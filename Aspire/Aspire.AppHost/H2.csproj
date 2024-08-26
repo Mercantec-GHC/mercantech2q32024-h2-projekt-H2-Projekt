@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
+    <PackageReference Include="Blazor.Bootstrap" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>

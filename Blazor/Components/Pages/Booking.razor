@@ -1,0 +1,42 @@
+﻿@page "/booking"
+@using BlazorBootstrap;
+
+<PageTitle>Book a room</PageTitle>
+
+<h1>Book a room</h1>
+
+<p>Enter guest name:</p>
+<input type="text" @bind="guestName" placeholder="Enter text" />
+<p></p>
+
+<p>Enter guest email:</p>
+<input type="text" @bind="guestEmail" placeholder="Enter email" />
+<p></p>
+
+<p>Enter guest phone number:</p>
+<input type="text" @bind="guestPhoneNr" placeholder="Enter phone number" />
+<p></p>
+
+<p>Enter number of rooms:</p>
+<input type="number" @bind="numberOfRooms" placeholder="Enter number of rooms" />
+<p></p>
+
+<p>Enter room type:</p>
+<input type="text" @bind="roomType" placeholder="Enter room type" />
+
+@* <dropdown Color ="DropdownColor.Primary">
+    <dropdownToggleButton>Dropdown button</dropdownToggleButton>
+    <DropdownMenu>
+        <DropdownItem To="/" Type="DropdownItemType.Link">Action(pris per nat)</DropdownItem>
+        <DropdownItem To="/" Type="DropdownItemType.Link">Another action</DropdownItem>
+        <DropdownItem To="/" Type="DropdownItemType.Link">Something else here</DropdownItem>
+    </DropdownMenu>
+</dropdown> *@
+
+@code {
+    string guestName;
+    string guestEmail;
+    string guestPhoneNr;
+    string roomType;
+    int numberOfRooms;
+}
