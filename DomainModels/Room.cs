@@ -17,12 +17,13 @@ namespace DomainModels
     internal class Room
     {
 
-        private int Id {  get; set; }
-        public string Type { get; set; }
-        public int Price { get; set; }
+        
+        public string type { get; set; }
+        public int price { get; set; }
 
-        private List<DateTime> BookedDays { get; set; } = new List<DateTime>();
+        private List<DateTime> bookedDays { get; set; } = new List<DateTime>();
 
-
+        Status status { get; set; }
+        
     }
 }
