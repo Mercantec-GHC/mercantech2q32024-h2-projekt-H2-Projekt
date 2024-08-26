@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace API.Models
 {
-    private enum Status
+    enum Status
     {
         available,
         underMaintenece,
