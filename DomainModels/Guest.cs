@@ -1,9 +1,10 @@
 ﻿namespace API.Models
 {
-    public class Guest : User
+    public class Guest
     {
         public void MakeReview()
         {
+
         }
     }
 }
