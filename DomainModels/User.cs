@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-	public class User
+	internal class User
 	{
-		public int id { get; set; }
-		public string userName { get; set; } = null!;
-		public string password { get; set; } = null!;
+		private string userName { get; set; } = null!;
+		private string password { get; set; } = null!;
 		public string name { get; set; } = null!;
-		public string? phoneNr { get; set; }
-		public string? email { get; set; }
-		public List<Booking> bookings { get; set; } = new List<Booking>();
+		private string? phoneNr { get; set; }
+		private string? email { get; set; }
+		private List<int> bookingIds { get; set; } = new List<int>();
 
 		public void DeleteOwnGuestAccount()
 		{ }
