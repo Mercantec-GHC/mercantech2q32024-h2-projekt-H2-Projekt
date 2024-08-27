@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace API.Models
+namespace DomainModels
 {
-    internal class Booking
+    public class Booking
     {
-        List<Room> rooms { get; set; } = new List<Room>();
-        string guestName { get; set; }
-        string guestEmail { get; set; }
-        string guestPhoneNr { get; set; }
-        List<DateOnly> bookingDates { get; set; } = new List<DateOnly>();
+        public int id { get; set; }
+        public List<Room> rooms { get; set; } = new List<Room>();
+        public string guestName { get; set; }
+        public string guestEmail { get; set; }
+        public string guestPhoneNr { get; set; }
+        public List<DateOnly> bookingDates { get; set; } = new List<DateOnly>();
 
         public void GetRoomAvailability()
         {
