@@ -14,10 +14,9 @@ namespace API.Models
 
     }
 
-    internal class Room
+    public class Room
     {
-
-        
+        public int id { get; set; }
         public string type { get; set; }
         public int price { get; set; }
 

@@ -1,33 +1,34 @@
 using Microsoft.AspNetCore.Mvc;
+using API.Models;
+using API.Data;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<UsersController> _logger;
+        private readonly HotelContext _hotelContext;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
+        public UsersController(ILogger<UsersController> logger, HotelContext hotelContext)
+		{
             _logger = logger;
+            _hotelContext = hotelContext;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet]
+        public IEnumerable<User> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return _hotelContext.users.ToArray();
+        }
+
+        [HttpPost]
+        public void Post([FromBody] User user)
+        {
+            _hotelContext.users.Add(user);
+            _hotelContext.SaveChanges();
         }
     }
 }

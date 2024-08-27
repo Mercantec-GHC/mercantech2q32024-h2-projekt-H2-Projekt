@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    internal class Booking
+    public class Booking
     {
+        public int id { get; set; }
         List<int> rooms { get; set; } = new List<int>();
         string guestName { get; set; }
         string guestEmail { get; set; }
