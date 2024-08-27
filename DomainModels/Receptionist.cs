@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace API.Models
+namespace DomainModels
 {
     public class Receptionist : Employee
     {
-        public int id { get; set; }
         public void CheckIn() { }
         public void CheckOut() { }
         public void DeleteAnyBooking() { }

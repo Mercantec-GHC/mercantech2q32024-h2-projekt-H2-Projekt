@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using API.Models;
 using API.Data;
+using DomainModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers

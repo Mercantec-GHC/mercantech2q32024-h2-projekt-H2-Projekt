@@ -1,10 +1,10 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace API.Models
+namespace DomainModels
 {
     enum Status
     {
@@ -14,14 +14,13 @@ namespace API.Models
 
     }
 
-    internal class Room
+    public class Room
     {
-
-        
+        public int id { get; set; }
         public string type { get; set; }
         public int price { get; set; }
 
-        private List<DateTime> bookedDays { get; set; } = new List<DateTime>();
+        public List<DateTime> bookedDays { get; set; } = new List<DateTime>();
 
         Status status { get; set; }
         
