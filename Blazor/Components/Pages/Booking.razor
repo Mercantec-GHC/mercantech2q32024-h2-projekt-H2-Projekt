@@ -3,6 +3,10 @@
 
 <PageTitle>Book a room</PageTitle>
 
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
 <h1>Book a room</h1>
 
 <p>Enter guest name:</p>
@@ -21,22 +25,61 @@
 <input type="number" @bind="numberOfRooms" placeholder="Enter number of rooms" />
 <p></p>
 
-<p>Enter room type:</p>
-<input type="text" @bind="roomType" placeholder="Enter room type" />
-
-@* <dropdown Color ="DropdownColor.Primary">
-    <dropdownToggleButton>Dropdown button</dropdownToggleButton>
-    <DropdownMenu>
-        <DropdownItem To="/" Type="DropdownItemType.Link">Action(pris per nat)</DropdownItem>
-        <DropdownItem To="/" Type="DropdownItemType.Link">Another action</DropdownItem>
-        <DropdownItem To="/" Type="DropdownItemType.Link">Something else here</DropdownItem>
-    </DropdownMenu>
-</dropdown> *@
+<div class="dropdown mt-3">
+    @if(roomType != null)
+    {
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            @roomType (@price per night)
+        </button>
+    }
+    else
+    {
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Choose desired room type
+        </button>
+    }
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li><button class="dropdown-item" @onclick="() => SetRoomType(0)">Standard single (600 dkk pr night)</button></li>
+        <li><button class="dropdown-item" @onclick="() => SetRoomType(1)">Standard double (800 dkk pr night)</button></li>
+        <li><button class="dropdown-item" @onclick="() => SetRoomType(2)">Premium single (900 dkk pr night)</button></li>
+        <li><button class="dropdown-item" @onclick="() => SetRoomType(3)">Premium double (1200 dkk pr night)</button></li>
+        <li><button class="dropdown-item" @onclick="() => SetRoomType(4)">Penthouse (3000 dkk pr night)</button></li>
+    </ul>
+</div>
 
 @code {
     string guestName;
     string guestEmail;
     string guestPhoneNr;
     string roomType;
+    int price;
     int numberOfRooms;
+
+    private void SetRoomType(int typeIndex)
+    {
+        switch (typeIndex)
+        {
+            case 0:
+                roomType = "Standard single";
+                price = 600;
+                break;
+            case 1:
+                roomType = "Standard double";
+                price = 800;
+                break;
+            case 2:
+                roomType = "premium single";
+                price = 900;
+                break;
+            case 3:
+                roomType = "premium double";
+                price = 1200;
+                break;
+            case 4:
+                roomType = "penthouse";
+                price = 3000;
+                break;
+        }
+        Console.WriteLine($"Selected Room Type: {roomType}");
+    }
 }
