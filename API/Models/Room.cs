@@ -11,7 +11,6 @@ namespace API.Models
         available,
         underMaintenece,
         needsCleaning
-
     }
 
     public class Room
@@ -20,9 +19,8 @@ namespace API.Models
         public string type { get; set; }
         public int price { get; set; }
 
-        private List<DateTime> bookedDays { get; set; } = new List<DateTime>();
+        public List<DateTime> bookedDays { get; set; } = new List<DateTime>();
 
         Status status { get; set; }
-        
     }
 }

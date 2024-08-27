@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace API.Models
 {
-    internal class Employee : User
+    public class Employee : User
     {
-        private int employeeId;
-
         public void EditTicket() { }
     }
 }

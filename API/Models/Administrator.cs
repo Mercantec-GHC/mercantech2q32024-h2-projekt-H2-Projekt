@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace API.Models
 {
-    internal class Administrator : Receptionist
+    public class Administrator : Receptionist
     {
+        public int id { get; set; }
         public void DeleteAnyAccount() { }
         public void AddAnyAccount() { }
         public void CreateRoom() { }

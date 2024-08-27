@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace API.Models
 {
-    internal class Cleaning : Employee
+    public class Cleaning : Employee
     {
+        public int id { get; set; }
         public void CleanRoom() { }
         public void GetRoomsToClean() { }
     }
