@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(HotelContext))]
-    [Migration("20240827091527_InitialCreate")]
+    [Migration("20240827112608_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("API.Models.Booking", b =>
+            modelBuilder.Entity("DomainModels.Booking", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace API.Migrations
                     b.ToTable("bookings");
                 });
 
-            modelBuilder.Entity("API.Models.Room", b =>
+            modelBuilder.Entity("DomainModels.Room", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace API.Migrations
                     b.ToTable("rooms");
                 });
 
-            modelBuilder.Entity("API.Models.User", b =>
+            modelBuilder.Entity("DomainModels.User", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -129,61 +129,61 @@ namespace API.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("API.Models.Employee", b =>
+            modelBuilder.Entity("DomainModels.Employee", b =>
                 {
-                    b.HasBaseType("API.Models.User");
+                    b.HasBaseType("DomainModels.User");
 
                     b.HasDiscriminator().HasValue("Employee");
                 });
 
-            modelBuilder.Entity("API.Models.Guest", b =>
+            modelBuilder.Entity("DomainModels.Guest", b =>
                 {
-                    b.HasBaseType("API.Models.User");
+                    b.HasBaseType("DomainModels.User");
 
                     b.HasDiscriminator().HasValue("Guest");
                 });
 
-            modelBuilder.Entity("API.Models.Cleaning", b =>
+            modelBuilder.Entity("DomainModels.Cleaning", b =>
                 {
-                    b.HasBaseType("API.Models.Employee");
+                    b.HasBaseType("DomainModels.Employee");
 
                     b.HasDiscriminator().HasValue("Cleaning");
                 });
 
-            modelBuilder.Entity("API.Models.Receptionist", b =>
+            modelBuilder.Entity("DomainModels.Receptionist", b =>
                 {
-                    b.HasBaseType("API.Models.Employee");
+                    b.HasBaseType("DomainModels.Employee");
 
                     b.HasDiscriminator().HasValue("Receptionist");
                 });
 
-            modelBuilder.Entity("API.Models.Administrator", b =>
+            modelBuilder.Entity("DomainModels.Administrator", b =>
                 {
-                    b.HasBaseType("API.Models.Receptionist");
+                    b.HasBaseType("DomainModels.Receptionist");
 
                     b.HasDiscriminator().HasValue("Administrator");
                 });
 
-            modelBuilder.Entity("API.Models.Booking", b =>
+            modelBuilder.Entity("DomainModels.Booking", b =>
                 {
-                    b.HasOne("API.Models.User", null)
+                    b.HasOne("DomainModels.User", null)
                         .WithMany("bookings")
                         .HasForeignKey("Userid");
                 });
 
-            modelBuilder.Entity("API.Models.Room", b =>
+            modelBuilder.Entity("DomainModels.Room", b =>
                 {
-                    b.HasOne("API.Models.Booking", null)
+                    b.HasOne("DomainModels.Booking", null)
                         .WithMany("rooms")
                         .HasForeignKey("Bookingid");
                 });
 
-            modelBuilder.Entity("API.Models.Booking", b =>
+            modelBuilder.Entity("DomainModels.Booking", b =>
                 {
                     b.Navigation("rooms");
                 });
 
-            modelBuilder.Entity("API.Models.User", b =>
+            modelBuilder.Entity("DomainModels.User", b =>
                 {
                     b.Navigation("bookings");
                 });
