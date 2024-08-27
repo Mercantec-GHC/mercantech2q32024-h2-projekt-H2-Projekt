@@ -25,6 +25,15 @@
 <input type="number" @bind="numberOfRooms" placeholder="Enter number of rooms" />
 <p></p>
 
+<p>Enter number of rooms:</p>
+<input type="number" @bind="numberOfRooms" placeholder="Enter number of rooms" />
+<p></p>
+
+<input type="date" @bind="startDate" min="@DateTime.Now"/>
+<p></p>
+
+<input type="date" @bind="endDate" min="@startDate.AddDays(1)" />
+
 <div class="dropdown mt-3">
     @if(roomType != null)
     {
@@ -52,6 +61,12 @@
     string guestEmail;
     string guestPhoneNr;
     string roomType;
+
+    DateTime startDate = DateTime.Now;
+    DateTime endDate = DateTime.Now.AddDays(1);
+
+    List<DateOnly> bookingDates = new List<DateOnly>();
+
     int price;
     int numberOfRooms;
 
