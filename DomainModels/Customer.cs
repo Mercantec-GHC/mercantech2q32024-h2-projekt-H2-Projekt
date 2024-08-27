@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace DomainModels
 {
-    public class Employee : User
+    public class Customer : User
     {
         public int Id { get; set; }
-        public string UPN { get; set; }
-        
     }
 }

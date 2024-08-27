@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace DomainModels
 {
-    public class Employee : User
+    public class Message
     {
         public int Id { get; set; }
-        public string UPN { get; set; }
-        
+        public DateTime TimeMessageSent { get; set; }
+        public User userID { get; set; }
+        public string message { get; set; }
     }
 }
