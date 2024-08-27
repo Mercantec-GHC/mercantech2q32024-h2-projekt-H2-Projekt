@@ -1,6 +1,6 @@
 ﻿namespace DomainModels
 {
-    public class Guest
+    public class Guest : User
     {
         public void MakeReview()
         {

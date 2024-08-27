@@ -14,7 +14,7 @@ namespace DomainModels
 		public string name { get; set; } = null!;
 		public string? phoneNr { get; set; }
 		public string? email { get; set; }
-		public List<int> bookingIds { get; set; } = new List<int>();
+		public List<Booking> bookings { get; set; } = new List<Booking>();
 
 		public void DeleteOwnGuestAccount()
 		{ }
