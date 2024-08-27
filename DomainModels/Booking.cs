@@ -10,9 +10,9 @@ namespace DomainModels
     {
         public int id { get; set; }
         public List<Room> rooms { get; set; } = new List<Room>();
-        public string guestName { get; set; }
-        public string guestEmail { get; set; }
-        public string guestPhoneNr { get; set; }
+        public string guestName { get; set; } = null!;
+        public string? guestEmail { get; set; }
+        public string? guestPhoneNr { get; set; }
         public List<DateOnly> bookingDates { get; set; } = new List<DateOnly>();
 
         public void GetRoomAvailability()

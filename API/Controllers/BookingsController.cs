@@ -22,5 +22,12 @@ namespace API.Controllers
 			var bookings = await _hotelContext.bookings.ToArrayAsync();
 			return Ok(bookings);
 		}
+
+		[HttpPost]
+		public void PostBooking(Booking booking)
+		{
+			_hotelContext.bookings.Add(booking);
+			_hotelContext.SaveChanges();
+		}
 	}
 }
