@@ -18,13 +18,13 @@ namespace API.Controllers
 		[HttpGet]
 		public IEnumerable<Room> GetRooms()
 		{
-			return _hotelContext.rooms.ToArray();
+			return _hotelContext.Rooms.ToArray();
 		}
 
 		[HttpPost]
 		public void Post(Room room)
 		{
-			_hotelContext.rooms.Add(room);
+			_hotelContext.Rooms.Add(room);
 			_hotelContext.SaveChanges();
 		}
 	}
