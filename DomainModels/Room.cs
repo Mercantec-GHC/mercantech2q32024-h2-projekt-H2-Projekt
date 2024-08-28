@@ -1,5 +1,6 @@
 ﻿    using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,15 +13,17 @@ namespace DomainModels
         underMaintenece,
         needsCleaning
     }
-
+    [Table("rooms")]
     public class Room
     {
-        public int id { get; set; }
-        public string type { get; set; }
-        public int price { get; set; }
-        public List<DateTime> bookedDays { get; set; } = new List<DateTime>();
-
-        Status status { get; set; }
+        [Column("type")]
+        public string Type { get; set; }
+        [Column("price")]
+        public int Price { get; set; }
+        [Column("booked_days")]
+        public List<DateTime> BookedDays { get; set; } = new List<DateTime>();
+        [Column("status")]
+        Status Status { get; set; }
         
     }
 }
