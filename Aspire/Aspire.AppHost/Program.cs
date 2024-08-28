@@ -3,7 +3,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 #region DBSetup
 var dbServer = builder.AddPostgres("dbserver");
 var db = dbServer.AddDatabase("hoteldb");
-dbServer.WithDataVolume();
+dbServer.WithDataVolume().WithPgAdmin();
 #endregion
 
 #region API
