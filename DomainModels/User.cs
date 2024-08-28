@@ -18,20 +18,33 @@ namespace DomainModels
 
 		public void DeleteOwnGuestAccount()
 		{ }
-
 		public void CreateOwnGuestAccount(string userName, string password)
 		{ }
-
 		public void AddTickets()
 		{ }
-
 		public void CreateBooking()
 		{ }
-
 		public void DeleteOwnBooking()
 		{ }
-
 		public void AddOwnBooking()
 		{ }
 	}
+
+	// A DTO classes used in the API controlleres
+	public class UserGetDTO
+	{
+		public int id { get; set; }
+		public string userName { get; set; } 
+		public List<Booking> bookings { get; set; } = new List<Booking>();
+	}
+
+
+	public class UserCreateDTO
+	{
+        public string userName { get; set; } = null!;
+        public string password { get; set; } = null!;
+        public string name { get; set; } = null!;
+        public string? phoneNr { get; set; }
+        public string? email { get; set; }
+    }
 }

@@ -16,8 +16,6 @@ namespace DomainModels
         public List<DateOnly> bookingDates { get; set; } = new List<DateOnly>();
 
         public void GetRoomAvailability()
-        {
-
-        }
+        {}
     }
 }

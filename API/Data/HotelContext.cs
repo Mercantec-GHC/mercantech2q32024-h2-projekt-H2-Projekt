@@ -6,7 +6,6 @@ namespace API.Data
 {
 	public class HotelContext : DbContext
 	{
-
 		public DbSet<Administrator> administrators { get; set; }
 		public DbSet<Booking> bookings { get; set; }
 		public DbSet<Cleaning> cleaningEmployees { get; set; }
