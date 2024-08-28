@@ -10,5 +10,8 @@ namespace DomainModels
     {
         public int Id { get; set; }
         public decimal Price { get; set; }
+        public Customer Customer { get; set; }
+        public List<Room> Rooms { get; set; }
+        public List<Extra> Extras { get; set; }
     }
 }

@@ -1,7 +1,17 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddProject<Projects.API>("api");
+#region DBSetup
+var dbServer = builder.AddPostgres("dbserver");
+var db = dbServer.AddDatabase("hoteldb");
+dbServer.WithDataVolume();
+#endregion
 
-builder.AddProject<Projects.Blazor>("blazor");
+#region API
+var api = builder.AddProject<Projects.API>("api").WithReference(db);
+#endregion
+
+#region Frontend
+builder.AddProject<Projects.Blazor>("blazor").WithReference(api);
+#endregion
 
 builder.Build().Run();
