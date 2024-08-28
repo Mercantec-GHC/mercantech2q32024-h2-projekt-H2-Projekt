@@ -16,6 +16,8 @@ namespace DomainModels
     [Table("rooms")]
     public class Room
     {
+        [Column("room_id")]
+        public int RoomId { get; set; }
         [Column("type")]
         public string Type { get; set; }
         [Column("price")]

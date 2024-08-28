@@ -18,12 +18,12 @@ namespace DomainModels
         public string Password { get; set; } = null!;
 		[Column("name")]
 		public string Name { get; set; } = null!;
-		[Column("user_id")]
+		[Column("user_phone")]
         public string? PhoneNr { get; set; }
 		[Column("email")]
         public string? Email { get; set; }
-		[Column("booking_ids")]
-        public List<int> BookingIds { get; set; } = new List<int>();
+		[Column("bookings")]
+        public List<Booking> Bookings { get; set; } = new List<Booking>();
 
 		public void DeleteOwnGuestAccount()
 		{ }

@@ -19,14 +19,14 @@ namespace API.Controllers
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
 		{
-			var bookings = await _hotelContext.bookings.ToArrayAsync();
+			var bookings = await _hotelContext.Bookings.ToArrayAsync();
 			return Ok(bookings);
 		}
 
 		[HttpPost]
 		public void PostBooking(Booking booking)
 		{
-			_hotelContext.bookings.Add(booking);
+			_hotelContext.Bookings.Add(booking);
 			_hotelContext.SaveChanges();
 		}
 	}
