@@ -24,16 +24,33 @@ namespace API.Controllers
             return Ok(room);
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{id}")]
 
-        public IActionResult GetById([FromRoute] int Id) 
+        public IActionResult GetById([FromRoute] int id) 
         {
-            var room = _context.Room.FindAsync(Id);
+            var room = _context.Room.Find(id);
             if (room == null)
             {
                 return NotFound();
             }
 
+            return Ok(room);
+        }
+
+        [HttpPut]
+        public IActionResult Update([FromBody] Room room) 
+        {
+            _context.Room.Update(room);
+            _context.SaveChanges();
+            return Ok(room);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var room = _context.Rooms.Find(id);
+            _context.Rooms.Remove(room);
+            _context.SaveChanges();
             return Ok(room);
         }
     }
