@@ -9,7 +9,7 @@ namespace DomainModels
     public class Administrator : Receptionist
     {
         public void DeleteAnyAccount() { }
-        public void AddAnyAccount(string userName, string Password) { }
+        public void AddAnyAccount() { }
         public void CreateRoom() { }
         public void ViewOccupancyReport() { }
 
