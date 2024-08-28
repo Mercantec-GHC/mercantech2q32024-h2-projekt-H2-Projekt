@@ -10,6 +10,7 @@ namespace DomainModels
     {
         public int Id { get; set; }
         public string UPN { get; set; }
+        public Department Department { get; set; }
         
     }
 }

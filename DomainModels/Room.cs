@@ -8,6 +8,7 @@ namespace DomainModels
 {
     public class Room
     {
+        public int Id { get; set; }
         public List<string> RoomType { get; set; }
         public int Rooms { get; set; }
         public int RoomNumber { get; set; }
@@ -15,5 +16,7 @@ namespace DomainModels
         public decimal Price { get; set; }
         public string Status { get; set; }
         public string Condition { get; set; }
+
+        public List<Reservation> Reservations { get; set; }
     }
 }

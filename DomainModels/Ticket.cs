@@ -10,10 +10,10 @@ namespace DomainModels
     {
        public int Id { get; set; }
        public string Title { get; set; }
-        public string Description { get; set; }
-        public Status status { get; set; }
+       public string Description { get; set; }
+       public Status status { get; set; }
 
-        public Message message { get; set; }
+       public List<Message> Messages { get; set; }
 
 
     }

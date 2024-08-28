@@ -10,7 +10,8 @@ namespace DomainModels
     {
         public int Id { get; set; }
         public DateTime TimeMessageSent { get; set; }
-        public User userID { get; set; }
-        public string message { get; set; }
+        public User User { get; set; }
+        public Ticket Ticket { get; set; }
+        public string MessageText { get; set; }
     }
 }

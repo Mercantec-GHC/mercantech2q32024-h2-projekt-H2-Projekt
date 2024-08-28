@@ -10,5 +10,7 @@ namespace DomainModels
     {
         public int Id { get; set; }
         public string ExtraName { get; set; }
+
+        public List<Reservation> Reservations { get; set; }
     }
 }
