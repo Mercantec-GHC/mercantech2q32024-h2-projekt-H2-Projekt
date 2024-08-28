@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DomainModels
 {
-    internal class Receptionist : Employee
+    public class Receptionist : Employee
     {
         public void CheckIn() { }
         public void CheckOut() { }

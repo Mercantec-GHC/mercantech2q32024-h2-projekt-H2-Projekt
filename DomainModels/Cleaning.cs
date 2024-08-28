@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DomainModels
 {
-    internal class Cleaning : Employee
+    public class Cleaning : Employee
     {
         public void CleanRoom() { }
         public void GetRoomsToClean() { }

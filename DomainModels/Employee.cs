@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace DomainModels
 {
-    internal class Employee : User
+    public class Employee : User
     {
-        private int employeeId;
-
         public void EditTicket() { }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DomainModels
 {
-    internal class Administrator : Receptionist
+    public class Administrator : Receptionist
     {
         public void DeleteAnyAccount() { }
         public void AddAnyAccount(string userName, string Password) { }
