@@ -8,7 +8,7 @@ namespace API.Data
         public HotelContext(DbContextOptions<HotelContext> options) : base(options)
         {
         }
-
+        public DbSet<User> Users { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -17,6 +17,8 @@ namespace API.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Department> Departments { get; set; }
+
+        public DbSet<Admin> Admins { get; set; }
 
 
     }
