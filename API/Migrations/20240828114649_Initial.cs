@@ -24,7 +24,7 @@ namespace API.Migrations
                     name = table.Column<string>(type: "text", nullable: false),
                     user_phone = table.Column<string>(type: "text", nullable: true),
                     email = table.Column<string>(type: "text", nullable: true),
-                    Discriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false)
+                    discriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,14 +41,14 @@ namespace API.Migrations
                     guest_email = table.Column<string>(type: "text", nullable: true),
                     guest_phone_nr = table.Column<string>(type: "text", nullable: true),
                     booking_dates = table.Column<List<DateOnly>>(type: "date[]", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: true)
+                    user_id = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_bookings", x => x.booking_id);
                     table.ForeignKey(
-                        name: "FK_bookings_users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_bookings_users_user_id",
+                        column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "user_id");
                 });
@@ -62,27 +62,27 @@ namespace API.Migrations
                     type = table.Column<string>(type: "text", nullable: false),
                     price = table.Column<int>(type: "integer", nullable: false),
                     booked_days = table.Column<List<DateTime>>(type: "timestamp with time zone[]", nullable: false),
-                    BookingId = table.Column<int>(type: "integer", nullable: true)
+                    booking_id = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_rooms", x => x.room_id);
                     table.ForeignKey(
-                        name: "FK_rooms_bookings_bookingId",
-                        column: x => x.BookingId,
+                        name: "FK_rooms_bookings_booking_id",
+                        column: x => x.booking_id,
                         principalTable: "bookings",
                         principalColumn: "booking_id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_bookings_userId",
+                name: "IX_bookings_user_id",
                 table: "bookings",
-                column: "UserId");
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_rooms_bookingId",
+                name: "IX_rooms_booking_id",
                 table: "rooms",
-                column: "BookingId");
+                column: "booking_id");
         }
 
         /// <inheritdoc />

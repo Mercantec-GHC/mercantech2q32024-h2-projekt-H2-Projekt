@@ -21,7 +21,7 @@ namespace DomainModels
         [Column("guest_phone_nr")]
         public string? GuestPhoneNr { get; set; }
         [Column("booking_dates")]
-        public List<DateOnly> BookingDates { get; set; } = new List<DateOnly>();
+        public List<DateTime> BookingDates { get; set; } = new List<DateTime>();
 
         public void GetRoomAvailability()
         {}
