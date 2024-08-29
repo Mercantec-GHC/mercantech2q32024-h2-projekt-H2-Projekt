@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace DomainModels
         [Column("booked_days")]
         public List<DateTime> BookedDays { get; set; } = new List<DateTime>();
         [Column("status")]
-        Status Status { get; set; }
+       Status Status { get; set; }
 
     }
 }

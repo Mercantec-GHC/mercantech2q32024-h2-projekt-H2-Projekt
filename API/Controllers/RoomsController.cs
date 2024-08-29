@@ -6,71 +6,106 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
 
-	[ApiController]
-	[Route("[controller]")]
-	public class RoomsController : ControllerBase
-	{
-		private readonly HotelContext _hotelContext;
+    [ApiController]
+    [Route("[controller]")]
+    public class RoomsController : ControllerBase
+    {
+        private readonly HotelContext _hotelContext;
 
-		public RoomsController(HotelContext hotelContext)
-		{
-			_hotelContext = hotelContext;
-		}
+        public RoomsController(HotelContext hotelContext)
+        {
+            _hotelContext = hotelContext;
+        }
 
-		[HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
-        {
-            var rooms = await _hotelContext.rooms
-                .ToListAsync();
-            return Ok(rooms);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Room>> GetRoom(long id)
-        {
-            var room = await _hotelContext.rooms.FindAsync(id);
-
-            if (room == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(room);
-
-        }
-            [HttpPost]
-        public async Task<IActionResult> PostRoom([FromBody] Room room)
         {
             try
             {
-                _hotelContext.rooms.Add(room);
+                var rooms = await _hotelContext.Rooms
+                    .Select(r => new { r.RoomId, r.Type, r.Price, r.BookedDays })
+                    .ToListAsync();
 
+                return Ok(rooms);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Room>> GetRoom(int id) // Change long to int if RoomId is an int
+        {
+            try
+            {
+                var room = await _hotelContext.Rooms.FindAsync(id);
+
+                if (room == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(room);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> PostRoom([FromBody] Room room)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                // Check if the RoomId already exists in the database
+                var existingRoom = await _hotelContext.Rooms.FindAsync(room.RoomId);
+
+                if (existingRoom != null)
+                {
+                    // If the RoomId already exists, increment the RoomId
+                    var maxRoomId = await _hotelContext.Rooms.MaxAsync(r => r.RoomId);
+                    room.RoomId = maxRoomId + 1;
+                }
+
+                // Add the room with the updated RoomId
+                _hotelContext.Rooms.Add(room);
                 await _hotelContext.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(GetRoom), new { id = room.RoomId }, room);
             }
             catch (Exception ex)
             {
-                // Log the exception (using your logging framework)
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
 
         [HttpDelete("id")]
-		public IActionResult DeleteRoom(int id)
-		{
-			var room = _hotelContext.rooms.Find(id);
+        public async Task<IActionResult> DeleteRoom(int id)
+        {
+            try
+            {
+                var room = await _hotelContext.Rooms.FindAsync(id);
 
-			if (room == null)
-			{
-				return NotFound();
-			}
+                if (room == null)
+                {
+                    return NotFound();
+                }
 
-			_hotelContext.rooms.Remove(room);
+                _hotelContext.Rooms.Remove(room);
+                await _hotelContext.SaveChangesAsync();
 
-			_hotelContext.SaveChanges();
-
-			return NoContent();
-		}
-	}
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+    }
 }
