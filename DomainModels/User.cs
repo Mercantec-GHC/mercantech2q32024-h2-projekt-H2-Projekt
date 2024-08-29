@@ -14,6 +14,10 @@ namespace DomainModels
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid? UserID { get; set; } = Guid.NewGuid();
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string phoneNumber { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
 
