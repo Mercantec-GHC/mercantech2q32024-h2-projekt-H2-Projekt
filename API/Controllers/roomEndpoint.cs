@@ -37,6 +37,14 @@ namespace API.Controllers
             return Ok(room);
         }
 
+        [HttpPost]
+        public IActionResult Post([FromBody]Room room) 
+        {
+            _context.Room.Add(room);
+            _context.SaveChanges();
+            return Ok(room);
+        }
+
         [HttpPut]
         public IActionResult Update([FromBody] Room room) 
         {
