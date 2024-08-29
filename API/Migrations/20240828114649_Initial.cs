@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,72 +17,72 @@ namespace API.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    userName = table.Column<string>(type: "text", nullable: false),
+                    user_name = table.Column<string>(type: "text", nullable: false),
                     password = table.Column<string>(type: "text", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
-                    phoneNr = table.Column<string>(type: "text", nullable: true),
+                    user_phone = table.Column<string>(type: "text", nullable: true),
                     email = table.Column<string>(type: "text", nullable: true),
                     Discriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.id);
+                    table.PrimaryKey("PK_users", x => x.user_id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "bookings",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    booking_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    guestName = table.Column<string>(type: "text", nullable: false),
-                    guestEmail = table.Column<string>(type: "text", nullable: false),
-                    guestPhoneNr = table.Column<string>(type: "text", nullable: false),
-                    bookingDates = table.Column<List<DateOnly>>(type: "date[]", nullable: false),
-                    Userid = table.Column<int>(type: "integer", nullable: true)
+                    guest_name = table.Column<string>(type: "text", nullable: false),
+                    guest_email = table.Column<string>(type: "text", nullable: true),
+                    guest_phone_nr = table.Column<string>(type: "text", nullable: true),
+                    booking_dates = table.Column<List<DateOnly>>(type: "date[]", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_bookings", x => x.id);
+                    table.PrimaryKey("PK_bookings", x => x.booking_id);
                     table.ForeignKey(
-                        name: "FK_bookings_users_Userid",
-                        column: x => x.Userid,
+                        name: "FK_bookings_users_UserId",
+                        column: x => x.UserId,
                         principalTable: "users",
-                        principalColumn: "id");
+                        principalColumn: "user_id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "rooms",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    room_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     type = table.Column<string>(type: "text", nullable: false),
                     price = table.Column<int>(type: "integer", nullable: false),
-                    bookedDays = table.Column<List<DateTime>>(type: "timestamp with time zone[]", nullable: false),
-                    Bookingid = table.Column<int>(type: "integer", nullable: true)
+                    booked_days = table.Column<List<DateTime>>(type: "timestamp with time zone[]", nullable: false),
+                    BookingId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_rooms", x => x.id);
+                    table.PrimaryKey("PK_rooms", x => x.room_id);
                     table.ForeignKey(
-                        name: "FK_rooms_bookings_Bookingid",
-                        column: x => x.Bookingid,
+                        name: "FK_rooms_bookings_bookingId",
+                        column: x => x.BookingId,
                         principalTable: "bookings",
-                        principalColumn: "id");
+                        principalColumn: "booking_id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_bookings_Userid",
+                name: "IX_bookings_userId",
                 table: "bookings",
-                column: "Userid");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_rooms_Bookingid",
+                name: "IX_rooms_bookingId",
                 table: "rooms",
-                column: "Bookingid");
+                column: "BookingId");
         }
 
         /// <inheritdoc />

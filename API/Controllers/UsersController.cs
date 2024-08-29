@@ -19,13 +19,13 @@ namespace API.Controllers
 		[HttpGet]
 		public IEnumerable<User> Get()
 		{
-			return _hotelContext.users.ToArray();
+			return _hotelContext.Users.ToArray();
 		}
 
 		[HttpPost]
 		public void Post([FromBody] User user)
 		{
-			_hotelContext.users.Add(user);
+			_hotelContext.Users.Add(user);
 			_hotelContext.SaveChanges();
 		}
 	}
