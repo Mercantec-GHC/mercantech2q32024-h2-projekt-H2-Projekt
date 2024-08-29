@@ -25,6 +25,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Ensure the database is created and migrated
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<HotelContext>();
