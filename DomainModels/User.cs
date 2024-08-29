@@ -42,18 +42,19 @@ namespace DomainModels
 	// A DTO classes used in the API controlleres
 	public class UserGetDTO
 	{
-		public int id { get; set; }
-		public string userName { get; set; } 
-		public List<Booking> bookings { get; set; } = new List<Booking>();
+		public int UserId { get; set; }
+		public string UserName { get; set; } 
+		public string Name { get; set; }
+		public List<Booking> Bookings { get; set; } = new List<Booking>();
 	}
 
 
-	public class UserCreateDTO
+	public class UserCreateAndUpdateDTO
 	{
-        public string userName { get; set; } = null!;
-        public string password { get; set; } = null!;
-        public string name { get; set; } = null!;
-        public string? phoneNr { get; set; }
-        public string? email { get; set; }
+        public string UserName { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string? PhoneNr { get; set; }
+        public string? Email { get; set; }
     }
 }
