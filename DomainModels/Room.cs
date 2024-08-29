@@ -16,6 +16,7 @@ namespace DomainModels
     public class Room
     {
         public int id { get; set; }
+        
         public string type { get; set; }
         public int price { get; set; }
         public List<DateTime> bookedDays { get; set; } = new List<DateTime>();
