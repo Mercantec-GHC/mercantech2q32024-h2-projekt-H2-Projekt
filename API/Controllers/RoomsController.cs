@@ -25,8 +25,8 @@ namespace API.Controllers
             return Ok(rooms);
         }
 
-        [HttpGet("id")]
-        public async Task<ActionResult<Room>> GetRoom(long id) 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Room>> GetRoom(long id)
         {
             var room = await _hotelContext.rooms.FindAsync(id);
 
@@ -35,10 +35,10 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Ok(room); 
-        }
+            return Ok(room);
 
-        [HttpPost]
+        }
+            [HttpPost]
         public async Task<IActionResult> PostRoom([FromBody] Room room)
         {
             try
