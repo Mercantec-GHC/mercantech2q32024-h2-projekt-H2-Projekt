@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DomainModels;
+using API.Data;
 
 namespace API.Controllers
 {
@@ -30,7 +31,7 @@ namespace API.Controllers
         public IActionResult GetAll() 
         {
             // Currently the simplest CRUD operation
-            var room = _context.Room.ToList();
+            var room = _context.Rooms.ToList();
             
             return Ok(room);
         }
@@ -44,7 +45,7 @@ namespace API.Controllers
         public IActionResult GetById([FromRoute] int id) 
         {
             // Currently the simplest CRUD operation
-            var room = _context.Room.Find(id);
+            var room = _context.Rooms.Find(id);
             //Just in case null it returns not found
             if (room == null)
             {
@@ -63,7 +64,7 @@ namespace API.Controllers
         public IActionResult Post([FromBody]Room room) 
         {
             // Currently the simplest CRUD operation
-            _context.Room.Add(room);
+            _context.Rooms.Add(room);
             _context.SaveChanges();
             return Ok(room);
         }
@@ -77,7 +78,7 @@ namespace API.Controllers
         public IActionResult Update([FromBody] Room room) 
         {
             // Currently the simplest CRUD operation
-            _context.Room.Update(room);
+            _context.Rooms.Update(room);
             _context.SaveChanges();
             return Ok(room);
         }
