@@ -1,8 +1,15 @@
 ﻿<MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All">Front Page</MudNavLink>
-    <MudNavGroup Title="Test Pages" Expanded="true">
+    <MudNavGroup Title="Example Pages" Expanded="true">
         <MudNavLink Href="/roomType" Match="NavLinkMatch.Prefix">Room Types</MudNavLink>
-        <MudNavLink Href="/roomSearch" Match="NavLinkMatch.Prefix">Search page example</MudNavLink>
+        <MudNavLink Href="/roomSearch" Match="NavLinkMatch.Prefix">Search page</MudNavLink>
+        <MudNavGroup Title="Function Pages" Expanded="true">
+            <MudNavLink Href="/createUser" Match="NavLinkMatch.Prefix">Sign up page</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Login Pages" Expanded="true">
+            <MudNavLink Href="/employee" Match="NavLinkMatch.Prefix">Employee</MudNavLink>
+            <MudNavLink Href="/manageProfile" Match="NavLinkMatch.Prefix">User page</MudNavLink>
+        </MudNavGroup>
     </MudNavGroup>
     <MudNavGroup Title="Basics" Expanded="true">
         <MudNavLink Href="/counter" Match="NavLinkMatch.Prefix">Counter</MudNavLink>
