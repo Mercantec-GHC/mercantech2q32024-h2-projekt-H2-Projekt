@@ -41,12 +41,21 @@ namespace DomainModels
 	}
 
 
-	public class UserCreateAndUpdateDTO
+	public class UserPostDTO
 	{
+		public int UserId { get; set; }
         public string FullName { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string Role { get; set; } = null!;
         public string? PhoneNr { get; set; }
 		public string Email { get; set; } = null!;
     }
+
+	public class UserPutDTO
+	{
+		public string FullName { get; set; } = null!;
+		public string Password { get; set; } = null!;
+		public string? PhoneNr { get; set; }
+		public string Email { get; set; } = null!;
+	}
 }
