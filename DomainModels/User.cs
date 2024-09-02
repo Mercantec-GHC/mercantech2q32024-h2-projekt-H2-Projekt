@@ -7,22 +7,14 @@ using System.Threading.Tasks;
 
 namespace DomainModels
 {
-	[Table("users")]
 	public class User
 	{
-		[Column("user_id")]
         public int UserId { get; set; }
-        [Column("user_name")]
-        public string UserName { get; set; } = null!;
-		[Column("password")]
+		public string FullName { get; set; } = null!;
+		public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
-		[Column("name")]
-		public string Name { get; set; } = null!;
-		[Column("user_phone")]
+		public string Role { get; set; } = null!;
         public string? PhoneNr { get; set; }
-		[Column("email")]
-        public string? Email { get; set; }
-		[Column("bookings")]
         public List<Booking> Bookings { get; set; } = new List<Booking>();
 
 		public void DeleteOwnGuestAccount()
@@ -42,18 +34,19 @@ namespace DomainModels
 	// A DTO classes used in the API controlleres
 	public class UserGetDTO
 	{
-		public int id { get; set; }
-		public string userName { get; set; } 
-		public List<Booking> bookings { get; set; } = new List<Booking>();
+		public int UserId { get; set; }
+		public string FullName { get; set; } 
+		public string Role { get; set; }
+		public List<Booking> Bookings { get; set; } = new List<Booking>();
 	}
 
 
-	public class UserCreateDTO
+	public class UserCreateAndUpdateDTO
 	{
-        public string userName { get; set; } = null!;
-        public string password { get; set; } = null!;
-        public string name { get; set; } = null!;
-        public string? phoneNr { get; set; }
-        public string? email { get; set; }
+        public string FullName { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string Role { get; set; } = null!;
+        public string? PhoneNr { get; set; }
+		public string Email { get; set; } = null!;
     }
 }

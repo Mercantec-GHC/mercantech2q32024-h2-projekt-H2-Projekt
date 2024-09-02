@@ -13,19 +13,12 @@ namespace DomainModels
         underMaintenece,
         needsCleaning
     }
-    [Table("rooms")]
     public class Room
     {
-        [Column("room_id")]
         public int RoomId { get; set; }
-        [Column("type")]
         public string Type { get; set; }
-        [Column("price")]
         public int Price { get; set; }
-        [Column("booked_days")]
-        public List<DateTime> BookedDays { get; set; } = new List<DateTime>();
-        [Column("status")]
+        public List<DateTime>? BookedDays { get; set; } = new List<DateTime>();
         Status Status { get; set; }
-        
     }
 }

@@ -20,4 +20,8 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.8.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\DomainModels\DomainModels.csproj" />
+  </ItemGroup>
+
 </Project>
