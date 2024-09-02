@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DomainModels;
 using API.Data;
+using Microsoft.EntityFrameworkCore;
+using API.Helpers;
 
 namespace API.Controllers
 {
@@ -14,10 +16,10 @@ namespace API.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]
-    public class roomController : ControllerBase
+    public class RoomController : ControllerBase
     {
         private readonly HotelContext _context;
-        public roomController(HotelContext context)
+        public RoomController(HotelContext context)
         {
             // Fill the DB Context through Dependency Injection
             _context = context;
@@ -96,6 +98,60 @@ namespace API.Controllers
             _context.Rooms.Remove(room);
             _context.SaveChanges();
             return Ok(room);
+        }
+
+
+        /// <summary>
+        /// Search for rooms. Currently supports searching by RoomType, sorting by any property of the Room object, and lastly non zero-based pagination
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns>A paginated list of rooms fitting the filters</returns>
+        [HttpGet]
+        public IActionResult Search([FromQuery] QueryObject query )
+        {
+            // Create the start of a request to the DB
+            var rooms = _context.Rooms.AsQueryable();
+
+            // Check if search property of the query object isn't empty 
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                // Add the condition to the db request that the returned list needs to have RoomType contain the search property
+                rooms = rooms.Where(r => r.RoomType.Contains(query.Search));
+            }
+
+            // Check if SortBy is empty and if not then check if the entered value is a property on the Room object
+            if (!string.IsNullOrWhiteSpace(query.SortBy) && typeof(Room).GetProperties().Any(p => p.Name.ToLower() == query.SortBy.ToLower()))
+            {
+                // Get the property name of the Room object that matches the SortBy property of the query object
+                // (Just ensures capitalization and such is correct)
+                string propName = typeof(Room).GetProperties().First(p => p.Name.ToLower() == query.SortBy.ToLower()).Name;
+
+                // Check if the sort is ascending or descending
+                if (query.IsSortAscending)
+                {
+                    // Modify the request to return the rooms ordered by the property name in ascending order
+                    rooms = rooms.OrderBy(r => EF.Property<object>(r, propName));
+                }
+                else
+                {
+                    // Modify the request to return the rooms ordered by the property name in descending order
+                    rooms = rooms.OrderByDescending(r => EF.Property<object>(r, propName));
+                }
+            }
+            // Check if SortBy contains a value but it isn't a property of the Room object
+            else if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                // Return a bad request with a message that the SortBy property isn't found in the Room object
+                return BadRequest($"SortBy '{query.SortBy}' parameter not found in rooms object");
+            }
+
+            // Pagination
+            rooms = rooms.Skip((query.Page - 1) * query.PageSize).Take(query.PageSize);
+
+            // Return the paginated list of rooms
+            return Ok(rooms.ToList());
+
+            
         }
     }
 }
