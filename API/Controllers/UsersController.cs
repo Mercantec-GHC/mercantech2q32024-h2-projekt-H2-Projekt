@@ -36,11 +36,11 @@ namespace API.Controllers
 			{
 				result.Add(_userMapping.MapUserToUserGetDTO(user));
 			}
-            return Ok(result);
+			return Ok(result);
 		}
 
-		//Get a specific user from the UserID.
-	   [HttpGet("{id}")]
+		// Get a specific user from the UserID.
+		[HttpGet("{id}")]
 		public async Task<ActionResult<UserGetDTO>> GetAUser(int id)
 		{
 			var user = await _hotelContext.Users.FindAsync(id);
@@ -50,45 +50,45 @@ namespace API.Controllers
 				return StatusCode(418);
 			}
 
-            return Ok(_userMapping.MapUserToUserGetDTO(user));
+			return Ok(_userMapping.MapUserToUserGetDTO(user));
 		}
 
-		// Create a user guest account
-	 //  [HttpPost]
-		//public async Task<ActionResult<UserCreateAndUpdateDTO>> PostAUser(UserCreateAndUpdateDTO user)
-		//{
-		//	var userDTO = new User
-		//	{
-		//		UserName = user.UserName,
-		//		Password = user.Password,
-		//		Name = user.Name,
-		//		PhoneNr = user.PhoneNr,
-		//		Email = user.Email
-		//	};
+		// Create a user account
+		[HttpPost]
+		public async Task<ActionResult<User>> PostAUser(UserCreateAndUpdateDTO user)
+		{
+			//var userDTO = new User
+			//{
+			//	UserName = user.UserName,
+			//	Password = user.Password,
+			//	Name = user.Name,
+			//	PhoneNr = user.PhoneNr,
+			//	Email = user.Email
+			//};
 
-		//	_hotelContext.Users.Add(userDTO);
-		//	await _hotelContext.SaveChangesAsync();
+			_hotelContext.Users.Add(_userMapping.MapToUserCreateAndUpdateDTO(user));
+			await _hotelContext.SaveChangesAsync();
 
-		//	return Ok(userDTO);
-		//}
+			return Ok(StatusCode(200));
+		}
 
 
 		// Update a specific guest user account
-		//[HttpPut("{id}")]
-		//public async Task<IActionResult> PutAUser(int id, UserGetDTO user)
-		//{
-		//	if (id != user.UserId)
-		//	{
-		//		return BadRequest();
-		//	}
+	   [HttpPut("{id}")]
+		public async Task<IActionResult> PutAUser(int id, UserGetDTO user)
+		{
+			if (id != user.UserId)
+			{
+				return BadRequest();
+			}
 
-		//	var userDTO = await _hotelContext.Users.FindAsync(id);
-		//	if (userDTO == null)
-		//	{
-		//		return NotFound();
-		//	}
-
-		//}
+			var userDTO = await _hotelContext.Users.FindAsync(id);
+			if (userDTO == null)
+			{
+				return NotFound();
+			}
+			return Ok(userDTO);
+		}
 
 
 		//[HttpPost]
@@ -98,4 +98,4 @@ namespace API.Controllers
 		//	_hotelContext.SaveChanges();
 		//}
 	}
-}
+	}

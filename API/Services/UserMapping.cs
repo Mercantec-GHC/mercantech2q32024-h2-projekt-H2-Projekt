@@ -11,17 +11,25 @@ namespace API.Services
             var userDTO = new UserGetDTO
             {
                 UserId = user.UserId,
-                UserName = user.UserName,
-                Name = user.Name,
+                FullName = user.FullName,
+                Role = user.Role,
                 Bookings = user.Bookings
             };
 
             return userDTO;
         }
 
-        public UserCreateAndUpdateDTO MapToUserCreateAndUpdateDTO()
+        public User MapToUserCreateAndUpdateDTO(UserCreateAndUpdateDTO user)
         {
-
+            var userDTO = new User
+            {
+                FullName = user.FullName,
+                Password = user.Password,
+                Role = user.Role,
+                PhoneNr = user.PhoneNr,
+                Email = user.Email
+            };
+            return userDTO;
         }
     }
 }
