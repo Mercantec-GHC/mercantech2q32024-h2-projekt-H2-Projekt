@@ -19,10 +19,11 @@ namespace API.Services
             return userDTO;
         }
 
-        public User MapToUserCreateAndUpdateDTO(UserCreateAndUpdateDTO user)
+        public User MapToUserCreateDTO(UserPostDTO user)
         {
             var userDTO = new User
             {
+                UserId = user.UserId,
                 FullName = user.FullName,
                 Password = user.Password,
                 Role = user.Role,
