@@ -26,6 +26,7 @@ namespace DomainModels
         public List<DateTime> BookedDays { get; set; } = new List<DateTime>();
         [Column("status")]
         Status Status { get; set; }
-        
+        //[Column("booking_id")]
+        //public int BookingId { get; set; }
     }
 }
