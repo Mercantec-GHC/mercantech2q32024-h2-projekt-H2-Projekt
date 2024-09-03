@@ -172,7 +172,7 @@ namespace API.Controllers
             booking.GuestName = user.FullName;
             booking.GuestEmail = user.Email;
             booking.GuestPhoneNr = user.PhoneNr;
-            booking.BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo };
+            //booking.BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo };
           
             _hotelContext.SaveChanges();
 
