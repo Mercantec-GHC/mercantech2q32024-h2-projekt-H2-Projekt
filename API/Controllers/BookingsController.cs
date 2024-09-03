@@ -115,13 +115,14 @@ namespace API.Controllers
 
             var booking = new Booking
             {
+                
                 Room = room,
-                GuestName = user.FullName,
-                GuestEmail = user.Email,
-                GuestPhoneNr = user.PhoneNr,
+                GuestName = bookingDTO.GuestName,
+                GuestEmail = bookingDTO.GuestEmail,
+                GuestPhoneNr = bookingDTO.GuestPhoneNr,
                 BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo }
             };
-            _hotelContext.Bookings.Add(booking);
+            user.Bookings.Add(booking);
 			_hotelContext.SaveChanges();
 
             return Ok("Done");
@@ -166,7 +167,7 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid date range");
             }
-
+            
             booking.Room = room;
             booking.GuestName = user.FullName;
             booking.GuestEmail = user.Email;

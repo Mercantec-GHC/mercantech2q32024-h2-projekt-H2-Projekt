@@ -10,6 +10,9 @@ namespace DomainModels
     {
         public int RoomId { get; set; }
         public int UserId { get; set; }
+        public string GuestName { get; set; }
+        public string GuestEmail { get; set; }
+        public string GuestPhoneNr { get; set; }
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
     }
@@ -19,6 +22,9 @@ namespace DomainModels
         public int BookingId { get; set; }
         public int RoomId { get; set; }
         public int UserId { get; set; }
+        public string GuestName { get; set; }
+        public string GuestEmail { get; set; }
+        public string GuestPhoneNr { get; set; }
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
     }
