@@ -87,7 +87,6 @@ namespace API.Controllers
        
 
         [HttpPost("add")]
-        [ProducesResponseType(201)]
 		public ActionResult AddBooking(CreateBookingDTO bookingDTO)
 		{
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
@@ -122,10 +121,9 @@ namespace API.Controllers
                 GuestPhoneNr = bookingDTO.GuestPhoneNr,
                 StartDate = bookingDTO.StartDate,
                 EndDate = bookingDTO.EndDate
-                //RoomId = bookingDTO.RoomId
 
-            };
-            //user.Bookings.Add(booking);
+            }; 
+            _hotelContext.Bookings.Add(booking);
 			_hotelContext.SaveChanges();
 
             return Ok("Done");

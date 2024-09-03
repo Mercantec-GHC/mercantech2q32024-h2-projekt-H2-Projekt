@@ -96,10 +96,10 @@ else
 
     public CreateBookingDTO guest = new CreateBookingDTO()
     {
-        StartDate = DateTime.Now,
-        EndDate = DateTime.Now.AddDays(1),
+            StartDate = DateTime.UtcNow.AddHours(26),
+            EndDate = DateTime.UtcNow.AddHours(50),
         RoomId = 1,
-        // UserId = 1
+        UserId = 1
     };
 
     bool bookingCompleted = false;
@@ -141,7 +141,7 @@ else
     private async Task FinishBooking()
     {
         bookingCompleted = true;
-        await SendMail();
+        //await SendMail();
         await CreateBooking();
     }
 
