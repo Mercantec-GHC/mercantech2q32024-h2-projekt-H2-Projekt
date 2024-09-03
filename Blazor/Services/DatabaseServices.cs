@@ -16,8 +16,15 @@ namespace Blazor.Services
         {
             var booking = new CreateBookingDTO
             {
+                GuestName = guestName,
+                GuestEmail = guestEmail,
+                GuestPhoneNr = guestPhoneNumber,
+                StartDate = startDate,
+                EndDate = endDate,
+                RoomId = roomId
+            };
 
-            }
+            await _httpClient.PostAsJsonAsync("Bookings", booking);
         }
     }
 }

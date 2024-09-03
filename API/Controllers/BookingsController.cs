@@ -102,12 +102,12 @@ namespace API.Controllers
                 return NotFound("user not found");
             }
 
-            if (bookingDTO.DateFrom >= bookingDTO.DateTo)
+            if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
                 return BadRequest("Invalid date range");
             }
 
-            if (bookingDTO.DateFrom < DateTime.Now)
+            if (bookingDTO.StartDate < DateTime.Now)
             {
                 return BadRequest("Invalid date range");
             }
@@ -120,8 +120,8 @@ namespace API.Controllers
                 GuestName = bookingDTO.GuestName,
                 GuestEmail = bookingDTO.GuestEmail,
                 GuestPhoneNr = bookingDTO.GuestPhoneNr,
-                StartDate = bookingDTO.DateFrom,
-                EndDate = bookingDTO.DateTo
+                StartDate = bookingDTO.StartDate,
+                EndDate = bookingDTO.EndDate
 
             };
             user.Bookings.Add(booking);
@@ -160,12 +160,12 @@ namespace API.Controllers
                 return NotFound("user not found");
             }
 
-            if (bookingDTO.DateFrom >= bookingDTO.DateTo)
+            if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
                 return BadRequest("Invalid date range");
             }
 
-            if (bookingDTO.DateFrom < DateTime.Now)
+            if (bookingDTO.StartDate < DateTime.Now)
             {
                 return BadRequest("Invalid date range");
             }
@@ -174,8 +174,8 @@ namespace API.Controllers
             booking.GuestName = user.FullName;
             booking.GuestEmail = user.Email;
             booking.GuestPhoneNr = user.PhoneNr;
-            booking.StartDate = bookingDTO.DateFrom;
-            booking.EndDate = bookingDTO.DateTo;
+            booking.StartDate = bookingDTO.StartDate;
+            booking.EndDate = bookingDTO.EndDate;
             
 
             _hotelContext.SaveChanges();
