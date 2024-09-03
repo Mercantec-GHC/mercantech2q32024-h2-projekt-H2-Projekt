@@ -2,6 +2,8 @@
 using DomainModels;
 using System.Security.Cryptography.X509Certificates;
 using static System.Net.WebRequestMethods;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace Blazor.Services
 {
@@ -27,7 +29,7 @@ namespace Blazor.Services
                 RoomId = roomId
             };
 
-            await _httpClient.PostAsJsonAsync("Bookings", booking);
+            await _httpClient.PostAsJsonAsync("https://localhost:7207/Bookings/add", booking);
         }
 
         public async Task<List<UserGetDTO>> GetAllUsers()

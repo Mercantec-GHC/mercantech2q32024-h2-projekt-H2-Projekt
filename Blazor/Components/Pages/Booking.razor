@@ -1,6 +1,8 @@
 ﻿@page "/booking"
 @using System.Net.Mail
 @using System.Net
+@inject HttpClient httpClient
+@inject Services.DatabaseServices DBServices
 
 <PageTitle>Book a room</PageTitle>
 
@@ -53,7 +55,7 @@
         </ul>
     </div>
 
-    <button class="btn btn-primary" @onclick="SendMail">Click me</button>
+    <button class="btn btn-primary" @onclick="FinishBooking">Click me</button>
 
 }
 else
@@ -99,7 +101,7 @@ else
     DateTime endDate = DateTime.Now.AddDays(1);
 
     int price;
-    int roomId;
+    int roomId = 2;
 
     private void SetRoomType(int typeIndex)
     {
@@ -129,6 +131,13 @@ else
         Console.WriteLine($"Selected Room Type: {roomType}");
     }
 
+    private async Task FinishBooking()
+    {
+        bookingCompleted = true;
+        await SendMail();
+        await CreateBooking();
+    }
+
     public async Task SendMail()
     {
         Console.WriteLine("test");
@@ -149,15 +158,14 @@ else
         {
             Console.WriteLine($"Failed to send mail: {ex.Message}");
         }
-        bookingCompleted = true;
     }
 
-    private async Task CreateBooking(string guestName)
+    private async Task CreateBooking()
     {
-        
+        await DBServices.CreateBooking(guestName, guestEmail, guestPhoneNr, startDate, endDate, roomId);
     }
 
-    public async Task GoToBooking()
+    public void GoToBooking()
     {
         bookingCompleted = false;
     }
