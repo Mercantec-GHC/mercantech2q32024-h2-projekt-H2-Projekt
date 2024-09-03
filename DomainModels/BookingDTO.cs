@@ -9,7 +9,7 @@ namespace DomainModels
     public class CreateBookingDTO
     {
         public int RoomId { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public string GuestName { get; set; }
         public string GuestEmail { get; set; }
         public string GuestPhoneNr { get; set; }
