@@ -35,7 +35,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Room>> GetRoom(int id) // Change long to int if RoomId is an int
+        public async Task<ActionResult<Room>> GetRoom(int id) 
         {
             try
             {
@@ -54,35 +54,57 @@ namespace API.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> PostRoom([FromBody] Room room)
+        public async Task<IActionResult> PostRoom(RoomPostDTO roomDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                // Check if the RoomId already exists in the database
-                var existingRoom = await _hotelContext.Rooms.FindAsync(room.RoomId);
-
-                if (existingRoom != null)
+                var room = new Room()
                 {
-                    // If the RoomId already exists, increment the RoomId
-                    var maxRoomId = await _hotelContext.Rooms.MaxAsync(r => r.RoomId);
-                    room.RoomId = maxRoomId + 1;
-                }
-
-                // Add the room with the updated RoomId
+                    Type = roomDTO.Type,
+                    Price = roomDTO.Price
+                };
                 _hotelContext.Rooms.Add(room);
                 await _hotelContext.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetRoom), new { id = room.RoomId }, room);
+                return Ok(StatusCode(200));
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, "Internal server error: " + ex.Message);
+                return NotFound();
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutRoom(int id, RoomPutDTO room)
+        {
+            var roomDTO = await _hotelContext.Rooms.FindAsync(id);
+
+            if (roomDTO == null)
+            {
+                return NotFound();
+            }
+
+            roomDTO.Type = room.Type;
+            roomDTO.Price = room.Price;
+
+            _hotelContext.Entry(roomDTO).State = EntityState.Modified;
+
+            try
+            {
+                await _hotelContext.SaveChangesAsync();
+            }
+            catch
+            {
+                if (!_hotelContext.Rooms.Any(r => r.RoomId == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return StatusCode(200);
         }
 
         [HttpDelete("id")]
