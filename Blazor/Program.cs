@@ -1,10 +1,15 @@
 using Blazor.Components;
+using Microsoft.EntityFrameworkCore.Storage;
+using Blazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<DatabaseServices>();
 
 var app = builder.Build();
 
