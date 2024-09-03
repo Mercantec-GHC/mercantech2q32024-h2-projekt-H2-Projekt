@@ -1,5 +1,6 @@
 ﻿@page "/booking"
-@using BlazorBootstrap;
+@using System.Net.Mail
+@using System.Net
 
 <PageTitle>Book a room</PageTitle>
 
@@ -7,68 +8,98 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<h1>Book a room</h1>
+@if (bookingCompleted == false)
+{
+    <h1>Book a room</h1>
 
-<p>Enter guest name:</p>
-<input type="text" @bind="guestName" placeholder="Enter text" />
-<p></p>
+    <p>Enter guest name:</p>
+    <input type="text" @bind="guestName" placeholder="Enter text" />
+    <p></p>
 
-<p>Enter guest email:</p>
-<input type="text" @bind="guestEmail" placeholder="Enter email" />
-<p></p>
+    <p>Enter guest email:</p>
+    <input type="text" @bind="guestEmail" placeholder="Enter email" />
+    <p></p>
 
-<p>Enter guest phone number:</p>
-<input type="text" @bind="guestPhoneNr" placeholder="Enter phone number" />
-<p></p>
+    <p>Enter guest phone number:</p>
+    <input type="text" @bind="guestPhoneNr" placeholder="Enter phone number" />
+    <p></p>
 
-<p>Enter number of rooms:</p>
-<input type="number" @bind="numberOfRooms" placeholder="Enter number of rooms" />
-<p></p>
+    <p>From:</p>
+    <input type="date" @bind="startDate" min="@DateTime.Now" />
+    <p></p>
 
-<p>Enter number of rooms:</p>
-<input type="number" @bind="numberOfRooms" placeholder="Enter number of rooms" />
-<p></p>
+    <p>To:</p>
+    <input type="date" @bind="endDate" min="@startDate.AddDays(1)" />
 
-<input type="date" @bind="startDate" min="@DateTime.Now"/>
-<p></p>
+    <div class="dropdown mt-3">
+        @if (roomType != null)
+        {
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                @roomType (@price per night)
+            </button>
+        }
+        else
+        {
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Choose desired room type
+            </button>
+        }
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><button class="dropdown-item" @onclick="() => SetRoomType(0)">Standard single (600 dkk pr night)</button></li>
+            <li><button class="dropdown-item" @onclick="() => SetRoomType(1)">Standard double (800 dkk pr night)</button></li>
+            <li><button class="dropdown-item" @onclick="() => SetRoomType(2)">Premium single (900 dkk pr night)</button></li>
+            <li><button class="dropdown-item" @onclick="() => SetRoomType(3)">Premium double (1200 dkk pr night)</button></li>
+            <li><button class="dropdown-item" @onclick="() => SetRoomType(4)">Penthouse (3000 dkk pr night)</button></li>
+        </ul>
+    </div>
 
-<input type="date" @bind="endDate" min="@startDate.AddDays(1)" />
+    <button class="btn btn-primary" @onclick="SendMail">Click me</button>
 
-<div class="dropdown mt-3">
-    @if(roomType != null)
-    {
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            @roomType (@price per night)
-        </button>
-    }
-    else
-    {
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            Choose desired room type
-        </button>
-    }
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li><button class="dropdown-item" @onclick="() => SetRoomType(0)">Standard single (600 dkk pr night)</button></li>
-        <li><button class="dropdown-item" @onclick="() => SetRoomType(1)">Standard double (800 dkk pr night)</button></li>
-        <li><button class="dropdown-item" @onclick="() => SetRoomType(2)">Premium single (900 dkk pr night)</button></li>
-        <li><button class="dropdown-item" @onclick="() => SetRoomType(3)">Premium double (1200 dkk pr night)</button></li>
-        <li><button class="dropdown-item" @onclick="() => SetRoomType(4)">Penthouse (3000 dkk pr night)</button></li>
-    </ul>
-</div>
+}
+else
+{
+    <h1>Booking confirmation:</h1>
+
+    <p>Name: @guestName</p>
+    <p></p>
+
+    <p>Email: @guestEmail</p>
+    <p></p>
+
+    <p>Phone number: @guestPhoneNr</p>
+    <p></p>
+
+    <p>Room type and cost: @roomType (@price per night)</p>
+    <p></p>
+
+    <p>From: @DateOnly.FromDateTime(startDate)</p>
+    <p></p>
+
+    <p>To: @DateOnly.FromDateTime(endDate)</p>
+    <p></p>
+
+    <button class="btn btn-primary" @onclick="GoToBooking">Create another booking</button>
+
+}
 
 @code {
-    string guestName;
-    string guestEmail;
-    string guestPhoneNr;
-    string roomType;
+    //Wont work if the mail or pw(password) isn't inserted with a real mail
+    string guestPassword = "TrinityGuest!"; //this is for access to see if mail was sent correctly if logged out from temp guest mail
+    string bookingMail = "trinityHotelEmployee@outlook.com";
+    string password = "TrinityBooking!";
+    string guestName = "";
+    string guestEmail = "trinityHotelGuest@outlook.com";
+    string guestPhoneNr = "";
+    string roomType = "";
+
+
+    bool bookingCompleted = false;
 
     DateTime startDate = DateTime.Now;
     DateTime endDate = DateTime.Now.AddDays(1);
 
-    List<DateOnly> bookingDates = new List<DateOnly>();
-
     int price;
-    int numberOfRooms;
+    int roomId;
 
     private void SetRoomType(int typeIndex)
     {
@@ -96,5 +127,38 @@
                 break;
         }
         Console.WriteLine($"Selected Room Type: {roomType}");
+    }
+
+    public async Task SendMail()
+    {
+        Console.WriteLine("test");
+
+        SmtpClient client = new SmtpClient("smtp-mail.outlook.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(bookingMail, password)
+            };
+
+        try
+        {
+            //Don't forget to make the (MailTo) to a real mail to send it to
+            await client.SendMailAsync(new MailMessage(bookingMail, guestEmail, "Trinity hotel", $"Confirmed booking \n name: {guestName} \n email: {guestEmail} \n number: {guestPhoneNr} \n selected room type: {roomType} \n from: {DateOnly.FromDateTime(startDate)} \n To: {DateOnly.FromDateTime(endDate)}"));
+            Console.WriteLine("Mail sent successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to send mail: {ex.Message}");
+        }
+        bookingCompleted = true;
+    }
+
+    private async Task CreateBooking(string guestName)
+    {
+        
+    }
+
+    public async Task GoToBooking()
+    {
+        bookingCompleted = false;
     }
 }

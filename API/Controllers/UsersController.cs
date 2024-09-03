@@ -10,10 +10,8 @@ namespace API.Controllers
 	[Route("[controller]")]
 	public class UsersController : ControllerBase
 	{
-
 		private readonly HotelContext _hotelContext;
 		private readonly UserMapping _userMapping;
-
 		public UsersController(HotelContext hotelContext, UserMapping userMapping)
 		{
 			_hotelContext = hotelContext;
@@ -27,13 +25,12 @@ namespace API.Controllers
 			var users = await _hotelContext.Users.ToListAsync();
 			List<UserGetDTO> result = new List<UserGetDTO>();
 
-			if (users == null)
-			{
-				return StatusCode(418);
+			if (users == null){
+				return NotFound();
 			}
-
-			foreach (var user in users)
-			{
+			/* Loops through each item in the List and maps it to a new class/type 
+			 and adds it to a new List.*/
+			foreach (var user in users){
 				result.Add(_userMapping.MapUserToUserGetDTO(user));
 			}
 			return Ok(result);
@@ -43,59 +40,85 @@ namespace API.Controllers
 		[HttpGet("{id}")]
 		public async Task<ActionResult<UserGetDTO>> GetAUser(int id)
 		{
+			// Finds a user through the user id.
 			var user = await _hotelContext.Users.FindAsync(id);
 
-			if (user == null)
-			{
-				return StatusCode(418);
+			if (user == null){
+				return NotFound();
 			}
-
+			// returns the user, after mapping it to a new class/type.
 			return Ok(_userMapping.MapUserToUserGetDTO(user));
 		}
 
 		// Create a user account
 		[HttpPost]
-		public async Task<ActionResult<User>> PostAUser(UserCreateAndUpdateDTO user)
+		public async Task<ActionResult<User>> PostAUser(UserPostDTO user)
 		{
-			//var userDTO = new User
-			//{
-			//	UserName = user.UserName,
-			//	Password = user.Password,
-			//	Name = user.Name,
-			//	PhoneNr = user.PhoneNr,
-			//	Email = user.Email
-			//};
+			try{
+				// Adds the user to database after mapping it to a new class/type.
+				_hotelContext.Users.Add(_userMapping.MapToUserCreateDTO(user));
+				// Saves the changes to the database.
+				await _hotelContext.SaveChangesAsync();
 
-			_hotelContext.Users.Add(_userMapping.MapToUserCreateAndUpdateDTO(user));
-			await _hotelContext.SaveChangesAsync();
-
-			return Ok(StatusCode(200));
-		}
-
-
-		// Update a specific guest user account
-	   [HttpPut("{id}")]
-		public async Task<IActionResult> PutAUser(int id, UserGetDTO user)
-		{
-			if (id != user.UserId)
-			{
-				return BadRequest();
+				return Ok(StatusCode(200));
 			}
-
-			var userDTO = await _hotelContext.Users.FindAsync(id);
-			if (userDTO == null)
-			{
+			catch{
 				return NotFound();
 			}
-			return Ok(userDTO);
 		}
 
+		// Update a specific guest user account.
+		[HttpPut("{id}")]
+		public async Task<IActionResult> PutUser(int id, UserPutDTO user)
+		{
+			// Finds the user by its user id.
+			var userDTO = await _hotelContext.Users.FindAsync(id);
 
-		//[HttpPost]
-		//public void Post([FromBody] User user)
-		//{
-		//	_hotelContext.Users.Add(user);
-		//	_hotelContext.SaveChanges();
-		//}
+			if (userDTO == null){
+				return NotFound();
+			}
+
+			// Update the value stored in the variables.
+			userDTO.FullName = user.FullName ?? throw new ArgumentException(nameof(user.FullName));
+			userDTO.Password = user.Password ?? throw new ArgumentException(nameof(user.Password));
+			userDTO.PhoneNr = user.PhoneNr ?? throw new ArgumentException(nameof(user.PhoneNr));
+			userDTO.Email = user.Email ?? throw new ArgumentException(nameof(user.Email));
+
+			// Mark the userDTO entity as modified in the change tracker.
+			_hotelContext.Entry(userDTO).State = EntityState.Modified;
+
+			// Try to save changes.
+			try{
+				await _hotelContext.SaveChangesAsync();
+			}
+			catch{
+				// Checks if the user is in the database.
+				if (!_hotelContext.Users.Any(u => u.UserId == id)){
+					return NotFound();
+				}
+				else{
+					throw;
+				}
+			}
+			return StatusCode(200);
+		}
+
+		// Delete a User.
+		[HttpDelete]
+		public async Task<IActionResult> UserDelete(int id)
+		{
+			// Find user by user id.
+			var user = await _hotelContext.Users.FindAsync(id);
+
+			if (user == null){
+				return NotFound();
+			}
+
+			// Removes user from Database.
+			_hotelContext.Users.Remove(user);
+			// Saves changes.
+			await _hotelContext.SaveChangesAsync();
+			return StatusCode(200);
+		}
 	}
-	}
+}
