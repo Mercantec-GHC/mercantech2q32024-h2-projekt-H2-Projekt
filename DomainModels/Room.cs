@@ -9,7 +9,7 @@ namespace DomainModels
     public class Room
     {
         public int Id { get; set; }
-        public List<string> RoomType { get; set; }
+        public RoomType RoomType { get; set; }
         public int Rooms { get; set; }
         public int RoomNumber { get; set; }
         public string Beds { get; set; }
