@@ -116,7 +116,7 @@ namespace API.Controllers
             if (!string.IsNullOrWhiteSpace(query.Search))
             {
                 // Add the condition to the db request that the returned list needs to have RoomType contain the search property
-                rooms = rooms.Where(r => r.RoomType.Any(e => e.ToLower().Contains(query.Search)));
+                rooms = rooms.Where(r => r.RoomType.Tags.Any(e => e.ToLower().Contains(query.Search)));
             }
 
             // Check if SortBy is empty and if not then check if the entered value is a property on the Room object
