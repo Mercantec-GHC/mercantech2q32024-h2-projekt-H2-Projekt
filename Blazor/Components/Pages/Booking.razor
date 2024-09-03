@@ -24,10 +24,6 @@
     <input type="text" @bind="guestPhoneNr" placeholder="Enter phone number" />
     <p></p>
 
-    <p>Enter number of rooms:</p>
-    <input type="number" @bind="numberOfRooms" placeholder="Enter number of rooms" />
-    <p></p>
-
     <p>From:</p>
     <input type="date" @bind="startDate" min="@DateTime.Now" />
     <p></p>
@@ -73,9 +69,6 @@ else
     <p>Phone number: @guestPhoneNr</p>
     <p></p>
 
-    <p>Number of rooms: @numberOfRooms</p>
-    <p></p>
-
     <p>Room type and cost: @roomType (@price per night)</p>
     <p></p>
 
@@ -94,20 +87,19 @@ else
     string guestPassword = "TrinityGuest!"; //this is for access to see if mail was sent correctly if logged out from temp guest mail
     string bookingMail = "trinityHotelEmployee@outlook.com";
     string password = "TrinityBooking!";
-    string guestName;
+    string guestName = "";
     string guestEmail = "trinityHotelGuest@outlook.com";
-    string guestPhoneNr;
-    string roomType;
+    string guestPhoneNr = "";
+    string roomType = "";
+
 
     bool bookingCompleted = false;
 
     DateTime startDate = DateTime.Now;
     DateTime endDate = DateTime.Now.AddDays(1);
 
-    List<DateOnly> bookingDates = new List<DateOnly>();
-
     int price;
-    int numberOfRooms;
+    int roomId;
 
     private void SetRoomType(int typeIndex)
     {
@@ -158,6 +150,11 @@ else
             Console.WriteLine($"Failed to send mail: {ex.Message}");
         }
         bookingCompleted = true;
+    }
+
+    private async Task CreateBooking(string guestName)
+    {
+        
     }
 
     public async Task GoToBooking()
