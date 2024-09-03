@@ -96,11 +96,11 @@ namespace API.Controllers
                 return NotFound("room not found");
             }
 
-            var user = _hotelContext.Users.Find(bookingDTO.UserId);
-            if (user == null)
-            {
-                return NotFound("user not found");
-            }
+            //var user = _hotelContext.Users.Find(bookingDTO.UserId);
+            //if (user == null)
+            //{
+            //    return NotFound("user not found");
+            //}
 
             if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
@@ -113,16 +113,16 @@ namespace API.Controllers
             }
 
 
-            var booking = new CreateBookingDTO
+            var booking = new Booking
             {
-                
-                //Room = room,
+
+                Room = room,
                 GuestName = bookingDTO.GuestName,
                 GuestEmail = bookingDTO.GuestEmail,
                 GuestPhoneNr = bookingDTO.GuestPhoneNr,
                 StartDate = bookingDTO.StartDate,
-                EndDate = bookingDTO.EndDate,
-                RoomId = bookingDTO.RoomId
+                EndDate = bookingDTO.EndDate
+                //RoomId = bookingDTO.RoomId
 
             };
             //user.Bookings.Add(booking);

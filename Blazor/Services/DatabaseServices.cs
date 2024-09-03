@@ -17,19 +17,9 @@ namespace Blazor.Services
             _httpClient = httpClient;
         }
 
-        public async Task CreateBooking(string guestName, string guestEmail, string guestPhoneNumber, DateTime startDate, DateTime endDate, int roomId)
+        public async Task CreateBooking(CreateBookingDTO booking)
         {
-            var booking = new CreateBookingDTO
-            {
-                GuestName = guestName,
-                GuestEmail = guestEmail,
-                GuestPhoneNr = guestPhoneNumber,
-                StartDate = startDate,
-                EndDate = endDate,
-                RoomId = roomId
-            };
-
-            await _httpClient.PostAsJsonAsync("https://localhost:7207/Bookings/add", booking);
+            await _httpClient.PostAsJsonAsync(_baseURL + "Bookings/add", booking);
         }
 
         public async Task<List<UserGetDTO>> GetAllUsers()
