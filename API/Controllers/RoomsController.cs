@@ -86,6 +86,8 @@ namespace API.Controllers
 
             roomDTO.Type = room.Type;
             roomDTO.Price = room.Price;
+            roomDTO.BookedDays = room.BookedDays;
+            
 
             _hotelContext.Entry(roomDTO).State = EntityState.Modified;
 
