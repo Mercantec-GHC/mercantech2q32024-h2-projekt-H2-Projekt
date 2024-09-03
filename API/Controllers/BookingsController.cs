@@ -119,7 +119,7 @@ namespace API.Controllers
                 GuestName = user.FullName,
                 GuestEmail = user.Email,
                 GuestPhoneNr = user.PhoneNr,
-                BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo }
+                //BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo }
             };
             _hotelContext.Bookings.Add(booking);
 			_hotelContext.SaveChanges();
@@ -171,7 +171,7 @@ namespace API.Controllers
             booking.GuestName = user.FullName;
             booking.GuestEmail = user.Email;
             booking.GuestPhoneNr = user.PhoneNr;
-            booking.BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo };
+            //booking.BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo };
           
             _hotelContext.SaveChanges();
 
