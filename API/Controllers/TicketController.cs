@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using DomainModels;
+using API.Data;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.ComponentModel;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("[controller]/[action]")]
+    public class TicketController : Controller
+    {
+        private readonly HotelContext _context;
+
+        public TicketController(HotelContext context)
+        {
+            _context = context;
+        }
+        //fetch all tickets
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var ticket = _context.Tickets.ToList();
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(ticket);
+        }
+        //fetch the id of a ticket
+        [HttpGet("{id}")]
+        public IActionResult GetById([FromRoute] int id)
+        {
+            var ticket = _context.Tickets.Find(id);
+            //Just in case null, returns not found
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(ticket);
+        }
+        // adding a new ticket
+        [HttpPost]
+        public IActionResult Post([FromBody] Ticket ticket)
+        {
+            _context.Tickets.Add(ticket);
+            _context.SaveChanges();
+            return Ok(ticket);
+        }
+    }
+}
