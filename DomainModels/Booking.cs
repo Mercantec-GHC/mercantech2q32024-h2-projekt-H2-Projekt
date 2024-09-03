@@ -15,9 +15,6 @@ namespace DomainModels
         public string GuestEmail { get; set; } = null!;
         public string? GuestPhoneNr { get; set; }
         public List<DateTime> BookingDates { get; set; } = new List<DateTime>();
-        //[Column("user_id")]
-        //public User UserId { get; set; }
-
 
         public void GetRoomAvailability()
         {}
