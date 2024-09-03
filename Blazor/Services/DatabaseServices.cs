@@ -1,11 +1,14 @@
 ﻿using Blazor.Components.Pages;
 using DomainModels;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace Blazor.Services
 {
     public class DatabaseServices
     {
         private readonly HttpClient _httpClient;
+        private readonly string _baseURL = "https://localhost:7207/";
 
         public DatabaseServices(HttpClient httpClient)
         {
@@ -24,7 +27,7 @@ namespace Blazor.Services
                 RoomId = roomId
             };
 
-            await _httpClient.PostAsJsonAsync("Bookings", booking);
+            await _httpClient.PostAsJsonAsync("https://localhost:7207/Bookings/add", booking);
         }
     }
 }
