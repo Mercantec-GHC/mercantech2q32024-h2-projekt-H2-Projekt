@@ -84,7 +84,7 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            roomDTO.Type = room.Type;
+            
             
             roomDTO.BookedDays = room.BookedDays;
             
@@ -110,7 +110,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}Admin")]
-        public async Task<IActionResult> PutRoomAdmin(int id, RoomPutDTO room)
+        public async Task<IActionResult> PutRoomAdmin(int id, RoomPutAdmin room)
         {
             var roomDTO = await _hotelContext.Rooms.FindAsync(id);
 
