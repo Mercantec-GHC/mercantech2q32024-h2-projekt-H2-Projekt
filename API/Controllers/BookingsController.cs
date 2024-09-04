@@ -114,7 +114,6 @@ namespace API.Controllers
 
             var booking = new Booking
             {
-
                 Room = room,
                 GuestName = bookingDTO.GuestName,
                 GuestEmail = bookingDTO.GuestEmail,

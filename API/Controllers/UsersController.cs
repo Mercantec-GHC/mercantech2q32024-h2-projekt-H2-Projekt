@@ -38,7 +38,7 @@ namespace API.Controllers
 
 		// Get a specific user from the UserID.
 		[HttpGet("{id}")]
-		public async Task<ActionResult<UserGetDTO>> GetAUser(int id)
+		public async Task<ActionResult<UserGetDTO>> GetAUserById(int id)
 		{
 			// Finds a user through the user id.
 			var user = await _hotelContext.Users.FindAsync(id);
@@ -49,6 +49,19 @@ namespace API.Controllers
 			// returns the user, after mapping it to a new class/type.
 			return Ok(_userMapping.MapUserToUserGetDTO(user));
 		}
+
+		// Get User info to login
+		[HttpGet("{email}/{password}")]
+		public async Task<ActionResult<UserLoginDTO>> Login(string email, string password)
+		{
+			var user = await _hotelContext.Users.Where(e => e.Email == email).FirstOrDefaultAsync(p => p.Password == password);
+
+			if (user == null)
+			{
+				return NotFound();
+			}
+			return Ok(_userMapping.MapToUserLoginDTO(user));
+        }
 
 		// Create a user account
 		[HttpPost]
