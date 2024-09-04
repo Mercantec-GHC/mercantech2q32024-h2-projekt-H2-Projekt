@@ -1,0 +1,44 @@
+﻿@using DomainModels
+@using System.Globalization
+@inject Services.DatabaseServices DatabaseServicesInstance
+
+@page "/upcomingbookings"
+
+<h3>Upcoming Bookings</h3>
+<button @onclick=UpdateBookings>Update</button>
+@foreach (var booking in bookings)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@booking.GuestName</h5>
+            <h6 class="card-subtitle mb-2 text-muted">@booking.GuestEmail</h6>
+            <p class="card-text">Room: @booking.Room.RoomId</p>
+            <p class="card-text"> @booking.Room.Type</p>
+            <ol>
+                @foreach (var day in booking.Room.BookedDays ?? new())
+                {
+                    <li class="card-text">  @day.ToString("dddd dd-MM-yyyy", CultureInfo.GetCultureInfo("en-US"))</li>
+                }
+            </ol>
+        </div>
+    </div>
+}
+
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateBookings();
+    }
+    async Task UpdateBookings()
+    {
+        bookings.Clear();
+        bookings.AddRange(await DatabaseServicesInstance.GetBookingList());
+        StateHasChanged();
+    }
+
+    string message = "";
+    string resp = "";
+    List<DomainModels.Booking> bookings = new();
+}
