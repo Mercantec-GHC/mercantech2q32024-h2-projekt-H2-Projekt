@@ -1,5 +1,6 @@
 ﻿@page "/manageProfile"
 @using System.ComponentModel.DataAnnotations
+@inject HttpClient _http
 
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
 <DataAnnotationsValidator/>
@@ -7,6 +8,14 @@
     <MudItem xs="12" sm="7">
         <MudCard>
             <MudCardContent>
+                 <MudTextField Label="Username" Class="mt-3"
+                                  @bind-Value="model.Username" For="@(() => model.Username)" />
+                <MudTextField Label="Firstname" Class="mt-3"
+                                  @bind-Value="model.Firstname" For="@(() => model.Firstname)" />
+                <MudTextField Label="Lastname" Class="mt-3"
+                                  @bind-Value="model.Lastname" For="@(() => model.Lastname)" />
+                <MudTextField Label="Phonenumber" Class="mt-3"
+                                  @bind-Value="model.PhoneNumber" For="@(() => model.PhoneNumber)" />
                 <MudTextField Label="Email" Class="mt-3" 
                               @bind-Value="model.Email" For="@(() => model.Email)"/>
                 <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
@@ -47,6 +56,17 @@
 
     public class RegisterAccountForm
     {
+        [Required]
+        public string Username { get; set; }
+
+        [Required]
+        public string Firstname { get; set; }
+
+        [Required]
+        public string PhoneNumber { get; set; }
+
+        [Required]
+        public string Lastname { get; set; }
 
         [Required]
         [EmailAddress]
@@ -61,7 +81,8 @@
 
     private void OnValidSubmit(EditContext context)
     {
-        success = true;
+        var response = _http.PostAsJsonAsync("https://localhost:7207/Authentication/Register", model);
+        success = response.Result.IsSuccessStatusCode;
         StateHasChanged();
     }
 
