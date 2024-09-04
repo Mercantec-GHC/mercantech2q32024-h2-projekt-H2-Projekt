@@ -58,4 +58,10 @@ namespace DomainModels
 		public string? PhoneNr { get; set; }
 		public string Email { get; set; } = null!;
 	}
+
+	public class UserLoginDTO
+	{
+		public int UserID { get; set; }
+		public string Role { get; set; }
+	}
 }
