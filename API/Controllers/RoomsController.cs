@@ -22,14 +22,16 @@ namespace API.Controllers
         {
             try
             {
+                //fetches a list of rooms with specific fields only
                 var rooms = await _hotelContext.Rooms
                     .Select(r => new { r.RoomId, r.Type, r.Price, r.BookedDays })
                     .ToListAsync();
-
+                //Returns an Ok(200) response with the list of rooms
                 return Ok(rooms);
             }
             catch (Exception ex)
             {
+
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -39,6 +41,7 @@ namespace API.Controllers
         {
             try
             {
+                //Attempts to find the room by its ID
                 var room = await _hotelContext.Rooms.FindAsync(id);
 
                 if (room == null)
@@ -58,11 +61,13 @@ namespace API.Controllers
         {
             try
             {
+                //Creates a new room object from the DTO
                 var room = new Room()
                 {
                     Type = roomDTO.Type,
                     Price = roomDTO.Price
                 };
+                //Adds the new room to the context and saves changes asynchronusly
                 _hotelContext.Rooms.Add(room);
                 await _hotelContext.SaveChangesAsync();
 
@@ -77,26 +82,31 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRoom(int id, RoomPutDTO room)
         {
+            //Finds the existing rooms by its ID
             var roomDTO = await _hotelContext.Rooms.FindAsync(id);
 
+
+            // Returns a 404 Not Found if the room doesn't exist
             if (roomDTO == null)
             {
                 return NotFound();
             }
 
             
-            
+            //Updates only the BookedDays property
             roomDTO.BookedDays = room.BookedDays;
-            
 
+            // Mark the room entity as modified in the context
             _hotelContext.Entry(roomDTO).State = EntityState.Modified;
 
             try
             {
+                // Save the changes to the database asynchronously
                 await _hotelContext.SaveChangesAsync();
             }
             catch
             {
+                //Checks if the room still exists before rethrowing the exception
                 if (!_hotelContext.Rooms.Any(r => r.RoomId == id))
                 {
                     return NotFound();
@@ -112,26 +122,31 @@ namespace API.Controllers
         [HttpPut("{id}Admin")]
         public async Task<IActionResult> PutRoomAdmin(int id, RoomPutAdmin room)
         {
+            // Find the existing room by its ID
             var roomDTO = await _hotelContext.Rooms.FindAsync(id);
 
+            // Return a 404 Not Found status if the room does not exist
             if (roomDTO == null)
             {
                 return NotFound();
             }
 
+            //// Update multiple properties of the room, including Type, Price, and BookedDays
             roomDTO.Type = room.Type;
             roomDTO.Price = room.Price;
             roomDTO.BookedDays = room.BookedDays;
 
-
+            // Mark the room entity as modified in the context
             _hotelContext.Entry(roomDTO).State = EntityState.Modified;
 
             try
             {
+                // Save the changes to the database asynchronously
                 await _hotelContext.SaveChangesAsync();
             }
             catch
             {
+                //Checks if the room still exists before rethrowing the exception
                 if (!_hotelContext.Rooms.Any(r => r.RoomId == id))
                 {
                     return NotFound();
@@ -149,16 +164,18 @@ namespace API.Controllers
         {
             try
             {
+                //find the room by its ID.
                 var room = await _hotelContext.Rooms.FindAsync(id);
 
                 if (room == null)
                 {
                     return NotFound();
                 }
-
+                //// Removes the room from the context and saves changes asynchronously
                 _hotelContext.Rooms.Remove(room);
                 await _hotelContext.SaveChangesAsync();
 
+                // Returns a 204 No Content after successful deletion
                 return NoContent();
             }
             catch (Exception ex)
