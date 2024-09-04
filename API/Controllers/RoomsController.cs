@@ -84,10 +84,45 @@ namespace API.Controllers
                 return NotFound();
             }
 
+            
+            
+            roomDTO.BookedDays = room.BookedDays;
+            
+
+            _hotelContext.Entry(roomDTO).State = EntityState.Modified;
+
+            try
+            {
+                await _hotelContext.SaveChangesAsync();
+            }
+            catch
+            {
+                if (!_hotelContext.Rooms.Any(r => r.RoomId == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return StatusCode(200);
+        }
+
+        [HttpPut("{id}Admin")]
+        public async Task<IActionResult> PutRoomAdmin(int id, RoomPutAdmin room)
+        {
+            var roomDTO = await _hotelContext.Rooms.FindAsync(id);
+
+            if (roomDTO == null)
+            {
+                return NotFound();
+            }
+
             roomDTO.Type = room.Type;
             roomDTO.Price = room.Price;
             roomDTO.BookedDays = room.BookedDays;
-            
+
 
             _hotelContext.Entry(roomDTO).State = EntityState.Modified;
 

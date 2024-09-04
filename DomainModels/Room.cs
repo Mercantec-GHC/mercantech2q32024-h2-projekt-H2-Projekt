@@ -35,6 +35,13 @@ namespace DomainModels
 
     public class RoomPutDTO
     {
+       
+        
+        public List<DateTime> BookedDays { get; set; } = new List<DateTime>();
+        Status Status { get; set; }
+    }
+    public class RoomPutAdmin
+    {
         public string Type { get; set; } = null!;
         public int Price { get; set; }
         public List<DateTime> BookedDays { get; set; } = new List<DateTime>();
