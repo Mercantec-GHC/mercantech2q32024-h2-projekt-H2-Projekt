@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,20 +8,10 @@ using System.Threading.Tasks;
 
 namespace DomainModels
 {
-    public class User
+    public class User : IdentityUser
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid? UserID { get; set; } = Guid.NewGuid();
-
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string phoneNumber { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
 
-        public List<string> Permissions { get; set; }
     }
 }

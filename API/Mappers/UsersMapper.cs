@@ -12,12 +12,12 @@ namespace API.Mappers
         {
             return new User
             {
+                UserName = userDTO.Username,
                 FirstName = userDTO.FirstName,
                 LastName = userDTO.LastName,
-                phoneNumber = userDTO.phoneNumber,
+                PhoneNumber = userDTO.phoneNumber,
                 Email = userDTO.Email,
-                Password = userDTO.Password,
-                Permissions = userDTO.Permissions
+                PasswordHash = userDTO.Password,
             };
         }
 
@@ -28,11 +28,10 @@ namespace API.Mappers
             {
                 FirstName = employeeDTO.FirstName,
                 LastName = employeeDTO.LastName,
-                phoneNumber = employeeDTO.phoneNumber,
+                PhoneNumber = employeeDTO.phoneNumber,
                 EmployeePhoneNumber = employeeDTO.EmployeePhoneNumber,
                 Email = employeeDTO.Email,
-                Password = employeeDTO.Password,
-                Permissions = employeeDTO.Permissions,
+                PasswordHash = employeeDTO.Password,
                 UPN = employeeDTO.UPN,
                 Department = employeeDTO.Department
 
