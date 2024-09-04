@@ -27,7 +27,7 @@
     <p></p>
 
     <p>From:</p>
-    <input type="date" @bind="guest.StartDate" min="@DateTime.Now" />
+    <input type="date" @bind="guest.StartDate" min="@DateTime.UtcNow" />
     <p></p>
 
     <p>To:</p>
@@ -96,16 +96,16 @@ else
 
     public CreateBookingDTO guest = new CreateBookingDTO()
     {
-            StartDate = DateTime.UtcNow.AddHours(26),
-            EndDate = DateTime.UtcNow.AddHours(50),
+        StartDate = DateTime.UtcNow.AddHours(26),
+        EndDate = DateTime.UtcNow.AddHours(50),
         RoomId = 1,
         UserId = 1
     };
 
     bool bookingCompleted = false;
 
-    DateTime startDate = DateTime.Now;
-    DateTime endDate = DateTime.Now.AddDays(1);
+    DateTime startDate = DateTime.UtcNow;
+    DateTime endDate = DateTime.UtcNow.AddDays(1);
 
     int price;
     int roomId = 2;
@@ -150,10 +150,10 @@ else
         Console.WriteLine("test");
 
         SmtpClient client = new SmtpClient("smtp-mail.outlook.com", 587)
-            {
-                EnableSsl = true,
-                Credentials = new NetworkCredential(bookingMail, password)
-            };
+        {
+            EnableSsl = true,
+            Credentials = new NetworkCredential(bookingMail, password)
+        };
 
         try
         {
