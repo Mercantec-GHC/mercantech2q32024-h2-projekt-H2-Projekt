@@ -26,5 +26,10 @@ namespace Blazor.Services
         {
             return await _httpClient.GetFromJsonAsync<List<UserGetDTO>>(_baseURL + "Users");
         }
+
+        public async Task<List<Room>> GetAllRooms()
+        {
+            return await _httpClient.GetFromJsonAsync<List<Room>>(_baseURL + "Rooms");
+        }
     }
 }

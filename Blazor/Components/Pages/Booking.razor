@@ -15,23 +15,23 @@
     <h1>Book a room</h1>
 
     <p>Enter guest name:</p>
-    <input type="text" @bind="guest.GuestName" placeholder="Enter text" />
+    <input type="text" @bind="booking.GuestName" placeholder="Enter text" />
     <p></p>
 
     <p>Enter guest email:</p>
-    <input type="text" @bind="guest.GuestEmail" placeholder="Enter email" />
+    <input type="text" @bind="booking.GuestEmail" placeholder="Enter email" />
     <p></p>
 
     <p>Enter guest phone number:</p>
-    <input type="text" @bind="guest.GuestPhoneNr" placeholder="Enter phone number" />
+    <input type="text" @bind="booking.GuestPhoneNr" placeholder="Enter phone number" />
     <p></p>
 
     <p>From:</p>
-    <input type="date" @bind="guest.StartDate" min="@DateTime.UtcNow" />
+    <input type="date" @bind="booking.StartDate" min="@DateTime.UtcNow" />
     <p></p>
 
     <p>To:</p>
-    <input type="date" @bind="guest.EndDate" min="@startDate.AddDays(1)" />
+    <input type="date" @bind="booking.EndDate" min="@startDate.AddDays(1)" />
 
     <div class="dropdown mt-3">
         @if (roomType != null)
@@ -58,30 +58,34 @@
     <button class="btn btn-primary" @onclick="FinishBooking">Click me</button>
 
 }
-else
+else if (roomFree)
 {
     <h1>Booking confirmation:</h1>
 
-    <p>Name: @guest.GuestName</p>
+    <p>Name: @booking.GuestName</p>
     <p></p>
 
-    <p>Email: @guest.GuestEmail</p>
+    <p>Email: @booking.GuestEmail</p>
     <p></p>
 
-    <p>Phone number: @guest.GuestPhoneNr</p>
+    <p>Phone number: @booking.GuestPhoneNr</p>
     <p></p>
 
     <p>Room type and cost: @roomType (@price per night)</p>
     <p></p>
 
-    <p>From: @DateOnly.FromDateTime(guest.StartDate)</p>
+    <p>From: @DateOnly.FromDateTime(booking.StartDate)</p>
     <p></p>
 
-    <p>To: @DateOnly.FromDateTime(guest.EndDate)</p>
+    <p>To: @DateOnly.FromDateTime(booking.EndDate)</p>
     <p></p>
 
     <button class="btn btn-primary" @onclick="GoToBooking">Create another booking</button>
 
+}
+else if (!roomFree)
+{
+    <h1>No rooms of type available for selected dates</h1>
 }
 
 @code {
@@ -89,25 +93,25 @@ else
     string guestPassword = "TrinityGuest!"; //this is for access to see if mail was sent correctly if logged out from temp guest mail
     string bookingMail = "trinityHotelEmployee@outlook.com";
     string password = "TrinityBooking!";
-    string guestName = "";
-    string guestEmail = "trinityHotelGuest@outlook.com";
-    string guestPhoneNr = "";
-    string roomType = "";
+    string roomType = "standard single";
 
-    public CreateBookingDTO guest = new CreateBookingDTO()
-    {
-        StartDate = DateTime.UtcNow.AddHours(26),
-        EndDate = DateTime.UtcNow.AddHours(50),
-        RoomId = 1,
-        UserId = 1
-    };
+
+    public CreateBookingDTO booking = new CreateBookingDTO()
+        {
+            GuestEmail = "trinityHotelGuest@outlook.com",
+            StartDate = DateTime.UtcNow.AddHours(3),
+            EndDate = DateTime.UtcNow.AddDays(1),
+            RoomId = 1,
+            UserId = 1
+        };
 
     bool bookingCompleted = false;
+    bool roomFree = true;
 
     DateTime startDate = DateTime.UtcNow;
     DateTime endDate = DateTime.UtcNow.AddDays(1);
 
-    int price;
+    int price = 600;
     int roomId = 2;
 
     private void SetRoomType(int typeIndex)
@@ -115,11 +119,11 @@ else
         switch (typeIndex)
         {
             case 0:
-                roomType = "Standard single";
+                roomType = "standard single";
                 price = 600;
                 break;
             case 1:
-                roomType = "Standard double";
+                roomType = "standard double";
                 price = 800;
                 break;
             case 2:
@@ -141,7 +145,7 @@ else
     private async Task FinishBooking()
     {
         bookingCompleted = true;
-        //await SendMail();
+        await SendMail();
         await CreateBooking();
     }
 
@@ -150,15 +154,15 @@ else
         Console.WriteLine("test");
 
         SmtpClient client = new SmtpClient("smtp-mail.outlook.com", 587)
-        {
-            EnableSsl = true,
-            Credentials = new NetworkCredential(bookingMail, password)
-        };
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(bookingMail, password)
+            };
 
         try
         {
             //Don't forget to make the (MailTo) to a real mail to send it to
-            await client.SendMailAsync(new MailMessage(bookingMail, guestEmail, "Trinity hotel", $"Confirmed booking \n name: {guestName} \n email: {guestEmail} \n number: {guestPhoneNr} \n selected room type: {roomType} \n from: {DateOnly.FromDateTime(startDate)} \n To: {DateOnly.FromDateTime(endDate)}"));
+            await client.SendMailAsync(new MailMessage(bookingMail, booking.GuestEmail, "Trinity hotel", $"Confirmed booking \n name: {booking.GuestName} \n email: {booking.GuestEmail} \n number: {booking.GuestPhoneNr} \n selected room type: {roomType} \n from: {DateOnly.FromDateTime(startDate)} \n To: {DateOnly.FromDateTime(endDate)}"));
             Console.WriteLine("Mail sent successfully.");
         }
         catch (Exception ex)
@@ -169,11 +173,47 @@ else
 
     private async Task CreateBooking()
     {
-        await DBServices.CreateBooking(guest);
+        booking.RoomId = await GetRoom();
+        await DBServices.CreateBooking(booking);
     }
 
     public void GoToBooking()
     {
         bookingCompleted = false;
+    }
+
+    private async Task<int> GetRoom()
+    {
+        List<Room> rooms = await DBServices.GetAllRooms();
+        foreach (Room room in rooms)
+        {
+            if (room.Type == roomType)
+            {
+                roomFree = true;
+                DateTime tempDate = booking.StartDate;
+                while (tempDate.Date < booking.EndDate.Date)
+                {
+                    foreach (DateTime bookedDate in room.BookedDays)
+                    {
+                        if (bookedDate.Date == tempDate.Date)
+                        {
+                            roomFree = false;
+                            break;
+                        }
+                    }
+                    if (!roomFree)
+                    {
+                        break;
+                    }
+
+                    tempDate = tempDate.AddDays(1);
+                }
+                if (roomFree)
+                {
+                    return room.RoomId;
+                }
+            }
+        }
+        return 0;
     }
 }
