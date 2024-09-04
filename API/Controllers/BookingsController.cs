@@ -113,19 +113,18 @@ namespace API.Controllers
             }
 
 
-            var booking = new CreateBookingDTO
+            var booking = new Booking
             {
                 
-                //Room = room,
+                Room = room,
                 GuestName = bookingDTO.GuestName,
                 GuestEmail = bookingDTO.GuestEmail,
                 GuestPhoneNr = bookingDTO.GuestPhoneNr,
                 StartDate = bookingDTO.StartDate,
-                EndDate = bookingDTO.EndDate,
-                RoomId = bookingDTO.RoomId
+                EndDate = bookingDTO.EndDate
 
             };
-            //user.Bookings.Add(booking);
+            user.Bookings.Add(booking);
 			_hotelContext.SaveChanges();
 
             return Ok("Done");
