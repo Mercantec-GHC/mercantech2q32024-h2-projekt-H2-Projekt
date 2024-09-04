@@ -87,7 +87,6 @@ namespace API.Controllers
        
 
         [HttpPost("add")]
-        [ProducesResponseType(201)]
 		public ActionResult AddBooking(CreateBookingDTO bookingDTO)
 		{
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
@@ -96,11 +95,11 @@ namespace API.Controllers
                 return NotFound("room not found");
             }
 
-            var user = _hotelContext.Users.Find(bookingDTO.UserId);
-            if (user == null)
-            {
-                return NotFound("user not found");
-            }
+            //var user = _hotelContext.Users.Find(bookingDTO.UserId);
+            //if (user == null)
+            //{
+            //    return NotFound("user not found");
+            //}
 
             if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
@@ -115,16 +114,14 @@ namespace API.Controllers
 
             var booking = new Booking
             {
-                
                 Room = room,
                 GuestName = bookingDTO.GuestName,
                 GuestEmail = bookingDTO.GuestEmail,
                 GuestPhoneNr = bookingDTO.GuestPhoneNr,
                 StartDate = bookingDTO.StartDate,
                 EndDate = bookingDTO.EndDate
-
-            };
-            user.Bookings.Add(booking);
+            }; 
+            _hotelContext.Bookings.Add(booking);
 			_hotelContext.SaveChanges();
 
             return Ok("Done");
