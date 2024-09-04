@@ -1,6 +1,8 @@
 ﻿@page "/booking"
 @using System.Net.Mail
 @using System.Net
+@inject HttpClient httpClient
+@inject Services.DatabaseServices DBServices
 
 <PageTitle>Book a room</PageTitle>
 
@@ -13,23 +15,23 @@
     <h1>Book a room</h1>
 
     <p>Enter guest name:</p>
-    <input type="text" @bind="guestName" placeholder="Enter text" />
+    <input type="text" @bind="guest.GuestName" placeholder="Enter text" />
     <p></p>
 
     <p>Enter guest email:</p>
-    <input type="text" @bind="guestEmail" placeholder="Enter email" />
+    <input type="text" @bind="guest.GuestEmail" placeholder="Enter email" />
     <p></p>
 
     <p>Enter guest phone number:</p>
-    <input type="text" @bind="guestPhoneNr" placeholder="Enter phone number" />
+    <input type="text" @bind="guest.GuestPhoneNr" placeholder="Enter phone number" />
     <p></p>
 
     <p>From:</p>
-    <input type="date" @bind="startDate" min="@DateTime.Now" />
+    <input type="date" @bind="guest.StartDate" min="@DateTime.UtcNow" />
     <p></p>
 
     <p>To:</p>
-    <input type="date" @bind="endDate" min="@startDate.AddDays(1)" />
+    <input type="date" @bind="guest.EndDate" min="@startDate.AddDays(1)" />
 
     <div class="dropdown mt-3">
         @if (roomType != null)
@@ -53,29 +55,29 @@
         </ul>
     </div>
 
-    <button class="btn btn-primary" @onclick="SendMail">Click me</button>
+    <button class="btn btn-primary" @onclick="FinishBooking">Click me</button>
 
 }
 else
 {
     <h1>Booking confirmation:</h1>
 
-    <p>Name: @guestName</p>
+    <p>Name: @guest.GuestName</p>
     <p></p>
 
-    <p>Email: @guestEmail</p>
+    <p>Email: @guest.GuestEmail</p>
     <p></p>
 
-    <p>Phone number: @guestPhoneNr</p>
+    <p>Phone number: @guest.GuestPhoneNr</p>
     <p></p>
 
     <p>Room type and cost: @roomType (@price per night)</p>
     <p></p>
 
-    <p>From: @DateOnly.FromDateTime(startDate)</p>
+    <p>From: @DateOnly.FromDateTime(guest.StartDate)</p>
     <p></p>
 
-    <p>To: @DateOnly.FromDateTime(endDate)</p>
+    <p>To: @DateOnly.FromDateTime(guest.EndDate)</p>
     <p></p>
 
     <button class="btn btn-primary" @onclick="GoToBooking">Create another booking</button>
@@ -92,14 +94,21 @@ else
     string guestPhoneNr = "";
     string roomType = "";
 
+    public CreateBookingDTO guest = new CreateBookingDTO()
+    {
+        StartDate = DateTime.UtcNow.AddHours(26),
+        EndDate = DateTime.UtcNow.AddHours(50),
+        RoomId = 1,
+        UserId = 1
+    };
 
     bool bookingCompleted = false;
 
-    DateTime startDate = DateTime.Now;
-    DateTime endDate = DateTime.Now.AddDays(1);
+    DateTime startDate = DateTime.UtcNow;
+    DateTime endDate = DateTime.UtcNow.AddDays(1);
 
     int price;
-    int roomId;
+    int roomId = 2;
 
     private void SetRoomType(int typeIndex)
     {
@@ -129,15 +138,22 @@ else
         Console.WriteLine($"Selected Room Type: {roomType}");
     }
 
+    private async Task FinishBooking()
+    {
+        bookingCompleted = true;
+        //await SendMail();
+        await CreateBooking();
+    }
+
     public async Task SendMail()
     {
         Console.WriteLine("test");
 
         SmtpClient client = new SmtpClient("smtp-mail.outlook.com", 587)
-            {
-                EnableSsl = true,
-                Credentials = new NetworkCredential(bookingMail, password)
-            };
+        {
+            EnableSsl = true,
+            Credentials = new NetworkCredential(bookingMail, password)
+        };
 
         try
         {
@@ -149,15 +165,14 @@ else
         {
             Console.WriteLine($"Failed to send mail: {ex.Message}");
         }
-        bookingCompleted = true;
     }
 
-    private async Task CreateBooking(string guestName)
+    private async Task CreateBooking()
     {
-        
+        await DBServices.CreateBooking(guest);
     }
 
-    public async Task GoToBooking()
+    public void GoToBooking()
     {
         bookingCompleted = false;
     }

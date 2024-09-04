@@ -1,6 +1,17 @@
 ﻿@page "/weather"
-@using DomainModels;
+@using DomainModels
+@inject HttpClient httpClient
 
+@if (users != null)
+{
+    <h1>@users[0].FullName</h1>
+    @foreach (var user in users)
+    {
+        <h1>@user.FullName</h1>
+    
+    }
+    
+}
 <PageTitle>Weather</PageTitle>
 
 <h1>Weather</h1>
@@ -37,12 +48,12 @@ else
 }
 
 @code {
-    public List<User> users;
+    public List<UserGetDTO> users;
 
     protected override async Task OnInitializedAsync()
     {
-        HttpClient _httpClient = new HttpClient();
-        users = await _httpClient.GetFromJsonAsync<List<User>>("https://localhost:7207/Users");
+        base.OnInitialized();
+        users = await DBServices.GetAllUsers();
     }
 
 
