@@ -119,8 +119,8 @@ namespace API.Controllers
                 GuestName = bookingDTO.GuestName,
                 GuestEmail = bookingDTO.GuestEmail,
                 GuestPhoneNr = bookingDTO.GuestPhoneNr,
-                StartDate = bookingDTO.StartDate,
-                EndDate = bookingDTO.EndDate
+                StartDate = DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc),
+                EndDate = DateTime.SpecifyKind(bookingDTO.EndDate, DateTimeKind.Utc)
 
             }; 
             _hotelContext.Bookings.Add(booking);
