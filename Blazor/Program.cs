@@ -10,6 +10,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<DatabaseServices>();
+builder.Services.AddScoped<MailServices>();
 
 var app = builder.Build();
 

@@ -51,7 +51,7 @@ namespace API.Controllers
 		}
 
 		// Get User info to login
-		[HttpGet("{email}/{password}")]
+		[HttpPost("/login")]
 		public async Task<ActionResult<UserLoginDTO>> Login(string email, string password)
 		{
 			var user = await _hotelContext.Users.Where(e => e.Email == email).FirstOrDefaultAsync(p => p.Password == password);

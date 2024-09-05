@@ -11,7 +11,7 @@ namespace Blazor.Services
         private readonly string GuestEmailPW = "TrinityGuest!";
         private readonly string BookingEmail = "trinityHotelEmployee@outlook.com";
         private readonly string BookingEmailPW = "TrinityBooking!";
-        public async Task SendEmail(string subject, string message, string FromEmail)
+        public async Task SendEmail(string FromEmail, string subject, string message)
         {
             Console.WriteLine("Test");
 
@@ -33,7 +33,7 @@ namespace Blazor.Services
                 Console.WriteLine("Failed to create email");
             }
 
-            SmtpClient client = new SmtpClient("smpt-mail.outlook.com", 587)
+            SmtpClient client = new SmtpClient("smtp-mail.outlook.com", 587)
             {
                 EnableSsl = true,
                 Credentials = new NetworkCredential(FromEmail, EmailPW)
@@ -42,8 +42,9 @@ namespace Blazor.Services
             try
             {
                 await client.SendMailAsync(new MailMessage(FromEmail, ToEmail, subject, message));
-            }
-            catch
+				Console.WriteLine("Mail sent successfully.");
+			}
+            catch 
             {
                 Console.WriteLine("Failed to send Email");
             }
