@@ -12,7 +12,6 @@ namespace API.Controllers
 {
     /// <summary>
     /// Controller for room endpoints
-    /// 
     /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]
@@ -102,10 +101,13 @@ namespace API.Controllers
 
 
         /// <summary>
-        /// Search for rooms. Currently supports searching by RoomType, sorting by any property of the Room object, and lastly non zero-based pagination
+        /// Search for rooms. 
         /// </summary>
         /// <param name="query"></param>
         /// <returns>A paginated list of rooms fitting the filters</returns>
+        /// <remarks>
+        /// Currently supports searching by RoomType, sorting by any property of the Room object, and lastly non zero-based pagination
+        /// </remarks>
         [HttpGet]
         public IActionResult Search([FromQuery] QueryObject query )
         {
