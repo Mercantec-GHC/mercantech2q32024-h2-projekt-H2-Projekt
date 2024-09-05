@@ -31,5 +31,10 @@ namespace Blazor.Services
         {
             return await _httpClient.GetFromJsonAsync<List<Room>>(_baseURL + "Rooms");
         }
+
+        public async Task InsertBookedDaysInRoomTable(Room room, int roomId)
+        {
+            await _httpClient.PutAsJsonAsync<Room>(_baseURL + "Rooms/" + roomId, room);
+        }
     }
 }

@@ -95,6 +95,8 @@ else if (!roomFree)
     string password = "TrinityBooking!";
     string roomType = "standard single";
 
+    bool bookingCompleted = false;
+    bool roomFree = true;
 
     public CreateBookingDTO booking = new CreateBookingDTO()
         {
@@ -105,14 +107,15 @@ else if (!roomFree)
             UserId = 1
         };
 
-    bool bookingCompleted = false;
-    bool roomFree = true;
+    private Room room = new Room();
 
     DateTime startDate = DateTime.UtcNow;
     DateTime endDate = DateTime.UtcNow.AddDays(1);
 
     int price = 600;
     int roomId = 2;
+
+    List<DateTime> bookedDays = new List<DateTime>();
 
     private void SetRoomType(int typeIndex)
     {
@@ -144,11 +147,15 @@ else if (!roomFree)
 
     private async Task FinishBooking()
     {
-        bookingCompleted = true;
         await SendMail();
         await CreateBooking();
+        bookingCompleted = true;
     }
 
+
+    //this function is used to send a mail to a guest with a booking confirmation, through the email address defined above
+    //the guest email is the one used on the booking page 
+    //and has a default currently defined in booking that was used for testing purposes
     public async Task SendMail()
     {
         Console.WriteLine("test");
@@ -161,7 +168,6 @@ else if (!roomFree)
 
         try
         {
-            //Don't forget to make the (MailTo) to a real mail to send it to
             await client.SendMailAsync(new MailMessage(bookingMail, booking.GuestEmail, "Trinity hotel", $"Confirmed booking \n name: {booking.GuestName} \n email: {booking.GuestEmail} \n number: {booking.GuestPhoneNr} \n selected room type: {roomType} \n from: {DateOnly.FromDateTime(startDate)} \n To: {DateOnly.FromDateTime(endDate)}"));
             Console.WriteLine("Mail sent successfully.");
         }
@@ -171,29 +177,44 @@ else if (!roomFree)
         }
     }
 
+    //this calls a function that gives the id of a room that is free for the duration of the booking
+    //then it saves that ID in a room as well as in a booking,
+    //if there was a free room of the room type for the duration two things happen:
+    //the room with our information is then used to update the corresponding room in the DB through our DBServices call
+    //finally the booking is used to create a new booking in DB through DBServices
     private async Task CreateBooking()
     {
         booking.RoomId = await GetRoom();
-        await DBServices.CreateBooking(booking);
+        room.RoomId = booking.RoomId;
+        if(booking.RoomId > 0)
+        {
+            await DBServices.InsertBookedDaysInRoomTable(room, booking.RoomId);
+            await DBServices.CreateBooking(booking);
+        }
     }
 
+    //this is used to allow the user to book another room after the first booking has gone through
     public void GoToBooking()
     {
         bookingCompleted = false;
     }
 
+    //this function makes a call to a DB services method to get all rooms,
+    //then it goes through all the rooms untill it finds one that is free for the booking dates,
+    //finally it saves all booking dates to a new rooms booked days list for use later
     private async Task<int> GetRoom()
     {
         List<Room> rooms = await DBServices.GetAllRooms();
-        foreach (Room room in rooms)
+        foreach (Room potentialRoom in rooms)
         {
-            if (room.Type == roomType)
+            if (potentialRoom.Type == roomType)
             {
                 roomFree = true;
                 DateTime tempDate = booking.StartDate;
+                bookedDays = new List<DateTime>();
                 while (tempDate.Date < booking.EndDate.Date)
                 {
-                    foreach (DateTime bookedDate in room.BookedDays)
+                    foreach (DateTime bookedDate in potentialRoom.BookedDays)
                     {
                         if (bookedDate.Date == tempDate.Date)
                         {
@@ -205,12 +226,18 @@ else if (!roomFree)
                     {
                         break;
                     }
+                    room.BookedDays.Add(DateTime.SpecifyKind(tempDate, DateTimeKind.Utc));
 
                     tempDate = tempDate.AddDays(1);
                 }
                 if (roomFree)
                 {
-                    return room.RoomId;
+                    foreach(DateTime date in potentialRoom.BookedDays)
+                    {
+                        room.BookedDays.Add(DateTime.SpecifyKind(date, DateTimeKind.Utc));
+                    }
+                    
+                    return potentialRoom.RoomId;
                 }
             }
         }
