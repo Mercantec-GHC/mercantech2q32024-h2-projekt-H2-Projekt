@@ -2,6 +2,7 @@
 using API.DTOs;
 using API.Mappers;
 using DomainModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -24,7 +25,7 @@ namespace API.Controllers
 
         // here we have a method that returns a user object by id
         [HttpGet("{id}")]
-        public IActionResult GetUser([FromRoute] int id)
+        public IActionResult GetUser([FromRoute] string id)
         {
             var user = _context.Users.Find(id);
             if (user == null) {
@@ -87,19 +88,18 @@ namespace API.Controllers
             if (user == null) {
                 return NotFound();
             }
+            user.UserName = userDTO.Username;
             user.FirstName = userDTO.FirstName;
             user.LastName = userDTO.LastName;
-            user.phoneNumber = userDTO.phoneNumber;
+            user.PhoneNumber = userDTO.phoneNumber;
             user.Email = userDTO.Email;
-            user.Password = userDTO.Password;
-            user.Permissions = userDTO.Permissions;
             _context.Users.Update(user);
             _context.SaveChanges();
             return Ok(user);
         }
 
 
-
+        
         // here we have method that update the employye object by the id of the employee
         [HttpPut("{id}")]
         public IActionResult UpdateEmployee([FromRoute] int id, [FromBody] CreateEmployeeDTO employeeDTO, string password)
@@ -114,12 +114,10 @@ namespace API.Controllers
                 }
                 user.FirstName = employeeDTO.FirstName;
                 user.LastName = employeeDTO.LastName;
-                user.phoneNumber = employeeDTO.phoneNumber;
+                user.PhoneNumber = employeeDTO.phoneNumber;
                 user.EmployeePhoneNumber = employeeDTO.EmployeePhoneNumber;
                 user.UPN = employeeDTO.UPN;
                 user.Email = employeeDTO.Email;
-                user.Password = employeeDTO.Password;
-                user.Permissions = employeeDTO.Permissions;
                 _context.Employees.Update(user);
                 _context.SaveChanges();
                 return Ok(user);
