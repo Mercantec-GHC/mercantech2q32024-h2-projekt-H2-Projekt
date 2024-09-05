@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace API.Controllers
 {
+    // This class is a controller class that handles the HTTP requests for the User entity
     [ApiController]
     [Route("[controller]/[action]")]
     public class TicketController : Controller
@@ -55,11 +56,10 @@ namespace API.Controllers
             _context.SaveChanges();
             return Ok(ticket);
         }
-        // updating an already existing ticket
+        // updating an already existing ticket, this can also be a part of the message/reply feature for now
         [HttpPut]
         public IActionResult Update([FromBody] Ticket ticket)
         {
-            // Currently the simplest CRUD operation
             _context.Tickets.Update(ticket);
             _context.SaveChanges();
             return Ok(ticket);
