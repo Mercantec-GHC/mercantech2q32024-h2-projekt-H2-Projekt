@@ -60,7 +60,7 @@ namespace API.Controllers
 				// Saves the changes to the database.
 				await _hotelContext.SaveChangesAsync();
 
-				return Ok(StatusCode(200));
+				return Ok();
 			}
 			catch{
 				return NotFound();
@@ -120,5 +120,30 @@ namespace API.Controllers
 			await _hotelContext.SaveChangesAsync();
 			return StatusCode(200);
 		}
-	}
+
+
+		// Loggin in a user. returns loggedin userdata
+        [HttpPost("Login")]
+        public async Task<ActionResult<UserGetDTO>> LoginUser(string email, string password)
+        {
+            try
+            {
+				User user = await _hotelContext.Users.FirstOrDefaultAsync(u=>u.Email == email && u.Password == password);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+				 UserGetDTO loggedin = _userMapping.MapUserToUserGetDTO(user);
+
+
+                return Ok(loggedin);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+    }
 }

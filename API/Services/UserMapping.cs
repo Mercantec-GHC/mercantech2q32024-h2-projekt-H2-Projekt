@@ -15,7 +15,6 @@ namespace API.Services
                 Role = user.Role,
                 Bookings = user.Bookings
             };
-
             return userDTO;
         }
 
