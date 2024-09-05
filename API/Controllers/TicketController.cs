@@ -7,6 +7,7 @@ using DomainModels;
 using API.Data;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.ComponentModel;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace API.Controllers
 {
@@ -51,6 +52,24 @@ namespace API.Controllers
         public IActionResult Post([FromBody] Ticket ticket)
         {
             _context.Tickets.Add(ticket);
+            _context.SaveChanges();
+            return Ok(ticket);
+        }
+        // updating an already existing ticket
+        [HttpPut]
+        public IActionResult Update([FromBody] Ticket ticket)
+        {
+            // Currently the simplest CRUD operation
+            _context.Tickets.Update(ticket);
+            _context.SaveChanges();
+            return Ok(ticket);
+        }
+        // removing/deleting an existing ticket, may want to do so in another way in the future, where it instead stores the ticket
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var ticket = _context.Tickets.Find(id);
+            _context.Tickets.Remove(ticket);
             _context.SaveChanges();
             return Ok(ticket);
         }
