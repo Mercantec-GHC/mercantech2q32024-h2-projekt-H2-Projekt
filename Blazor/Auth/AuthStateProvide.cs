@@ -51,5 +51,11 @@ namespace Blazor.Auth
             return new ClaimsIdentity(claims, "jwt");
         }
 
+        public async Task Logout()
+        {
+            await _sesseionStorage.RemoveItemAsync("authToken");
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_anonymous)));
+        }
+
     }
 }
