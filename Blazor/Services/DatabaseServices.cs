@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using static System.Net.WebRequestMethods;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Blazor.Services
 {
@@ -36,6 +37,14 @@ namespace Blazor.Services
             return JsonSerializer.Deserialize<List<DomainModels.Booking>>(jsonString) ?? new();
         }
 
+        public async Task<List<Feedback>> GetAllFeedbacks()
+        {
+            return await _httpClient.GetFromJsonAsync<List<Feedback>>(_baseURL + "Feedbacks");
+        }
 
+        public async Task CreateFeedback(Feedback feedback)
+        {
+            await _httpClient.PostAsJsonAsync(_baseURL + "Feedbacks", feedback);
+        }
     }
 }
