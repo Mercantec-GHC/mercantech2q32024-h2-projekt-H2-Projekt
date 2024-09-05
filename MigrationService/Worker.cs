@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 using OpenTelemetry.Trace;
 using System.Threading;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MigrationService;
 
@@ -82,12 +83,16 @@ public class Worker : BackgroundService
     /// <param name="dbContext"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    private static async Task SeedDataAsync(HotelContext dbContext, CancellationToken cancellationToken)
+    private async Task SeedDataAsync(HotelContext dbContext, CancellationToken cancellationToken)
     {
         // Create a new room object with sample data.
         Room testRoom = new()
         {
-            RoomType = new List<string> { "Single" },
+            RoomType = new RoomType()
+            {
+                RoomTypeName = "Single Room",
+                Tags = new List<string> { "Single" },
+            },
             Rooms = 1,
             RoomNumber = 101,
             Beds = "Single",
@@ -96,15 +101,30 @@ public class Worker : BackgroundService
             Condition = "Good"
         };
 
-        // Use the database execution strategy to seed the database.
-        var strategy = dbContext.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(async () =>
+        // Try to seed the database with the sample room data.
+        var success = TrySeedEntity<Room>(dbContext, testRoom);
+
+        // Log the result of the seeding operation.
+        _logger.LogDebug(success ? "Sample room was created" : "Room table already contains data. Room was skipped.");
+    }
+
+    /// <summary>
+    /// Using provided entity, try to seed the database with sample data.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="dbContext"></param>
+    /// <param name="entity"></param>
+    /// <returns>True if successful, false if database table of entity already contains data</returns>
+    private bool TrySeedEntity<T>(HotelContext dbContext, T entity) where T : class
+    {
+        var existingEntity = !dbContext.Set<T>().IsNullOrEmpty();
+        if (existingEntity)
         {
-            // Seed the database
-            await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
-            await dbContext.Rooms.AddAsync(testRoom, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
-        });
+            return false;
+        }
+
+        dbContext.Set<T>().Add(entity);
+        dbContext.SaveChanges();
+        return true;
     }
 }
