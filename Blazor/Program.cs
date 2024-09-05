@@ -16,7 +16,10 @@ builder.Services.AddHttpClient<AuthService>(options =>
 });
 builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvide>();
 builder.Services.AddAuthorizationCore();
+builder.Services.AddAuthenticationCore();
+builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
+
 
 var app = builder.Build();
 
@@ -32,6 +35,8 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

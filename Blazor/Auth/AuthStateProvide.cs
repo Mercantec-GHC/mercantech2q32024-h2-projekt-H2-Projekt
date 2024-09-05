@@ -1,6 +1,8 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Session;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -9,49 +11,45 @@ namespace Blazor.Auth
     public class AuthStateProvide : AuthenticationStateProvider
     {
         private readonly ILocalStorageService _sesseionStorage;
+        private readonly HttpClient _http;
         private ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
 
-        public AuthStateProvide(ILocalStorageService sessionStore)
+        public AuthStateProvide(ILocalStorageService sessionStore, HttpClient http)
         {
             _sesseionStorage = sessionStore;
+            _http = http;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await _sesseionStorage.GetItemAsync<string>("token");
+            var token = await _sesseionStorage.GetItemAsync<string>("authToken");
             if (string.IsNullOrWhiteSpace(token))
             {
                 return new AuthenticationState(_anonymous);
             }
-            ClaimsIdentity identity = new ClaimsIdentity(ParseJwtToken(token), "jwt");
+            ClaimsIdentity identity = GetClaimsIdentity(token);
             var user = new ClaimsPrincipal(identity);
-            return await Task.FromResult(new AuthenticationState(user));
+            var authState = new AuthenticationState(user);
+            NotifyAuthenticationStateChanged(Task.FromResult(authState));
+            return authState;
         }
 
-        public void AuthenticatedUser(string token)
+        public async Task AuthenticateUser(string token)
         {
-            var identity = new ClaimsIdentity(ParseJwtToken(token), "jwt");
+            await _sesseionStorage.SetItemAsync("authToken", token);
+            var identity = GetClaimsIdentity(token);
             var user = new ClaimsPrincipal(identity);
             var authState = Task.FromResult(new AuthenticationState(user));
             NotifyAuthenticationStateChanged(authState);
         }
 
-        public static IEnumerable<Claim> ParseJwtToken(string jwt)
+        public ClaimsIdentity GetClaimsIdentity(string token)
         {
-            var payload = jwt.Split('.')[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-            return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var claims = jwtToken.Claims;
+            return new ClaimsIdentity(claims, "jwt");
         }
 
-        private static byte[] ParseBase64WithoutPadding(string base64)
-        {
-            switch (base64.Length % 4)
-            {
-                case 2: base64 += "=="; break;
-                case 3: base64 += "="; break;
-            }
-            return Convert.FromBase64String(base64);
-        }
     }
 }

@@ -1,9 +1,12 @@
 ﻿@page "/createUser"
 @using Blazor.Auth
 @using Blazor.Auth.Contracts
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider authState
 @inject NavigationManager NavigationManager
-@inject Blazor.Auth.AuthService AuthService
+@inject Blazor.Auth.AuthService authService
+@inject HttpClient _http
+
 
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -33,14 +36,11 @@
 @code {
     public AuthRequest? model = new AuthRequest();
 
+
     public async void OnValidSubmit()
     {
-        var authResponse = await AuthService.Login(model!);
-        if (authResponse != null)
-        {
-            await LocalStorage.SetItemAsync("token", authResponse.Token);
-            AuthStateProvide.AuthenticatedUser(authResponse.Token);
-            NavigationManager.NavigateTo("/");
-        }
+        var response = await authService.Login(model!);
+        await ((AuthStateProvide)authState).AuthenticateUser(response.Token);
+        NavigationManager.NavigateTo("/");
     }
 }
