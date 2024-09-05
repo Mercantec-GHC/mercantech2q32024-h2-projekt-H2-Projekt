@@ -32,5 +32,15 @@ namespace API.Services
             };
             return userDTO;
         }
+
+        public UserLoginDTO MapToUserLoginDTO(User user)
+        {
+            var userDTO = new UserLoginDTO
+            {
+                UserID = user.UserId,
+                Role = user.Role
+            };
+            return userDTO;
+        }
     }
 }

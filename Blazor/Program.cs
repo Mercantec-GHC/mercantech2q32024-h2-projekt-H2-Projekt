@@ -7,9 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
-builder.Services.AddHttpClient();
+builder.Services.AddScoped<HttpClient>();
 builder.Services.AddScoped<DatabaseServices>();
+builder.Services.AddScoped<MailServices>();
 
 var app = builder.Build();
 

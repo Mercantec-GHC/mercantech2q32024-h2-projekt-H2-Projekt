@@ -122,7 +122,15 @@ namespace API.Controllers
                 EndDate = DateTime.SpecifyKind(bookingDTO.EndDate, DateTimeKind.Utc)
             }; 
             _hotelContext.Bookings.Add(booking);
-			_hotelContext.SaveChanges();
+            
+            //update room booked days
+            room.BookedDays.Clear();
+            room.BookedDays.AddRange(Enumerable
+                .Range(0, (int)(bookingDTO.EndDate - bookingDTO.StartDate).TotalDays)
+                .Select(i => bookingDTO.StartDate
+                .AddDays(i)));
+
+            _hotelContext.SaveChanges();
 
             return Ok("Done");
         }
@@ -185,16 +193,16 @@ namespace API.Controllers
         [HttpDelete("id/{BookingId}")]
         public async Task<ActionResult<Booking>> DeleteBooking(int BookingId)
         {
-            var booking = await _hotelContext.Bookings.FindAsync(BookingId);
+            var booking =  _hotelContext.Bookings.Include(b => b.Room).Where(b => b.BookingId == BookingId).FirstOrDefault();
             if (booking == null)
             {
                 return NotFound();
             }
 
+            booking.Room.BookedDays.Clear();
             _hotelContext.Bookings.Remove(booking);
             await _hotelContext.SaveChangesAsync();
-
-            return Ok(booking);
+            return NoContent();
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Blazor.Services
         public DatabaseServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
         public async Task CreateBooking(CreateBookingDTO booking)
@@ -35,6 +36,13 @@ namespace Blazor.Services
         public async Task InsertBookedDaysInRoomTable(Room room, int roomId)
         {
             await _httpClient.PutAsJsonAsync<Room>(_baseURL + "Rooms/" + roomId, room);
+        }
+        public async Task<List<DomainModels.Booking>> GetBookingList()
+        {
+            string url = "https://localhost:7207/Bookings/all";
+
+            var jsonString = await _httpClient.GetStringAsync(url);
+            return JsonSerializer.Deserialize<List<DomainModels.Booking>>(jsonString) ?? new();
         }
     }
 }
