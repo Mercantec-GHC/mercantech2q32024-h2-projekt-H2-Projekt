@@ -1,4 +1,6 @@
 ﻿using DomainModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,7 +17,6 @@ namespace API.Services
         {
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SecretKey"]));
-            
         }
 
         public string CreateToken(User user)
@@ -49,5 +50,20 @@ namespace API.Services
     public interface ITokenService
     {
         public string CreateToken(User user);
+    }
+
+    public sealed class JwtBearerPostConfigurationOptions : IPostConfigureOptions<JwtBearerOptions>
+    {
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public JwtBearerPostConfigurationOptions(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
+        public void PostConfigure(string? name, JwtBearerOptions options)
+        {
+            options.Backchannel = string.IsNullOrEmpty(name) ? _httpClientFactory.CreateClient() : _httpClientFactory.CreateClient(name);
+        }
     }
 }
