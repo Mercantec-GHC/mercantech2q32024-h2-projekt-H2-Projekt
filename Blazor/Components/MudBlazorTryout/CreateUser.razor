@@ -28,6 +28,12 @@
             <MudText Typo="Typo.body2" Align="Align.Center">
                 Fill out the form correctly to see the success message.
             </MudText>
+            @if(isInValid)
+            {
+                <MudText Typo="Typo.body2" Align="Align.Center">
+                    Username or password is incorrect
+                </MudText>
+            }
         </MudItem>
     </MudGrid>
 </EditForm>
@@ -35,12 +41,19 @@
 
 @code {
     public AuthRequest? model = new AuthRequest();
-
+    public bool isInValid;
 
     public async void OnValidSubmit()
     {
         var response = await authService.Login(model!);
-        await ((AuthStateProvide)authState).AuthenticateUser(response.Token);
-        NavigationManager.NavigateTo("/");
+        if(response != null)
+        {
+            await ((AuthStateProvide)authState).AuthenticateUser(response.Token);
+            NavigationManager.NavigateTo("/");
+        } else
+        {
+            isInValid = true;
+        }
+
     }
 }
