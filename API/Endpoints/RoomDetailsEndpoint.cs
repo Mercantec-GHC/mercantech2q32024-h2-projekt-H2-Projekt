@@ -12,7 +12,7 @@ namespace API.TEST
     [Route("[controller]/[action]")]
     public class RoomDetailsEndpoint : ControllerBase
     {
-        // This is a constructor for the UserController class that takes in a HotelContext object to istantiate the database context
+        // This is a constructor for the UserController class that takes in a HotelContext object to instantiate the database context
         private readonly HotelContext _context;
 
         public RoomDetailsEndpoint(HotelContext context)
@@ -20,21 +20,20 @@ namespace API.TEST
             _context = context;
         }
 
-        //This is a method that returns all the Room details
+        // This is a method that returns all the Room details
         [HttpGet]
-        public IActionResult GetRoomDetails([FromBody] GetRoomDetailsDTO roomDTO)
+        public IActionResult GetRoomDetails([FromQuery] GetRoomDetailsDTO roomDTO)
         {
-          
             var rooms = _context.Rooms.ToList();
 
-            var roomDetails = rooms.Select(roomDTO => new GetRoomDetailsDTO
+            var roomDetails = rooms.Select(room => new GetRoomDetailsDTO
             {
-                Rooms = roomDTO.Rooms,
-                RoomNumber = roomDTO.RoomNumber,
-                Beds = roomDTO.Beds,
-                Price = roomDTO.Price,
-                Status = roomDTO.Status,
-                Condition = roomDTO.Condition
+                Rooms = room.Rooms,
+                RoomNumber = room.RoomNumber,
+                Beds = room.Beds,
+                Price = room.Price,
+                Status = room.Status,
+                Condition = room.Condition
             }).ToList();
 
             return Ok(roomDetails);
