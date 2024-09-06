@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace DomainModels.DB
 {
     public class Room
     {
@@ -16,6 +16,8 @@ namespace DomainModels
         public decimal Price { get; set; }
         public string Status { get; set; }
         public string Condition { get; set; }
+
+        public string Description { get; set; }
 
         public List<Reservation> Reservations { get; set; }
     }

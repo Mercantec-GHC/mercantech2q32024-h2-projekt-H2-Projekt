@@ -1,7 +1,6 @@
 ﻿using API.Data;
-using API.DTOs;
 using API.Mappers;
-using DomainModels;
+using DomainModels.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DomainModels.DTO;
+using DomainModels.DB;
 
-namespace DomainModels
+namespace DomainModels.DB
 {
     public class Message
     {

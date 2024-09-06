@@ -6,7 +6,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace DomainModels.DB
 {
     public class PentHouse : RoomType
     {
@@ -15,6 +15,6 @@ namespace DomainModels
         {
             "King-size seng", "stort badeværelse med badekar og separat bruser", "opholdsstue", "TV", "skrivebord", "minibar", "Wi-Fi", "privat terrasse med udsigt"
         };
-        public decimal PricePerNight = 3000; 
+        public decimal PricePerNight = 3000;
     }
 }

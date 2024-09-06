@@ -1,6 +1,7 @@
-﻿using API.DTOs;
+﻿
 using API.Services;
-using DomainModels;
+using DomainModels.DB;
+using DomainModels.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace DomainModels.DB
 {
     public class User : IdentityUser
     {

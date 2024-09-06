@@ -1,9 +1,9 @@
-﻿namespace API.Helpers
+﻿namespace DomainModels.DTO
 {
     /// <summary>
     /// Query object for pagination and sorting
     /// </summary>
-    public class QueryObject
+    public class SearchRoomQuery
     {
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 5;

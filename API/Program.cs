@@ -1,6 +1,6 @@
 using API.Data;
 using API.Services;
-using DomainModels;
+using DomainModels.DB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

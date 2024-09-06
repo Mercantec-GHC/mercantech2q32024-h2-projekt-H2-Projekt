@@ -11,4 +11,10 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DB\Authentication\" />
+    <Folder Include="DTO\Ticket\" />
+    <Folder Include="DTO\Reservation\" />
+  </ItemGroup>
+
 </Project>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace DomainModels.DB
 {
     public class Employee : User
     {
@@ -12,6 +12,6 @@ namespace DomainModels
         public string UPN { get; set; }
         public Department Department { get; set; }
         public string EmployeePhoneNumber { get; set; }
-        
+
     }
 }

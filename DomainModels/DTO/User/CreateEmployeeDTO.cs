@@ -1,6 +1,6 @@
-﻿using DomainModels;
+﻿using DomainModels.DB;
 
-namespace API.DTOs
+namespace DomainModels.DTO
 {
     // this class is to be used to create a employee.
     // the reason for this is not to expose the guid and id of the user when creating an employee
