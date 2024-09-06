@@ -1,5 +1,8 @@
+using Blazor.Auth;
 using Blazor.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
+using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddMudServices();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<AuthService>(options =>
+{
+    options.BaseAddress = new Uri("https://localhost:7207/");
+});
+builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvide>();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddAuthenticationCore();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddBlazoredLocalStorage();
+
 
 var app = builder.Build();
 
@@ -23,6 +35,8 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

@@ -1,77 +1,59 @@
 ﻿@page "/createUser"
+@using Blazor.Auth
+@using Blazor.Auth.Contracts
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider authState
+@inject NavigationManager NavigationManager
+@inject Blazor.Auth.AuthService authService
+@inject HttpClient _http
 
-<MudContainer Class="mt-16" MaxWidth="MaxWidth.Medium">
-    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Sign up</MudText>
-    <MudGrid Spacing="12" Class="mt-16">
-        <MudItem xs="7">
-            <MudText Typo="Typo.h5" GutterBottom="true">Your information</MudText>
-            <MudGrid>
-                <MudItem xs="12">
-                    <MudTextField T="string" Label="Email" />
-                </MudItem>
-                <MudItem xs="12">
-                    <MudTextField T="string" Label="Mobile number" />
-                </MudItem>
-                <MudItem xs="12">
-                    <MudTextField T="string" Label="Personal number" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField T="string" Label="First name" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField T="string" Label="Last name" />
-                </MudItem>
-                <MudItem xs="12">
-                    <MudTextField T="string" Label="Address" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField T="string" Label="Postal code" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField T="string" Label="Postal Area" />
-                </MudItem>
-                <MudItem xs="12" Class="d-flex justify-center">
-                    <MudButton Variant="Variant.Filled" DropShadow="false" Color="Color.Primary" Size="Size.Large" Class="mt-8">Continue</MudButton>
-                </MudItem>
-            </MudGrid>
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Username" Class="mt-3"
+                                  @bind-Value="model.Username" For="@(() => model.Username)" />
+                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">login</MudButton>
+                </MudCardActions>
+            </MudCard>
         </MudItem>
-        <MudItem xs="5">
-            <MudText Typo="Typo.h5" GutterBottom="true">Cart</MudText>
-            <MudPaper Class="d-flex flex-column" Style="height:100%;" Outlined="true">
-                <MudList T="string">
-                    <MudListItem Icon="@Icons.Material.Filled.ContentCut">
-                        <div class="d-flex">
-                            <MudText>Scissor - Big</MudText>
-                            <MudText HtmlTag="span" Class="ml-auto">$5</MudText>
-                        </div>
-                    </MudListItem>
-                    <MudListItem Icon="@Icons.Material.Filled.AirplanemodeActive">
-                        <div class="d-flex">
-                            <MudText>Model Airplane</MudText>
-                            <MudText Class="ml-auto">$20</MudText>
-                        </div>
-                    </MudListItem>
-                    <MudListItem Icon="@Icons.Material.Filled.Create">
-                        <div class="d-flex">
-                            <MudText>Plastic Glue</MudText>
-                            <MudText Class="ml-auto">$12</MudText>
-                        </div>
-                    </MudListItem>
-                    <MudListItem Icon="@Icons.Material.Filled.ColorLens">
-                        <div class="d-flex">
-                            <MudText>Color set - Modern planes</MudText>
-                            <MudText Class="ml-auto">$16</MudText>
-                        </div>
-                    </MudListItem>
-                </MudList>
-                <div class="mt-auto">
-                    <MudDivider />
-                    <div class="d-flex pa-4">
-                        <MudText>Total:</MudText>
-                        <MudText Class="ml-auto"><b>$53</b></MudText>
-                    </div>
-                </div>
-            </MudPaper>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+            @if(isInValid)
+            {
+                <MudText Typo="Typo.body2" Align="Align.Center">
+                    Username or password is incorrect
+                </MudText>
+            }
         </MudItem>
     </MudGrid>
-</MudContainer>
+</EditForm>
+
+
+@code {
+    public AuthRequest? model = new AuthRequest();
+    public bool isInValid;
+
+    public async void OnValidSubmit()
+    {
+        var response = await authService.Login(model!);
+        if(response != null)
+        {
+            await ((AuthStateProvide)authState).AuthenticateUser(response.Token);
+            NavigationManager.NavigateTo("/");
+        } else
+        {
+            isInValid = true;
+        }
+
+    }
+}
