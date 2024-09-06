@@ -123,8 +123,7 @@ namespace API.Controllers
             }; 
             _hotelContext.Bookings.Add(booking);
             
-            //update room booked days
-            room.BookedDays.Clear();
+            //update room booked days.
             room.BookedDays.AddRange(Enumerable
                 .Range(0, (int)(bookingDTO.EndDate - bookingDTO.StartDate).TotalDays)
                 .Select(i => bookingDTO.StartDate
@@ -174,7 +173,7 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid date range");
             }
-            
+
             booking.Room = room;
             booking.GuestName = user.FullName;
             booking.GuestEmail = user.Email;
