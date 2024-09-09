@@ -1,6 +1,12 @@
-﻿using DomainModels;
-using System.Text.Json;
+
 using Booking = DomainModels.Booking;
+using Blazor.Components.Pages;
+using DomainModels;
+using System.Security.Cryptography.X509Certificates;
+using static System.Net.WebRequestMethods;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Blazor.Services
 {
@@ -52,6 +58,16 @@ namespace Blazor.Services
             await _httpClient.DeleteAsync(_baseURL + $"Bookings/id/{bookingId}");
         }
 
+        public async Task<List<Room>> GetAllRooms()
+        {
+            return await _httpClient.GetFromJsonAsync<List<Room>>(_baseURL + "Rooms");
+        }
+
+        public async Task InsertBookedDaysInRoomTable(Room room, int roomId)
+        {
+            await _httpClient.PutAsJsonAsync<Room>(_baseURL + "Rooms/" + roomId, room);
+        }
+
         public async Task<List<DomainModels.Booking>> GetBookingList()
         {
             string url = "https://localhost:7207/Bookings/all";
@@ -74,6 +90,10 @@ namespace Blazor.Services
         public async Task<UserGetDTO> GetUserById(int userId)
         {
             return await _httpClient.GetFromJsonAsync<UserGetDTO>($"{_baseURL}Users/{userId}");
+        }
+        public async Task DeleteUser(int userID)
+        {
+            await _httpClient.DeleteAsync(_baseURL + "Users/" + userID);
         }
     }
 }
