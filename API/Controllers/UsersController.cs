@@ -18,22 +18,31 @@ namespace API.Controllers
 			_userMapping = userMapping;
 		}
 
-		// Get all users.
+		//// Get all users.
+		//[HttpGet]
+		//public async Task<ActionResult<IEnumerable<UserGetDTO>>> GetAllUsers()
+		//{
+		//	var users = await _hotelContext.Users.ToListAsync();
+		//	List<UserGetDTO> result = new List<UserGetDTO>();
+
+		//	if (users == null)
+		//	{
+		//		return NotFound();
+		//	}
+		//	/* Loops through each item in the List and maps it to a new class/type 
+		//	 and adds it to a new List.*/
+		//	foreach (var user in users)
+		//	{
+		//		result.Add(_userMapping.MapUserToUserGetDTO(user));
+		//	}
+		//	return Ok(result);
+		//}
+
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<UserGetDTO>>> GetAllUsers()
 		{
-			var users = await _hotelContext.Users.ToListAsync();
-			List<UserGetDTO> result = new List<UserGetDTO>();
-
-			if (users == null){
-				return NotFound();
-			}
-			/* Loops through each item in the List and maps it to a new class/type 
-			 and adds it to a new List.*/
-			foreach (var user in users){
-				result.Add(_userMapping.MapUserToUserGetDTO(user));
-			}
-			return Ok(result);
+			var user = await _hotelContext.Users.Select(user => _userMapping.MapUserToUserGetDTO(user)).ToListAsync();
+			return Ok(user);
 		}
 
 		// Get a specific user from the UserID.
@@ -43,7 +52,8 @@ namespace API.Controllers
 			// Finds a user through the user id.
 			var user = await _hotelContext.Users.FindAsync(id);
 
-			if (user == null){
+			if (user == null)
+			{
 				return NotFound();
 			}
 			// returns the user, after mapping it to a new class/type.
@@ -60,22 +70,24 @@ namespace API.Controllers
 			{
 				return NotFound();
 			}
-			return Ok(_userMapping.MapToUserLoginDTO(user));
+			return Ok(_userMapping.MapUserToUserLoginDTO(user));
         }
 
 		// Create a user account
 		[HttpPost]
 		public async Task<ActionResult<User>> PostAUser(UserPostDTO user)
 		{
-			try{
+			try
+			{
 				// Adds the user to database after mapping it to a new class/type.
-				_hotelContext.Users.Add(_userMapping.MapToUserCreateDTO(user));
+				_hotelContext.Users.Add(_userMapping.MapUserPostDTOToUser(user));
 				// Saves the changes to the database.
 				await _hotelContext.SaveChangesAsync();
 
 				return Ok(StatusCode(200));
 			}
-			catch{
+			catch
+			{
 				return NotFound();
 			}
 		}
@@ -87,7 +99,8 @@ namespace API.Controllers
 			// Finds the user by its user id.
 			var userDTO = await _hotelContext.Users.FindAsync(id);
 
-			if (userDTO == null){
+			if (userDTO == null)
+			{
 				return NotFound();
 			}
 
@@ -101,10 +114,12 @@ namespace API.Controllers
 			_hotelContext.Entry(userDTO).State = EntityState.Modified;
 
 			// Try to save changes.
-			try{
+			try
+			{
 				await _hotelContext.SaveChangesAsync();
 			}
-			catch{
+			catch
+			{
 				// Checks if the user is in the database.
 				if (!_hotelContext.Users.Any(u => u.UserId == id)){
 					return NotFound();
@@ -123,7 +138,8 @@ namespace API.Controllers
 			// Find user by user id.
 			var user = await _hotelContext.Users.FindAsync(id);
 
-			if (user == null){
+			if (user == null)
+			{
 				return NotFound();
 			}
 

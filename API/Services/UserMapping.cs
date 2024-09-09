@@ -19,7 +19,7 @@ namespace API.Services
             return userDTO;
         }
 
-        public User MapToUserCreateDTO(UserPostDTO user)
+        public User MapUserPostDTOToUser(UserPostDTO user)
         {
             var userDTO = new User
             {
@@ -33,7 +33,7 @@ namespace API.Services
             return userDTO;
         }
 
-        public UserLoginDTO MapToUserLoginDTO(User user)
+        public UserLoginDTO MapUserToUserLoginDTO(User user)
         {
             var userDTO = new UserLoginDTO
             {
