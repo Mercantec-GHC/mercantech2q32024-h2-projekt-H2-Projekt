@@ -1,0 +1,153 @@
+﻿@page "/profile/{userId:int}"
+
+@inject Services.DatabaseServices DBServices
+@using DomainModels
+
+@code {
+    // Declaring a parameter to receive the userId from the URL
+    [Parameter]public int userId { get; set; }
+
+    // User object to store data
+    private UserGetDTO user = new UserGetDTO();  
+
+    // Fetch user data on component initialization
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Fetch the user by their ID from the DBServices and assign it to the fetchedUser variable
+            var fetchedUser = await DBServices.GetUserById(userId);
+
+            // If the user is found, assign the fetched data to the user variable.
+            if (fetchedUser != null)
+            {
+                user = fetchedUser;
+            }
+            else
+            {
+                // If no user is found, log to the console.
+                Console.WriteLine("User not found.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+        }
+    }
+}
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-picture">
+           
+        </div>
+        <div class="profile-info">
+            <div class="profile-name">@user.FullName</div>
+            <div class="profile-username">@user.Role</div>
+            
+            @* <div>@user.PhoneNr</div> *@
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <h3>Bookings of @user.FullName</h3>
+
+        @if (user.Bookings != null && user.Bookings.Any())
+        {
+            <ul>
+                @foreach (var booking in user.Bookings)
+                {
+                    <li>@booking.BookingId</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No bookings available.</p>
+        }
+    </div>
+</div>
+
+<style>
+  
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f4f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #007bff;
+    }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .profile-info {
+        flex-grow: 1;
+        margin-left: 20px;
+    }
+
+    .profile-name {
+        font-size: 2em;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .profile-username {
+        font-size: 1.2em;
+        color: #666;
+    }
+
+    .profile-bio {
+        margin-top: 10px;
+        font-size: 1.1em;
+        color: #555;
+    }
+
+    .profile-stats {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-around;
+    }
+
+        .profile-stats div {
+            text-align: center;
+        }
+
+        .profile-stats span {
+            display: block;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .profile-stats small {
+            color: #777;
+        }
+
+    .profile-content {
+        margin-top: 40px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+</style>
