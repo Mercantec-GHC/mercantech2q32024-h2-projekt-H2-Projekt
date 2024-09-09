@@ -1,6 +1,7 @@
 ﻿using DomainModels;
+using DomainModels.DB;
 
-namespace API.DTOs
+namespace DomainModels.DTO
 {
     //this is only an example DTO and might need to be modified in the near future
     public class CreateTicketDTO

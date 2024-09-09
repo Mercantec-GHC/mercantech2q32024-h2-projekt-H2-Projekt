@@ -36,7 +36,7 @@ namespace API.Controllers
         /// <summary>
         /// Get specific ID of room
         /// </summary>
-        /// <param name="id">RoomType ID</param>
+        /// <param name="id">This is the id in the database of the room you want to select</param>
         /// <returns>Status OK with room</returns>
         [HttpGet("{id}")]
         public IActionResult GetById([FromRoute] int id) 

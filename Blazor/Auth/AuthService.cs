@@ -41,5 +41,11 @@ namespace Blazor.Auth
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<T?> GetFrom<T>(string url)
+        {
+            await SetAuthorHeader();
+            return await _http.GetFromJsonAsync<T?>(url);
+        }
+
     }
 }

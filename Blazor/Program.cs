@@ -10,10 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddMudServices();
-builder.Services.AddHttpClient<AuthService>(options =>
-{
-    options.BaseAddress = new Uri("https://localhost:7207/");
-});
+builder.Services.AddHttpClient<AuthService>("api");
 builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvide>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthenticationCore();

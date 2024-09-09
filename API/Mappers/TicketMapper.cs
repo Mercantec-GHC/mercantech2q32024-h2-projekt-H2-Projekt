@@ -1,5 +1,6 @@
-﻿using API.DTOs;
+﻿using DomainModels.DTO;
 using DomainModels;
+using DomainModels.DB;
 using Microsoft.AspNetCore.Authentication;
 
 namespace API.Mappers

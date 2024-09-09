@@ -1,6 +1,6 @@
 ﻿using API.Data;
 using DomainModels.DB;
-using Microsoft.AspNetCore.Http;
+using DomainModels.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -54,10 +54,23 @@ namespace API.Controllers
         /// <param name="reservation">Reservation object</param>
         /// <returns>Status CREATED</returns>
         [HttpPost]
-        public IActionResult Post([FromBody] Reservation reservation)
+        public IActionResult Post([FromBody] CreateReservationDTO reservation)
         {
             // Currently the simplest CRUD operation
-            _context.Reservations.Add(reservation);
+
+            Room room = _context.Rooms.Find(reservation.RoomId);
+            User customer = _context.Users.Find(reservation.UserId);
+
+            Reservation res = new Reservation
+            {
+                Rooms = new List<Room> { room },
+                Customer = customer,
+                Price = room.Price,
+                CheckIn = reservation.CheckIn,
+                CheckOut = reservation.CheckOut
+            };
+
+            _context.Reservations.Add(res);
             _context.SaveChanges();
             return Created();
         }

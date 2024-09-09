@@ -32,4 +32,8 @@
     <None Include="Components\MudBlazorTryout\Employee.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DomainModels\DomainModels.csproj" />
+  </ItemGroup>
+
 </Project>

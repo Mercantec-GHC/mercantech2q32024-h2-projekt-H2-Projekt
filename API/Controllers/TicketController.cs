@@ -8,6 +8,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using DomainModels.DB;
 
 namespace API.Controllers
 {

@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using Blazor.Auth
+@using DomainModels.DB
+@inject AuthService AuthService
 
 <PageTitle>Home</PageTitle>
 
@@ -6,8 +9,32 @@
 
 Velkommen til Hotel Vesterly, her kan du booke nogle af de bedste rum.
 
+
+@if (rooms != null)
+{
+    <ul>
+        @foreach (var room in rooms)
+        {
+            <li>@room.Description</li>
+        }
+    </ul>
+}
+
+
 <AuthorizeView>
     <p>
         You can see this if you are authorized
     </p>
 </AuthorizeView>
+
+    @code{
+        private List<Room> rooms;
+
+        protected override async Task OnInitializedAsync()
+        {
+
+            rooms = await AuthService.GetFrom<List<Room>>("https://localhost:7207/Room/GetAll");
+
+
+        }
+}

@@ -13,8 +13,6 @@
 
   <ItemGroup>
     <Folder Include="DB\Authentication\" />
-    <Folder Include="DTO\Ticket\" />
-    <Folder Include="DTO\Reservation\" />
   </ItemGroup>
 
 </Project>
