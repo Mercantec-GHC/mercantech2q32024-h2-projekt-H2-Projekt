@@ -18,31 +18,24 @@ namespace API.Controllers
 			_userMapping = userMapping;
 		}
 
-		//// Get all users.
-		//[HttpGet]
-		//public async Task<ActionResult<IEnumerable<UserGetDTO>>> GetAllUsers()
-		//{
-		//	var users = await _hotelContext.Users.ToListAsync();
-		//	List<UserGetDTO> result = new List<UserGetDTO>();
-
-		//	if (users == null)
-		//	{
-		//		return NotFound();
-		//	}
-		//	/* Loops through each item in the List and maps it to a new class/type 
-		//	 and adds it to a new List.*/
-		//	foreach (var user in users)
-		//	{
-		//		result.Add(_userMapping.MapUserToUserGetDTO(user));
-		//	}
-		//	return Ok(result);
-		//}
-
+		// Get all users.
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<UserGetDTO>>> GetAllUsers()
 		{
-			var user = await _hotelContext.Users.Select(user => _userMapping.MapUserToUserGetDTO(user)).ToListAsync();
-			return Ok(user);
+			var users = await _hotelContext.Users.ToListAsync();
+			List<UserGetDTO> result = new List<UserGetDTO>();
+
+			if (users == null)
+			{
+				return NotFound();
+			}
+			/* Loops through each item in the List and maps it to a new class/type 
+			 and adds it to a new List.*/
+			foreach (var user in users)
+			{
+				result.Add(_userMapping.MapUserToUserGetDTO(user));
+			}
+			return Ok(result);
 		}
 
 		// Get a specific user from the UserID.
