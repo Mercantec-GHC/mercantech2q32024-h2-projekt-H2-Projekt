@@ -46,5 +46,11 @@ namespace Blazor.Services
         {
             await _httpClient.PostAsJsonAsync(_baseURL + "Feedbacks", feedback);
         }
+
+        // Method to get a user by ID
+        public async Task<UserGetDTO> GetUserById(int userId)
+        {
+            return await _httpClient.GetFromJsonAsync<UserGetDTO>($"{_baseURL}Users/{userId}");
+        }
     }
 }
