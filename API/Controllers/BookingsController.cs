@@ -90,16 +90,11 @@ namespace API.Controllers
 		public ActionResult AddBooking(CreateBookingDTO bookingDTO)
 		{
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
+            // Data validation
             if (room == null)
             {
                 return NotFound("room not found");
             }
-
-            //var user = _hotelContext.Users.Find(bookingDTO.UserId);
-            //if (user == null)
-            //{
-            //    return NotFound("user not found");
-            //}
 
             if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
@@ -110,7 +105,6 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid date range");
             }
-
 
             var booking = new Booking
             {
@@ -151,6 +145,12 @@ namespace API.Controllers
                 return NotFound("booking not found");
             }
 
+            var user = _hotelContext.Users.Find(bookingDTO.UserId);
+            if (user == null)
+            {
+                return NotFound("user not found");
+            }
+
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
 
 
@@ -159,13 +159,7 @@ namespace API.Controllers
                 return NotFound("room not found");
             }
 
-            var user = _hotelContext.Users.Find(bookingDTO.UserId);
-            if (user == null)
-            {
-                return NotFound("user not found");
-            }
-
-            if (bookingDTO.StartDate >= bookingDTO.DateTo)
+            if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
                 return BadRequest("Invalid date range");
             }
@@ -176,13 +170,13 @@ namespace API.Controllers
             }
             
             booking.Room = room;
-            booking.GuestName = user.FullName;
-            booking.GuestEmail = user.Email;
-            booking.GuestPhoneNr = user.PhoneNr;
-            booking.StartDate = bookingDTO.StartDate;
-            booking.EndDate = bookingDTO.DateTo;
-            
+            booking.GuestName = bookingDTO.GuestName;
+            booking.GuestEmail = bookingDTO.GuestEmail;
+            booking.GuestPhoneNr = bookingDTO.GuestPhoneNr;
+            booking.StartDate = DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc);
+            booking.EndDate = DateTime.SpecifyKind(bookingDTO.EndDate, DateTimeKind.Utc);
 
+            _hotelContext.Entry(booking).State = EntityState.Modified;
             _hotelContext.SaveChanges();
 
             return Ok("Done");
@@ -199,7 +193,7 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            booking.Room.BookedDays.Clear();
+            
             _hotelContext.Bookings.Remove(booking);
             await _hotelContext.SaveChangesAsync();
             return NoContent();
