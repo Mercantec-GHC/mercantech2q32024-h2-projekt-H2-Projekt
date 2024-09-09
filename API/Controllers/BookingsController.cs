@@ -121,7 +121,7 @@ namespace API.Controllers
             room.BookedDays.Clear();
             room.BookedDays.AddRange(Enumerable
                 .Range(0, (int)(bookingDTO.EndDate - bookingDTO.StartDate).TotalDays)
-                .Select(i => bookingDTO.StartDate
+                .Select(i => DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc)
                 .AddDays(i)));
 
             _hotelContext.SaveChanges();
