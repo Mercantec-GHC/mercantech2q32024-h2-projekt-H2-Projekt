@@ -34,7 +34,7 @@
     async Task UpdateBookings()
     {
         bookings.Clear();
-        bookings.AddRange(await DatabaseServicesInstance.GetBookingList());
+        //bookings.AddRange(await DatabaseServicesInstance.GetBookingList());
         StateHasChanged();
     }
 

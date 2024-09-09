@@ -89,15 +89,18 @@ else if (!roomFree)
 }
 
 @code {
-    //Wont work if the mail or pw(password) isn't inserted with a real mail
-    string guestPassword = "TrinityGuest!"; //this is for access to see if mail was sent correctly if logged out from temp guest mail
+    //these are used to be able to log in to the mails we use for testing
+    string guestPassword = "TrinityGuest!";
     string bookingMail = "trinityHotelEmployee@outlook.com";
     string password = "TrinityBooking!";
     string roomType = "standard single";
 
+    //this is used to give feedback to the user as to whether a booking went through or not
     bool bookingCompleted = false;
+    //this is used to check if a room is free and stop from looping through more than necessary if a room is booked at least one date in the selected range of dates
     bool roomFree = true;
 
+    //booking placeholder that has the values getting filled into the booking table in DB
     public CreateBookingDTO booking = new CreateBookingDTO()
         {
             GuestEmail = "trinityHotelGuest@outlook.com",
@@ -107,16 +110,22 @@ else if (!roomFree)
             UserId = 1
         };
 
+    //Placeholder room that is used for a put function to the database so we can update booked days for a room in DB
     private Room room = new Room();
 
+    //Start date and end date for the booking, start date is included but end date is the day the guest is checking out
+    //we decided the end date should not be saved as a booked date on the room so someone else can check in that day
+    //we also decided to include start date, that way a room can get 
+    //freed up, cleaned and then someone can check in and get it on the same day,
+    //without two people booking the same room from that day
     DateTime startDate = DateTime.UtcNow;
     DateTime endDate = DateTime.UtcNow.AddDays(1);
 
+    //this is used to display the price of currently selected roomtype on the dropdown
     int price = 600;
-    int roomId = 2;
 
-    List<DateTime> bookedDays = new List<DateTime>();
-
+    //this function is used by the dropdown further up to set a roomtype and a price, 
+    // roomtype is used to make sure the room attached to the booking will be the correct type
     private void SetRoomType(int typeIndex)
     {
         switch (typeIndex)
@@ -145,36 +154,33 @@ else if (!roomFree)
         Console.WriteLine($"Selected Room Type: {roomType}");
     }
 
+
+    //we use this function to do what we need to do when the guest finishes a booking
+    //first we make the booking by calling a function in charge of doing everything related to the booking
+    //then if the booking has a room we will send an email to the guest
+    //finally we set booking completed to true which will display the result to the guest
     private async Task FinishBooking()
     {
-        await SendMail();
         await CreateBooking();
+        if(booking.RoomId > 0)
+        {
+            await SendMail();
+        }
         bookingCompleted = true;
     }
 
 
     //this function is used to send a mail to a guest with a booking confirmation, through the email address defined above
-    //the guest email is the one used on the booking page 
-    //and has a default currently defined in booking that was used for testing purposes
+    //here we call a function that currently uses a predefined guest email to send the email to
     public async Task SendMail()
     {
+
         Console.WriteLine("test");
 
-        SmtpClient client = new SmtpClient("smtp-mail.outlook.com", 587)
-            {
-                EnableSsl = true,
-                Credentials = new NetworkCredential(bookingMail, password)
-            };
-
-        try
-        {
-            await client.SendMailAsync(new MailMessage(bookingMail, booking.GuestEmail, "Trinity hotel", $"Confirmed booking \n name: {booking.GuestName} \n email: {booking.GuestEmail} \n number: {booking.GuestPhoneNr} \n selected room type: {roomType} \n from: {DateOnly.FromDateTime(startDate)} \n To: {DateOnly.FromDateTime(endDate)}"));
-            Console.WriteLine("Mail sent successfully.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to send mail: {ex.Message}");
-        }
+        Services.MailServices mailServices = new Services.MailServices();
+        await mailServices.SendEmail(bookingMail, 
+            "Trinity hotel", 
+            $"Confirmed booking \n name: {booking.GuestName} \n email: {booking.GuestEmail} \n number: {booking.GuestPhoneNr} \n selected room type: {roomType} \n from: {DateOnly.FromDateTime(startDate)} \n To: {DateOnly.FromDateTime(endDate)}");
     }
 
     //this calls a function that gives the id of a room that is free for the duration of the booking
@@ -186,7 +192,7 @@ else if (!roomFree)
     {
         booking.RoomId = await GetRoom();
         room.RoomId = booking.RoomId;
-        if(booking.RoomId > 0)
+        if (booking.RoomId > 0)
         {
             await DBServices.InsertBookedDaysInRoomTable(room, booking.RoomId);
             await DBServices.CreateBooking(booking);
@@ -211,7 +217,6 @@ else if (!roomFree)
             {
                 roomFree = true;
                 DateTime tempDate = booking.StartDate;
-                bookedDays = new List<DateTime>();
                 while (tempDate.Date < booking.EndDate.Date)
                 {
                     foreach (DateTime bookedDate in potentialRoom.BookedDays)
@@ -232,11 +237,11 @@ else if (!roomFree)
                 }
                 if (roomFree)
                 {
-                    foreach(DateTime date in potentialRoom.BookedDays)
+                    foreach (DateTime date in potentialRoom.BookedDays)
                     {
                         room.BookedDays.Add(DateTime.SpecifyKind(date, DateTimeKind.Utc));
                     }
-                    
+
                     return potentialRoom.RoomId;
                 }
             }

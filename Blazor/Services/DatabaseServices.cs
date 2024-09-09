@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using static System.Net.WebRequestMethods;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Blazor.Services
 {
@@ -37,12 +38,18 @@ namespace Blazor.Services
         {
             await _httpClient.PutAsJsonAsync<Room>(_baseURL + "Rooms/" + roomId, room);
         }
+
         public async Task<List<DomainModels.Booking>> GetBookingList()
         {
             string url = "https://localhost:7207/Bookings/all";
 
             var jsonString = await _httpClient.GetStringAsync(url);
             return JsonSerializer.Deserialize<List<DomainModels.Booking>>(jsonString) ?? new();
+        }
+
+        public async Task DeleteUser(int userID)
+        {
+            await _httpClient.DeleteAsync(_baseURL + "Users/" + userID);
         }
     }
 }
