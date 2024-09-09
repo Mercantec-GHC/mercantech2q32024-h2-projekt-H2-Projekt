@@ -1,8 +1,6 @@
 ﻿using API.Data;
-using API.Mappers;
 using DomainModels.DTO;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace API.TEST
 {

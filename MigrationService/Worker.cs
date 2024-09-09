@@ -1,14 +1,7 @@
 using API.Data;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics;
-
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-
-using OpenTelemetry.Trace;
-using System.Threading;
 using Microsoft.IdentityModel.Tokens;
-using DomainModels.DTO;
 using DomainModels.DB;
 
 namespace MigrationService;
