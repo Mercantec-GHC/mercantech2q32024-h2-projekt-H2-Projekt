@@ -1,5 +1,5 @@
 ﻿using API.Data;
-using DomainModels;
+using DomainModels.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +11,7 @@ namespace API.Controllers
     /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
     /// </summary>
     [ApiController]
-    [Route("v1/api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     public class ReservationsController : Controller
     {
 

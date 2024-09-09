@@ -4,27 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainModels
+namespace DomainModels.DB
 {
-    public class PremiumHouse
+    public class StandardHouse
     {
         public int Id { get; set; }
         public List<string> facilitates = new List<string>()
         {
-            "Dobbeltseng", "badeværelse med badekar og bruser", "TV", "skrivebord", "minibar", "Wi-Fi", "balkon"
+            "Enkeltseng eller dobbeltseng", "badeværelse med bruser", "TV", "skrivebord", "Wi-Fi"
         };
         public decimal PricePerNight;
 
-        public string numberOfRooms { get; set; }
-        public decimal CalRoomPrice(PremiumHouse rooms)
+        public string NumberOfRooms { get; set; }
+
+        public decimal CalRoomPrice(StandardHouse rooms)
         {
-            if (rooms.numberOfRooms == "single room")
+            if (rooms.NumberOfRooms == "single room")
             {
-                rooms.PricePerNight = 900;
+                rooms.PricePerNight = 500;
             }
-            else if (rooms.numberOfRooms == "double room")
+            else if (rooms.NumberOfRooms == "double room")
             {
-                rooms.PricePerNight = 1200;
+                rooms.PricePerNight = 800;
             }
             else
             {
@@ -33,6 +34,4 @@ namespace DomainModels
             return rooms.PricePerNight;
         }
     }
-
-
 }

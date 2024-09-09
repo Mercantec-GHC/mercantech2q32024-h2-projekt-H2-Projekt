@@ -1,6 +1,6 @@
 ﻿using DomainModels;
 
-namespace API.DTOs
+namespace DomainModels.DTO
 {
     public class GetRoomDetailsDTO
     {

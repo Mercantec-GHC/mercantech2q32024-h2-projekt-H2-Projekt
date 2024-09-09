@@ -1,6 +1,5 @@
-﻿using API.DTOs;
-using DomainModels;
-using System.Runtime.CompilerServices;
+﻿using DomainModels.DTO;
+using DomainModels.DB;
 
 namespace API.Mappers
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.DTOs
+namespace DomainModels.DTO
 {
     // this class is to be used to create a user.
     // the reason for this is not to expose the guid and id of the user when creating a user

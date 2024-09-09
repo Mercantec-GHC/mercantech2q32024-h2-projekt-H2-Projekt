@@ -1,14 +1,8 @@
 using API.Data;
-using DomainModels;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics;
-
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-
-using OpenTelemetry.Trace;
-using System.Threading;
 using Microsoft.IdentityModel.Tokens;
+using DomainModels.DB;
 
 namespace MigrationService;
 
@@ -85,24 +79,47 @@ public class Worker : BackgroundService
     /// <returns></returns>
     private async Task SeedDataAsync(HotelContext dbContext, CancellationToken cancellationToken)
     {
+        // Create a new room type object with sample data.
+        RoomType testRoomType = new()
+        {
+            RoomTypeName = "Single Room",
+            Tags = new List<string> { "Single" },
+        };
+
+        RoomType testRoomType2 = new()
+        {
+            RoomTypeName = "Double Room",
+            Tags = new List<string> { "Double" },
+        };
+
         // Create a new room object with sample data.
         Room testRoom = new()
         {
-            RoomType = new RoomType()
-            {
-                RoomTypeName = "Single Room",
-                Tags = new List<string> { "Single" },
-            },
+            RoomType = testRoomType,
             Rooms = 1,
             RoomNumber = 101,
             Beds = "Single",
             Price = 100,
             Status = "Available",
-            Condition = "Good"
+            Condition = "Good",
+            Description = "This is a single room with a single bed."
+        };
+
+        Room testRoom2 = new()
+        {
+            RoomType = testRoomType2,
+            Rooms = 1,
+            RoomNumber = 102,
+            Beds = "Double",
+            Price = 200,
+            Status = "Available",
+            Condition = "Good",
+            Description = "This is a double room with a double bed."
         };
 
         // Try to seed the database with the sample room data.
         var success = TrySeedEntity<Room>(dbContext, testRoom);
+        var success2 = TrySeedEntity<Room>(dbContext, testRoom2);
 
         // Log the result of the seeding operation.
         _logger.LogDebug(success ? "Sample room was created" : "Room table already contains data. Room was skipped.");

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using DomainModels;
+﻿using Microsoft.AspNetCore.Mvc;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
-using API.Helpers;
+using DomainModels.DB;
+using DomainModels.DTO;
 
 namespace API.Controllers
 {
@@ -109,7 +105,7 @@ namespace API.Controllers
         /// Currently supports searching by RoomType, sorting by any property of the Room object, and lastly non zero-based pagination
         /// </remarks>
         [HttpGet]
-        public IActionResult Search([FromQuery] QueryObject query )
+        public IActionResult Search([FromQuery] SearchRoomQuery query )
         {
             // Create the start of a request to the DB
             var rooms = _context.Rooms.AsQueryable();
@@ -118,7 +114,7 @@ namespace API.Controllers
             if (!string.IsNullOrWhiteSpace(query.Search))
             {
                 // Add the condition to the db request that the returned list needs to have RoomType contain the search property
-                rooms = rooms.Where(r => r.RoomType.Tags.Any(e => e.ToLower().Contains(query.Search)));
+                rooms = rooms.Where(r => r.Description.ToLower().Contains(query.Search.ToLower()));
             }
 
             // Check if SortBy is empty and if not then check if the entered value is a property on the Room object

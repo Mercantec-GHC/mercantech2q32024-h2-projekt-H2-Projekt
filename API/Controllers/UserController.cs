@@ -1,7 +1,7 @@
 ﻿using API.Data;
-using API.DTOs;
 using API.Mappers;
-using DomainModels;
+using DomainModels.DB;
+using DomainModels.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
