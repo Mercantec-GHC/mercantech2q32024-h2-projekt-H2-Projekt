@@ -47,5 +47,7 @@ namespace Blazor.Auth
             return await _http.GetFromJsonAsync<T?>(url);
         }
 
+        public HttpClient GetHttpClient() => _http;
+
     }
 }
