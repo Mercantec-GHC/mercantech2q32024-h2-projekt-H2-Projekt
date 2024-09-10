@@ -40,14 +40,20 @@
 
 
 @code {
+
     public AuthRequest? model = new AuthRequest();
     public bool isInValid;
 
+    /// <summary>
+    /// The OnValidSubmit function will be run once when clicked on the "Login" button
+    /// </summary>
     public async void OnValidSubmit()
     {
+        // response variable that will make the post request to the api to get the neccessary user information back from the logged in user.
         var response = await authService.Login(model!);
         if(response != null)
         {
+            // Authenticate the user with the token that is returned from the api
             await ((AuthStateProvide)authState).AuthenticateUser(response.Token);
             NavigationManager.NavigateTo("/");
         } else
