@@ -57,6 +57,10 @@ namespace Blazor.Services
         {
             await _httpClient.DeleteAsync(_baseURL + $"Bookings/id/{bookingId}");
         }
+        public async Task<List<UserGetDTO>> GetAllUsers()
+        {
+            return await _httpClient.GetFromJsonAsync<List<UserGetDTO>>(_baseURL + "Users");
+        }
 
         public async Task<List<Room>> GetAllRooms()
         {
