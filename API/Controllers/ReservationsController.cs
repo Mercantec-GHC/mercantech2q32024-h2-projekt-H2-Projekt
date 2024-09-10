@@ -1,6 +1,9 @@
 ﻿using API.Data;
+using API.Extensions;
 using DomainModels.DB;
 using DomainModels.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -11,16 +14,18 @@ namespace API.Controllers
     /// Most likely wanna later add some more complex logic here to handle creation of reservations based off of user and room availability and such.
     /// </summary>
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class ReservationsController : Controller
     {
 
         private readonly HotelContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public ReservationsController(HotelContext context)
+        public ReservationsController(HotelContext context, UserManager<User> userManager)
         {
             // Fill the DB Context through Dependency Injection
             _context = context;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -54,12 +59,26 @@ namespace API.Controllers
         /// <param name="reservation">Reservation object</param>
         /// <returns>Status CREATED</returns>
         [HttpPost]
-        public IActionResult Post([FromBody] CreateReservationDTO reservation)
+        [Authorize]
+        public async Task<IActionResult> Post([FromBody] CreateReservationDTO reservation)
         {
-            // Currently the simplest CRUD operation
+            // Check if the data fulfills the requirements of the DTO
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            Room room = _context.Rooms.Find(reservation.RoomId);
-            User customer = _context.Users.Find(reservation.UserId);
+            // Find user by username
+            var username = User.GetUsername();
+            var appuser = await _userManager.FindByNameAsync(username);
+
+            Room? room = await _context.Rooms.FindAsync(reservation.RoomId);
+            User? customer = _context.Users.FirstOrDefault(u => u.UserName == username);
+
+            if (room == null || customer == null)
+            {
+                return BadRequest("Room ID could not be found.");
+            }
 
             Reservation res = new Reservation
             {
@@ -78,15 +97,46 @@ namespace API.Controllers
         /// <summary>
         /// Update reservation
         /// </summary>
-        /// <param name="reservation">Reservation object</param>
+        /// <param name="modifyReservation">Reservation object</param>
         /// <returns>Status OK with the modified reservation</returns>
         [HttpPut]
-        public IActionResult Update([FromBody] Reservation reservation)
+        [Authorize]
+        public async Task<IActionResult> Update([FromBody] ModifyReservationDTO modifyReservation)
         {
-            // Currently the simplest CRUD operation
+            // Check if the data fulfills the requirements of the DTO
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Get user information
+            var username = User.GetUsername();
+            var appuser = await _userManager.FindByNameAsync(username);
+
+            // Find reservation by ID
+            var reservation = _context.Reservations.Find(modifyReservation.ReservationId);
+            if (reservation == null) {
+                return BadRequest("Reservation ID could not be found.");
+            }
+
+            // Check if user is admin role or user role
+            if (!User.IsInRole("Admin"))
+            { 
+                // User can only update their own reservation
+                if (reservation.Customer.Id != appuser.Id)
+                {
+                    return Unauthorized("You can only modify your own reservations!");
+                }
+            }
+
+            // Modify reservation
+            reservation.CheckIn = modifyReservation.CheckIn;
+            reservation.CheckOut = modifyReservation.CheckOut;
             _context.Reservations.Update(reservation);
+
+            // Save changes
             _context.SaveChanges();
-            return Ok(reservation);
+            return Ok(modifyReservation);
         }
 
         /// <summary>
@@ -95,10 +145,27 @@ namespace API.Controllers
         /// <param name="id">Integer ID of reservation</param>
         /// <returns>Status OK</returns>
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
         {
-            // Currently the simplest CRUD operation
+            // Get user information
+            var username = User.GetUsername();
+            var appuser = await _userManager.FindByNameAsync(username);
+            
+            // Find reservation by ID
             var reservation = _context.Reservations.Find(id);
+
+            // Check if user is admin role or user role
+            if (!User.IsInRole("Admin"))
+            {
+                // User can only delete their own reservation
+                if (reservation.Customer.Id != appuser.Id)
+                {
+                    return Unauthorized("You can only delete your own reservations!");
+                }
+            }
+
+            // Remove reservation and save changes
             _context.Reservations.Remove(reservation);
             _context.SaveChanges();
             return Ok();
