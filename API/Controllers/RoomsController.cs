@@ -159,7 +159,7 @@ namespace API.Controllers
             return StatusCode(200);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)
         {
             try

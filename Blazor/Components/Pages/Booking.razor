@@ -177,8 +177,8 @@ else if (!roomFree)
 
         Console.WriteLine("test");
 
-        Services.MailServices mailServices = new Services.MailServices();
-        await mailServices.SendEmail(bookingMail, 
+        
+         await MailServices.SendEmail(bookingMail, 
             "Trinity hotel", 
             $"Confirmed booking \n name: {booking.GuestName} \n email: {booking.GuestEmail} \n number: {booking.GuestPhoneNr} \n selected room type: {roomType} \n from: {DateOnly.FromDateTime(startDate)} \n To: {DateOnly.FromDateTime(endDate)}");
     }

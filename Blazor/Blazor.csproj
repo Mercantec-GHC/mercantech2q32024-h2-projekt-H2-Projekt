@@ -39,8 +39,4 @@
     <_ContentIncludedByDefault Remove="Components\Pages\Component.razor" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Components\Pages\Component.razor" />
-  </ItemGroup>
-
 </Project>
