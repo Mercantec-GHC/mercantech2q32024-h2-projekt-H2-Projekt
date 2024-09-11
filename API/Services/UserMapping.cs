@@ -12,7 +12,7 @@ namespace API.Services
                 FullName = user.FullName,
                 Role = user.Role,
                 Email = user.Email,
-                //Bookings = user.Bookings
+                Bookings = user.Bookings
             };
 
             return userDTO;

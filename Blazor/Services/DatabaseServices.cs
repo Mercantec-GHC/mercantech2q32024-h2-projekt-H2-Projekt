@@ -21,7 +21,7 @@ namespace Blazor.Services
         public DatabaseServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+           // _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
 

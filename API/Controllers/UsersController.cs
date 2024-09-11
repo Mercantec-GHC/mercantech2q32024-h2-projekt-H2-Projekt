@@ -125,7 +125,7 @@ namespace API.Controllers
 		}
 
 		// Delete a User.
-		[HttpDelete]
+		[HttpDelete("{id}")]
 		public async Task<IActionResult> UserDelete(int id)
 		{
 			// Find user by user id.
