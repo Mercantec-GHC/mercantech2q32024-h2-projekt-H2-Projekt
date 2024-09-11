@@ -24,12 +24,10 @@ namespace Blazor.Services
            // _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-
         public async Task CreateBooking(CreateBookingDTO booking)
         {
             await _httpClient.PostAsJsonAsync(_baseURL + "Bookings/add", booking);
         }
-
 
         public async Task<Booking> GetBookingById(int bookingId)
         {
@@ -74,10 +72,7 @@ namespace Blazor.Services
 
         public async Task<List<DomainModels.Booking>> GetBookingList()
         {
-            string url = "https://localhost:7207/Bookings/all";
-
-            var jsonString = await _httpClient.GetStringAsync(url);
-            return JsonSerializer.Deserialize<List<DomainModels.Booking>>(jsonString) ?? new();
+            return await _httpClient.GetFromJsonAsync<List<DomainModels.Booking>>(_baseURL + "Bookings/all") ?? new();
         }
 
         public async Task<List<Feedback>> GetAllFeedbacks()
@@ -104,5 +99,12 @@ namespace Blazor.Services
         {
             await _httpClient.DeleteAsync(_baseURL + "Users/" + userID);
         }
+
+        public async Task<List<Room>> GetAllRoomsTypes()
+        {
+            return await _httpClient.GetFromJsonAsync<List<Room>>(_baseURL + "Rooms/types") ?? new();
+        }
+
     }
+
 }

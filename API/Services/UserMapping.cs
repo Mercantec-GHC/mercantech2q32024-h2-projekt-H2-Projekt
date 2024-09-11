@@ -14,7 +14,6 @@ namespace API.Services
                 Email = user.Email,
                 Bookings = user.Bookings
             };
-
             return userDTO;
         }
 
