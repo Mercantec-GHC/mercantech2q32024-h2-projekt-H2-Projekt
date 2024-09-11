@@ -1,10 +1,22 @@
 using Blazor.Components;
+using Microsoft.EntityFrameworkCore.Storage;
+using Blazor.Services;
+using Blazorise;
+using Blazorise.Bootstrap5;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrap5Providers();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped<HttpClient>();
+builder.Services.AddScoped<DatabaseServices>();
+builder.Services.AddScoped<MailServices>();
 
 var app = builder.Build();
 

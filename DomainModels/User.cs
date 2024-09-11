@@ -37,6 +37,8 @@ namespace DomainModels
 		public int UserId { get; set; }
 		public string FullName { get; set; } 
 		public string Role { get; set; }
+
+		public string Email { get; set; }
 		public List<Booking> Bookings { get; set; } = new List<Booking>();
 	}
 
@@ -57,5 +59,11 @@ namespace DomainModels
 		public string Password { get; set; } = null!;
 		public string? PhoneNr { get; set; }
 		public string Email { get; set; } = null!;
+	}
+
+	public class UserLoginDTO
+	{
+		public int UserID { get; set; }
+		public string Role { get; set; }
 	}
 }

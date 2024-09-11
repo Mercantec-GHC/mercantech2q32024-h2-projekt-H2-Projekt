@@ -57,72 +57,92 @@ namespace API.Controllers
 		[HttpGet("email/{GuestEmail}")]
         public async Task<ActionResult<Booking>> GetBookingByGuestEmail(string GuestEmail)
         {
-            var booking = await _hotelContext.Bookings
+            var bookings = await _hotelContext.Bookings
                 .Where(b => b.GuestEmail == GuestEmail)
                 .Include(b => b.Room)
-                .FirstOrDefaultAsync();
-            if (booking == null)
+                .ToArrayAsync();
+            if (bookings == null)
             {
                 return NotFound();
             }
 
-            return Ok(booking);
+            return Ok(bookings);
+        }
+
+
+		[HttpGet("phone/{GuestPhoneNr}")]
+
+        [HttpGet("emails/{GuestEmail}")]
+        public async Task<ActionResult<List<Booking>>> GetBookingsByGuestEmail(string GuestEmail)
+        {
+            var bookings = await _hotelContext.Bookings
+                .Where(b => b.GuestEmail == GuestEmail)
+                .Include(b => b.Room)
+                .ToListAsync();
+            if (bookings == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(bookings);
         }
 
         [HttpGet("phone/{GuestPhoneNr}")]
+
         public async Task<ActionResult<Booking>> GetBookingByGuestPhoneNr(string GuestPhoneNr)
         {
-            var booking = await _hotelContext.Bookings
+            var bookings = await _hotelContext.Bookings
                 .Where(b => b.GuestPhoneNr == GuestPhoneNr)
                 .Include(b => b.Room)
-                .FirstOrDefaultAsync();
-            if (booking == null)
+                .ToArrayAsync();
+            if (bookings == null)
             {
                 return NotFound();
             }
 
-            return Ok(booking);
+            return Ok(bookings);
         }
 
        
 
         [HttpPost("add")]
-        [ProducesResponseType(201)]
 		public ActionResult AddBooking(CreateBookingDTO bookingDTO)
 		{
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
+            // Data validation
             if (room == null)
             {
                 return NotFound("room not found");
             }
 
-            var user = _hotelContext.Users.Find(bookingDTO.UserId);
-            if (user == null)
-            {
-                return NotFound("user not found");
-            }
-
-            if (bookingDTO.DateFrom >= bookingDTO.DateTo)
+            if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
                 return BadRequest("Invalid date range");
             }
 
-            if (bookingDTO.DateFrom < DateTime.Now)
+            if (bookingDTO.StartDate < DateTime.Now)
             {
                 return BadRequest("Invalid date range");
             }
-
 
             var booking = new Booking
             {
                 Room = room,
-                GuestName = user.FullName,
-                GuestEmail = user.Email,
-                GuestPhoneNr = user.PhoneNr,
-                BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo }
-            };
+                GuestName = bookingDTO.GuestName,
+                GuestEmail = bookingDTO.GuestEmail,
+                GuestPhoneNr = bookingDTO.GuestPhoneNr,
+                StartDate = DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc),
+                EndDate = DateTime.SpecifyKind(bookingDTO.EndDate, DateTimeKind.Utc)
+            }; 
             _hotelContext.Bookings.Add(booking);
-			_hotelContext.SaveChanges();
+            
+            //update room booked days.
+            room.BookedDays.AddRange(Enumerable
+                .Range(0, (int)(bookingDTO.EndDate - bookingDTO.StartDate).TotalDays)
+                .Select(i => DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc)
+                .AddDays(i)));
+
+            _hotelContext.SaveChanges();
 
             return Ok("Done");
         }
@@ -143,6 +163,12 @@ namespace API.Controllers
                 return NotFound("booking not found");
             }
 
+            var user = _hotelContext.Users.Find(bookingDTO.UserId);
+            if (user == null)
+            {
+                return NotFound("user not found");
+            }
+
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
 
 
@@ -151,28 +177,24 @@ namespace API.Controllers
                 return NotFound("room not found");
             }
 
-            var user = _hotelContext.Users.Find(bookingDTO.UserId);
-            if (user == null)
-            {
-                return NotFound("user not found");
-            }
-
-            if (bookingDTO.DateFrom >= bookingDTO.DateTo)
+            if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
                 return BadRequest("Invalid date range");
             }
 
-            if (bookingDTO.DateFrom < DateTime.Now)
+            if (bookingDTO.StartDate < DateTime.Now)
             {
                 return BadRequest("Invalid date range");
             }
 
             booking.Room = room;
-            booking.GuestName = user.FullName;
-            booking.GuestEmail = user.Email;
-            booking.GuestPhoneNr = user.PhoneNr;
-            booking.BookingDates = new List<DateTime> { bookingDTO.DateFrom, bookingDTO.DateTo };
-          
+            booking.GuestName = bookingDTO.GuestName;
+            booking.GuestEmail = bookingDTO.GuestEmail;
+            booking.GuestPhoneNr = bookingDTO.GuestPhoneNr;
+            booking.StartDate = DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc);
+            booking.EndDate = DateTime.SpecifyKind(bookingDTO.EndDate, DateTimeKind.Utc);
+
+            _hotelContext.Entry(booking).State = EntityState.Modified;
             _hotelContext.SaveChanges();
 
             return Ok("Done");
@@ -183,16 +205,16 @@ namespace API.Controllers
         [HttpDelete("id/{BookingId}")]
         public async Task<ActionResult<Booking>> DeleteBooking(int BookingId)
         {
-            var booking = await _hotelContext.Bookings.FindAsync(BookingId);
+            var booking =  _hotelContext.Bookings.Include(b => b.Room).Where(b => b.BookingId == BookingId).FirstOrDefault();
             if (booking == null)
             {
                 return NotFound();
             }
 
+            
             _hotelContext.Bookings.Remove(booking);
             await _hotelContext.SaveChangesAsync();
-
-            return Ok(booking);
+            return NoContent();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(HotelContext))]
-    partial class HotelContextModelSnapshot : ModelSnapshot
+    [Migration("20240903075250_Second")]
+    partial class Second
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,35 +30,29 @@ namespace API.Migrations
                 {
                     b.Property<int>("BookingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Relational:JsonPropertyName", "bookingId");
+                        .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BookingId"));
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "endDate");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("GuestEmail")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "guestEmail");
+                        .HasColumnType("text");
 
                     b.Property<string>("GuestName")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "guestName");
+                        .HasColumnType("text");
 
                     b.Property<string>("GuestPhoneNr")
-                        .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "guestPhoneNr");
+                        .HasColumnType("text");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "startDate");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
@@ -69,34 +66,15 @@ namespace API.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("DomainModels.Feedback", b =>
-                {
-                    b.Property<int>("FeedBackId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FeedBackId"));
-
-                    b.Property<string>("FeedbackText")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("FeedBackId");
-
-                    b.ToTable("Feedbacks");
-                });
-
             modelBuilder.Entity("DomainModels.Room", b =>
                 {
                     b.Property<int>("RoomId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Relational:JsonPropertyName", "roomId");
+                        .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RoomId"));
 
                     b.Property<List<DateTime>>("BookedDays")
-                        .IsRequired()
                         .HasColumnType("timestamp with time zone[]");
 
                     b.Property<int>("Price")
@@ -109,8 +87,6 @@ namespace API.Migrations
                     b.HasKey("RoomId");
 
                     b.ToTable("Rooms");
-
-                    b.HasAnnotation("Relational:JsonPropertyName", "room");
                 });
 
             modelBuilder.Entity("DomainModels.User", b =>

@@ -1,0 +1,50 @@
+﻿@page "/All-profiles"
+
+<PageTitle>Profile manager</PageTitle>
+
+<h1>Profiles:</h1>
+
+<button class="btn btn-primary" @onclick="UpdateProfiles">Refresh list</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Number of bookings</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (UserGetDTO profile in profiles)
+        {
+            <tr>
+                <td>@profile.UserId</td>
+                <td>@profile.FullName</td>
+                <td>@profile.Role</td>
+                <td>@profile.Bookings.Count()</td>
+                <td>
+                    <button class="btn btn-primary" @onclick="@(async () => await DeleteAccount(profile.UserId))">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<UserGetDTO> profiles = new List<UserGetDTO>();
+
+    private async Task UpdateProfiles()
+    {
+        profiles = await DBServices.GetAllUsers();
+
+        profiles = profiles.OrderBy(p => p.UserId).ToList();
+    }
+
+    private async Task DeleteAccount(int userID)
+    {
+        await DBServices.DeleteUser(userID);
+        await UpdateProfiles();
+    }
+}

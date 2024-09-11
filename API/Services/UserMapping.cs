@@ -13,12 +13,13 @@ namespace API.Services
                 UserId = user.UserId,
                 FullName = user.FullName,
                 Role = user.Role,
+                Email = user.Email,
                 Bookings = user.Bookings
             };
             return userDTO;
         }
 
-        public User MapToUserCreateDTO(UserPostDTO user)
+        public User MapUserPostDTOToUser(UserPostDTO user)
         {
             var userDTO = new User
             {
@@ -28,6 +29,16 @@ namespace API.Services
                 Role = user.Role,
                 PhoneNr = user.PhoneNr,
                 Email = user.Email
+            };
+            return userDTO;
+        }
+
+        public UserLoginDTO MapUserToUserLoginDTO(User user)
+        {
+            var userDTO = new UserLoginDTO
+            {
+                UserID = user.UserId,
+                Role = user.Role
             };
             return userDTO;
         }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace DomainModels
 {
@@ -14,9 +9,8 @@ namespace DomainModels
         public string GuestName { get; set; } = null!;
         public string GuestEmail { get; set; } = null!;
         public string? GuestPhoneNr { get; set; }
-        public List<DateTime> BookingDates { get; set; } = new List<DateTime>();
-        //[Column("user_id")]
-        //public User UserId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; } 
 
 
         public void GetRoomAvailability()
