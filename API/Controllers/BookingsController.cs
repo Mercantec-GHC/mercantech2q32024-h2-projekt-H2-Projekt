@@ -69,7 +69,7 @@ namespace API.Controllers
             return Ok(booking);
         }
 
-        [HttpGet("phone/{GuestPhoneNr}")]
+		[HttpGet("phone/{GuestPhoneNr}")]
         public async Task<ActionResult<Booking>> GetBookingByGuestPhoneNr(string GuestPhoneNr)
         {
             var booking = await _hotelContext.Bookings
