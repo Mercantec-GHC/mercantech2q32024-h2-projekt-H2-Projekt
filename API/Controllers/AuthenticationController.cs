@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+
+    /// <summary>
+    /// Authorization controller
+    /// Handles anything to do with login and registration of users
+    /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]
     public class AuthenticationController : Controller
@@ -22,29 +27,39 @@ namespace API.Controllers
             _signInManager = signInManager;
         }
 
-
+        /// <summary>
+        /// Login endpoint
+        /// </summary>
+        /// <param name="loginDTO">Login DTO consisting of username and password</param>
+        /// <returns>UserTokenDTO which consists of username, email, and JWT token used in future requests to locked services</returns>
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
+            // Check if the model is valid
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            // Find the user by username
             var user = await _userManager.FindByNameAsync(loginDTO.Username);
 
+            // If the user is not found, return unauthorized
             if (user == null)
             {
                 return Unauthorized("Username is invalid");
             }
 
+            // Check if the password is correct
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
 
-            if(!result.Succeeded)
+            // If the password is incorrect, return unauthorized
+            if (!result.Succeeded)
             {
                 return Unauthorized("Username or password is invalid");
             }
 
+            // Return the user token DTO and create a token for the user to put in the response
             return Ok(
                 new UserTokenDTO
                 {
@@ -55,17 +70,23 @@ namespace API.Controllers
 
         }
 
-
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        /// <param name="createUsersDTO">CreateUserDTO consisting of usernname, firstname, lastname, phonenumber, email, and password</param>
+        /// <returns>UserTokenDTO which consists of username, email, and jwt token</returns>
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] CreateUsersDTO createUsersDTO)
+        public async Task<IActionResult> Register([FromBody] CreateUserDTO createUsersDTO)
         {
             try
             {
+                // Check if the model is valid
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
 
+                // Create a new user object from the DTO
                 var user = new User
                 {
                     UserName = createUsersDTO.Username,
@@ -75,8 +96,10 @@ namespace API.Controllers
                     Email = createUsersDTO.Email
                 };
 
+                // Create the user in the database
                 var createUser = await _userManager.CreateAsync(user, createUsersDTO.Password);
 
+                // If the user is created, add the user to the role of User, and return the user token DTO
                 if (createUser.Succeeded)
                 {
                     var roleResult = await _userManager.AddToRoleAsync(user, "User");

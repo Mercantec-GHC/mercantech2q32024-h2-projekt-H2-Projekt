@@ -17,6 +17,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add authentication and authorization JWT options to the swagger UI
+// Also adds the XML comments from the API project to the swagger UI
 builder.Services.AddSwaggerGen(
     options =>     {
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
@@ -49,6 +52,7 @@ builder.Services.AddSwaggerGen(
 
 builder.AddNpgsqlDbContext<HotelContext>("hoteldb");
 
+// Add Identity to the services and configure them in regards to the DB
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<HotelContext>();
 builder.Services.AddAuthentication(options =>
@@ -72,6 +76,7 @@ builder.Services.AddAuthentication(options =>
     }
 );
 
+// Add JWT token generation service to the services
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
