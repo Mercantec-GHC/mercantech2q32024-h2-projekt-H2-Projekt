@@ -5,6 +5,7 @@ using static System.Net.WebRequestMethods;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blazor.Services
 {
@@ -52,5 +53,11 @@ namespace Blazor.Services
         {
             return await _httpClient.GetFromJsonAsync<UserGetDTO>($"{_baseURL}Users/{userId}");
         }
+
+        public async Task<List<DomainModels.Booking>> GetBookingsByEmail(string email)
+        {
+            return await _httpClient.GetFromJsonAsync<List<DomainModels.Booking>>(_baseURL + $"Bookings/emails/{email}");
+        }
+
     }
 }

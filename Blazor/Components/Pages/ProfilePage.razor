@@ -3,12 +3,15 @@
 @inject Services.DatabaseServices DBServices
 @using DomainModels
 
+
 @code {
     // Declaring a parameter to receive the userId from the URL
     [Parameter]public int userId { get; set; }
 
     // User object to store data
-    private UserGetDTO user = new UserGetDTO();  
+    private UserGetDTO user = new UserGetDTO();
+
+    public List<DomainModels.Booking> bookings = new List<DomainModels.Booking>();
 
     // Fetch user data on component initialization
     protected override async Task OnInitializedAsync()
@@ -28,6 +31,8 @@
                 // If no user is found, log to the console.
                 Console.WriteLine("User not found.");
             }
+
+            bookings = await DBServices.GetBookingsByEmail(user.Email);
         }
         catch (Exception ex)
         {
@@ -38,26 +43,23 @@
 
 <div class="profile-container">
     <div class="profile-header">
-        <div class="profile-picture">
-           
-        </div>
         <div class="profile-info">
             <div class="profile-name">@user.FullName</div>
-            <div class="profile-username">@user.Role</div>
-            
-            @* <div>@user.PhoneNr</div> *@
+            <div class="profile-role">@user.Role</div>
         </div>
     </div>
 
     <div class="profile-content">
-        <h3>Bookings of @user.FullName</h3>
-
-        @if (user.Bookings != null && user.Bookings.Any())
+        @if (bookings != null)
         {
             <ul>
-                @foreach (var booking in user.Bookings)
+                @foreach (var booking in bookings)
                 {
-                    <li>@booking.BookingId</li>
+                    <li>Room type : @booking.Room.Type</li>
+                    <li>Start date : @booking.StartDate</li>
+                    <li>End date : @booking.EndDate</li>
+                    <li>Email : @booking.GuestEmail</li>
+                    
                 }
             </ul>
         }
