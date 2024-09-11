@@ -7,7 +7,7 @@ namespace API.Mappers
     public static class UsersMapper
     {
         // so for example we have a method that maps a CreateUsersDTO to a User object in the domain models folder
-        public static User toCreateUserDTO(this CreateUsersDTO userDTO)
+        public static User toCreateUserDTO(this CreateUserDTO userDTO)
         {
             return new User
             {

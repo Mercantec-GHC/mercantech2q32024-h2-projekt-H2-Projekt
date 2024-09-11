@@ -50,7 +50,7 @@ namespace API.Controllers
 
         // here we have a method that creates a user object. That is to be used by the customers to create their account
         [HttpPost]
-        public IActionResult CreateCustomer([FromBody] CreateUsersDTO userDTO )
+        public IActionResult CreateCustomer([FromBody] CreateUserDTO userDTO )
         {
             var user = userDTO.toCreateUserDTO();
             _context.Users.Add(user);
@@ -82,7 +82,7 @@ namespace API.Controllers
         // here we have a method that updates a user object by id.
         // That is to be used by the customers or employee to update that specific customers account
         [HttpPut("{id}")]
-        public IActionResult UpdateCustomer([FromRoute] int id, [FromBody] CreateUsersDTO userDTO)
+        public IActionResult UpdateCustomer([FromRoute] int id, [FromBody] CreateUserDTO userDTO)
         {
             var user = _context.Users.Find(id);
             if (user == null) {
