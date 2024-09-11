@@ -11,6 +11,8 @@ namespace API.Services
                 UserId = user.UserId,
                 FullName = user.FullName,
                 Role = user.Role,
+                Email = user.Email,
+                //Bookings = user.Bookings
             };
 
             return userDTO;
