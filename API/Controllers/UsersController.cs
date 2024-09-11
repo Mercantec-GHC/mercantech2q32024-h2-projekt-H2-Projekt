@@ -128,16 +128,20 @@ namespace API.Controllers
         {
             try
             {
-				User user = await _hotelContext.Users.FirstOrDefaultAsync(u=>u.Email == email && u.Password == password);
+                // Fetch the user from the database asynchronously by matching email and password
+                User user = await _hotelContext.Users.FirstOrDefaultAsync(u=>u.Email == email && u.Password == password);
 
+                // Check if the user exists, if not return a 404 Not Found response
                 if (user == null)
                 {
                     return NotFound();
                 }
 
-				 UserGetDTO loggedin = _userMapping.MapUserToUserGetDTO(user);
+                // Map the User entity to a UserGetDTO object using a mapping function
+                // This ensures only required data is sent back, not sensitive information like passwords
+                UserGetDTO loggedin = _userMapping.MapUserToUserGetDTO(user);
 
-
+                // Return the mapped DTO object wrapped in a 200 OK response
                 return Ok(loggedin);
             }
             catch

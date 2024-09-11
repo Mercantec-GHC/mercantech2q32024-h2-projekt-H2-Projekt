@@ -2,30 +2,35 @@
 <h3>Login</h3>
 
 
-     <form>
+ 
 
         <div class="imgcontainer">
-            <img src="img/Skærmbillede 2024-09-02 110806.png" height="300px" alt="Image">
+            <img src="/Pictures/Trinity-logo.png" height="300px" alt="Image">
         </div>
 
 
-      
+      <div class="container">
             <label for="Email"><b>Email</b></label>
             <input @bind-value="Email" type="email" placeholder="Enter Email" name="Email" required>
 
             <label for="psw"><b>Password</b></label>
             <input @bind-value="Password" type="password" placeholder="Enter Password" name="psw" required>
 
+        </div>
 
         <div class="button-container">
             <button @onclick="LoginUser" type="submit" class="login-button">Login</button>
-            <a href="register.html" class="register-button">Register</a>
+
+              <a href="Register">
+                   <button>Register</button>
+              </a>
         </div>
+        
 
         <div class="container text-center" style="background-color:#f1f1f1">
             <button type="button" class="cancel-button">Cancel</button>
         </div>
-     </form>
+    
 
 
 
