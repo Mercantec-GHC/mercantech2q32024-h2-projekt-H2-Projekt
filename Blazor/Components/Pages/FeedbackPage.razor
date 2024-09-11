@@ -40,11 +40,13 @@ else
 		feedbacks = await DBServices.GetAllFeedbacks();
 	}
 
+	// changes the page so customer can create a feedback.
 	private void Onclick()
 	{
 		submitFeedback = true;
 	}
 
+	// Submits Feedback and updates the feedback page.
 	private async Task SubmitFeedback()
 	{
 		await DBServices.CreateFeedback(newFeedback);
