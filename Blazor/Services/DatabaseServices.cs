@@ -73,9 +73,9 @@ namespace Blazor.Services
             await _httpClient.PutAsJsonAsync<Room>(_baseURL + "Rooms/" + roomId, room);
         }
 
-        public async Task<List<DomainModels.Booking>> GetBookingList()
+        public async Task<List<DomainModels.GetBookingDTO>> GetBookingList()
         {
-            return await _httpClient.GetFromJsonAsync<List<DomainModels.Booking>>(_baseURL + "Bookings/all") ?? new();
+            return await _httpClient.GetFromJsonAsync<List<DomainModels.GetBookingDTO>>(_baseURL + "Bookings/all") ?? new();
         }
 
         public async Task<List<Feedback>> GetAllFeedbacks()

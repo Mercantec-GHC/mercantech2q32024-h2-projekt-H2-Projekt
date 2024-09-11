@@ -17,10 +17,11 @@ namespace API.Controllers
 		}
 
 		[HttpGet("all")]
-		public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
+		public async Task<ActionResult<IEnumerable<GetBookingDTO>>> GetBookings()
 		{
-			var bookings = await _hotelContext.Bookings.Include(b => b.Room).ToArrayAsync();
-			return Ok(bookings);
+			var bookings = await _hotelContext.Bookings.Include(b => b.Room).ToListAsync();
+            // convert to dto and return
+            return Ok(bookings.ConvertAll(GetBookingDTO.FromBooking));
 		}
 
         [HttpGet("id/{BookingId}")]
@@ -70,22 +71,8 @@ namespace API.Controllers
         }
 
 
-		[HttpGet("phone/{GuestPhoneNr}")]
+		
 
-        [HttpGet("emails/{GuestEmail}")]
-        public async Task<ActionResult<List<Booking>>> GetBookingsByGuestEmail(string GuestEmail)
-        {
-            var bookings = await _hotelContext.Bookings
-                .Where(b => b.GuestEmail == GuestEmail)
-                .Include(b => b.Room)
-                .ToListAsync();
-            if (bookings == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(bookings);
-        }
 
         [HttpGet("phone/{GuestPhoneNr}")]
 
@@ -210,9 +197,13 @@ namespace API.Controllers
             {
                 return NotFound();
             }
+            var room = booking.Room;
 
-            
+            // need to filter bookeddays by booking start and end date
+            room.BookedDays.RemoveAll(d => d >= booking.StartDate && d < booking.EndDate);
+
             _hotelContext.Bookings.Remove(booking);
+            
             await _hotelContext.SaveChangesAsync();
             return NoContent();
         }
