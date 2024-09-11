@@ -1,4 +1,12 @@
-﻿@page "/room-details"
+﻿@using DomainModels
+@using System.Globalization
+@using System.Diagnostics
+
+@using Blazorise;
+@using Blazorise.Bootstrap5;
+@inject Services.DatabaseServices DatabaseServicesInstance
+
+@page "/room-details"
 
 <h1>Room Details</h1>
 
@@ -14,12 +22,44 @@
     Stay connected with complimentary Wi-Fi throughout the premises, allowing you to keep in touch or plan your next adventure.
     Our accommodation offers 10 single rooms and 10 double rooms, each designed with your comfort in mind.
     Whether you're traveling solo or with a companion, our rooms provide a welcoming retreat at affordable rates:
-    <div>
-        <span class="badge bg-primary">Single room: @PriseSingleStandart @Curency.ToUpper() per night</span>
+   
+    <div class="carousel-container">
+        <div class="carousel-text">
+            <div class="room-price">
+                <span>Single room: @PriseSingleStandart @Curency.ToUpper() per night</span>
+            </div>
+
+        </div>
+        <div class="carousel-images">
+            <Carousel Autoplay="false">
+                <CarouselSlide Name="1">
+                    <Image Source="/Pictures/Trinity hotel.jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+                <CarouselSlide Name="2">
+                    <Image Source="/Pictures/Standart Single (2).jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+            </Carousel>
+        </div>
     </div>
 
-    <div>
-        <span class="badge bg-primary">Double room: @PriseDoubleStandart @Curency.ToUpper() per night</span>
+    
+    <div class="carousel-container">
+        <div class="carousel-text">
+            <div class="room-price">
+                <span>Double room: @PriseDoubleStandart @Curency.ToUpper() per night</span>
+            </div>
+
+        </div>
+        <div class="carousel-images">
+            <Carousel Autoplay="false">
+                <CarouselSlide Name="1">
+                    <Image Source="/Pictures/Standart Double.jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+                <CarouselSlide Name="2">
+                    <Image Source="/Pictures/Standart Double (2).jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+            </Carousel>
+        </div>
     </div>
 
 
@@ -35,14 +75,46 @@
     Our Premium Rooms feature a plush double bed for the ultimate in relaxation. The ensuite bathroom is equipped with both a bathtub and a shower, offering you the choice of a soothing soak or a quick refresh. Entertainment is at your fingertips with a TV, while a dedicated workspace with a desk provides the perfect spot for any tasks you need to tackle. A well-stocked minibar is available for your convenience, allowing you to enjoy refreshments in the privacy of your room. Stay connected with complimentary Wi-Fi, and step out onto your private balcony to enjoy some fresh air and scenic views.
 
     We offer 10 double rooms and 5 single rooms in our Premium category, each designed to provide a superior level of comfort and style. Whether you're traveling alone or with a partner, our Premium Rooms offer an exclusive retreat at competitive rates:
-    <div>
-        <span class="badge bg-primary">Single room: @PriseSinglePremium @Curency.ToUpper() per night</span>
-    </div>
+   
+    <div class="carousel-container">
+        <div class="carousel-text">
 
-    <div>
-        <span class="badge bg-primary">Double room: @PriseDoublePremium @Curency.ToUpper() per night</span>
+            <div class ="room-price">
+                    <span>Single room: @PriseSinglePremium @Curency.ToUpper() per night</span>
+                </div>
+           
+        </div>
+        <div class="carousel-images">
+            <Carousel Autoplay="false">
+                <CarouselSlide Name="1">
+                    <Image Source="/Pictures/Premium Single.jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+                <CarouselSlide Name="2">
+                    <Image Source="/Pictures/PremiumSingle.jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+            </Carousel>
+        </div>
     </div>
-
+   
+    <div class="carousel-container">
+        <div class="carousel-text">
+            
+                <div class="room-price">
+                    <span>Double room: @PriseDoublePremium @Curency.ToUpper() per night</span>
+                </div>
+            
+        </div>
+        <div class="carousel-images">
+            <Carousel Autoplay="false">
+                <CarouselSlide Name="1">
+                    <Image Source="/Pictures/Premium Double.jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+                <CarouselSlide Name="2">
+                    <Image Source="/Pictures/PremiumDouble.jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+            </Carousel>
+        </div>
+    </div>
 
     Indulge in the finer things during your stay and enjoy the sophisticated ambiance of our Premium Rooms, where every detail is tailored to enhance your comfort.
 </p>
@@ -50,28 +122,83 @@
 <h3>Penthouse Suites</h3>
 
 <p>
-    Welcome to the pinnacle of luxury with our exclusive Penthouse Suites, where every detail is crafted to provide an unparalleled experience. These lavish suites are designed for those who seek the highest level of comfort and sophistication during their stay.
+   
+    <div class="carousel-container">
+        <div class="carousel-text">
+            <p>
+                Welcome to the pinnacle of luxury with our exclusive Penthouse Suites, where every detail is crafted to provide an unparalleled experience. These lavish suites are designed for those who seek the highest level of comfort and sophistication during their stay.
 
-    Each Penthouse Suite features a grand king-size bed, promising a night of restful sleep in an opulent setting. The expansive bathroom is equipped with both a luxurious bathtub and a separate shower, allowing you to unwind in style. The suite includes a spacious living area, perfect for relaxing or entertaining guests. Stay entertained with a state-of-the-art TV, and if work calls, a well-appointed desk is available for your convenience. The minibar offers a selection of premium beverages, while complimentary Wi-Fi keeps you connected throughout your stay.
+                Each Penthouse Suite features a grand king-size bed, promising a night of restful sleep in an opulent setting. The expansive bathroom is equipped with both a luxurious bathtub and a separate shower, allowing you to unwind in style. The suite includes a spacious living area, perfect for relaxing or entertaining guests. Stay entertained with a state-of-the-art TV, and if work calls, a well-appointed desk is available for your convenience. The minibar offers a selection of premium beverages, while complimentary Wi-Fi keeps you connected throughout your stay.
 
-    One of the standout features of our Penthouse Suites is the private terrace, offering stunning views and a perfect spot to enjoy the outdoors in complete privacy.
+                One of the standout features of our Penthouse Suites is the private terrace, offering stunning views and a perfect spot to enjoy the outdoors in complete privacy.
 
-    All our Penthouse Suites come with the same exquisite amenities, ensuring a consistent experience of luxury.
-    <div>
-        <span class="badge bg-primary">Penthouse: @PrisePenthouse @Curency.ToUpper() per night</span>
+                All our Penthouse Suites come with the same exquisite amenities, ensuring a consistent experience of luxury.
+                <div class="room-price">
+                    <span>Penthouse: @PrisePenthouse @Curency.ToUpper() per night</span>
+                </div>
+                Experience the ultimate in luxury and comfort in our Penthouse Suites, where every moment is elevated by the exceptional surroundings and top-tier amenities.
+            </p>
+        </div>
+        <div class="carousel-images">
+            <Carousel Autoplay="false">
+                <CarouselSlide Name="1">
+                    <Image Source="/Pictures/Penthouse.jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+                <CarouselSlide Name="2">
+                    <Image Source="/Pictures/Penthouse (2).jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+                <CarouselSlide Name="3">
+                    <Image Source="/Pictures/Penthouse (3).jpg" Text="" Display="Display.Block" Class="carousel-image" />
+                </CarouselSlide>
+            </Carousel>
+        </div>
     </div>
-
-    Experience the ultimate in luxury and comfort in our Penthouse Suites, where every moment is elevated by the exceptional surroundings and top-tier amenities.
+   
 </p>
 
 
 
 @code {
-    private int PriseSingleStandart = 600;
-    private int PriseDoubleStandart = 800;
-    private int PriseSinglePremium = 900;
-    private int PriseDoublePremium = 1200;
-    private int PrisePenthouse = 3000;
+    private string selectedSlide = "0"; 
+    
+
+    private int PriseSingleStandart = 0;
+    private int PriseDoubleStandart = 0;
+    private int PriseSinglePremium = 0;
+    private int PriseDoublePremium = 0;
+    private int PrisePenthouse = 0;
     private string Curency = "DKK";
-     
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllRoomsTypes();
+    }
+
+    async Task GetAllRoomsTypes()
+    {
+        var rooms = await DatabaseServicesInstance.GetAllRoomsTypes();
+
+        foreach (var room in rooms)
+        {
+            switch (room.Type)
+            {
+                case "standard single":
+                    PriseSingleStandart = room.Price;
+                    break;
+                case "standard double":
+                    PriseDoubleStandart = room.Price;
+                    break;
+                case "premium single":
+                    PriseSinglePremium = room.Price;
+                    break;
+                case "premium double":
+                    PriseDoublePremium = room.Price;
+                    break;
+                case "penthouse":
+                    PrisePenthouse = room.Price;
+                    break;
+            }
+        }
+    }
 }

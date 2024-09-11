@@ -57,16 +57,16 @@ namespace API.Controllers
 		[HttpGet("email/{GuestEmail}")]
         public async Task<ActionResult<Booking>> GetBookingByGuestEmail(string GuestEmail)
         {
-            var booking = await _hotelContext.Bookings
+            var bookings = await _hotelContext.Bookings
                 .Where(b => b.GuestEmail == GuestEmail)
                 .Include(b => b.Room)
-                .FirstOrDefaultAsync();
-            if (booking == null)
+                .ToArrayAsync();
+            if (bookings == null)
             {
                 return NotFound();
             }
 
-            return Ok(booking);
+            return Ok(bookings);
         }
 
 
@@ -91,16 +91,16 @@ namespace API.Controllers
 
         public async Task<ActionResult<Booking>> GetBookingByGuestPhoneNr(string GuestPhoneNr)
         {
-            var booking = await _hotelContext.Bookings
+            var bookings = await _hotelContext.Bookings
                 .Where(b => b.GuestPhoneNr == GuestPhoneNr)
                 .Include(b => b.Room)
-                .FirstOrDefaultAsync();
-            if (booking == null)
+                .ToArrayAsync();
+            if (bookings == null)
             {
                 return NotFound();
             }
 
-            return Ok(booking);
+            return Ok(bookings);
         }
 
        
