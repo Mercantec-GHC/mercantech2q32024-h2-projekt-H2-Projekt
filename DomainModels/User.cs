@@ -16,19 +16,6 @@ namespace DomainModels
 		public string Role { get; set; } = null!;
         public string? PhoneNr { get; set; }
         public List<Booking> Bookings { get; set; } = new List<Booking>();
-
-		public void DeleteOwnGuestAccount()
-		{ }
-		public void CreateOwnGuestAccount(string userName, string password)
-		{ }
-		public void AddTickets()
-		{ }
-		public void CreateBooking()
-		{ }
-		public void DeleteOwnBooking()
-		{ }
-		public void AddOwnBooking()
-		{ }
 	}
 
 	// A DTO classes used in the API controlleres

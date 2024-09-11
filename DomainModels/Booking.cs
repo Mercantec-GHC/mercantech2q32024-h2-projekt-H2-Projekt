@@ -19,9 +19,5 @@ namespace DomainModels
         public DateTime StartDate { get; set; }
         [JsonPropertyName("endDate")]
         public DateTime EndDate { get; set; } 
-
-
-        public void GetRoomAvailability()
-        {}
     }
 }
