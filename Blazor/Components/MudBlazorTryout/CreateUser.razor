@@ -1,6 +1,7 @@
-﻿@page "/createUser"
+﻿@page "/login"
 @using Blazor.Auth
 @using Blazor.Auth.Contracts
+@using DomainModels.DTO
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider authState
 @inject NavigationManager NavigationManager
@@ -41,7 +42,7 @@
 
 @code {
 
-    public AuthRequest? model = new AuthRequest();
+    public LoginDTO? model = new LoginDTO();
     public bool isInValid;
 
     /// <summary>

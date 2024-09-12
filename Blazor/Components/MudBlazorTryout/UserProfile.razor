@@ -1,5 +1,13 @@
-﻿@page "/manageProfile"
+﻿@page "/register"
 @using System.ComponentModel.DataAnnotations
+@using DomainModels.DTO
+@using Blazor.Auth
+@using Blazor.Auth.Contracts
+@inject Blazor.Auth.AuthService authService
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider authState
+
+@inject NavigationManager NavigationManager
 @inject HttpClient _http
 
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
@@ -51,39 +59,34 @@
 
 
 @code {
-    RegisterAccountForm model = new RegisterAccountForm();
+
+    CreateUserDTO model = new CreateUserDTO(); 
     bool success;
 
-    public class RegisterAccountForm
+    // we use this function to handle the registration and signin/login of a user. 
+    private async void OnValidSubmit(EditContext context)
     {
-        [Required]
-        public string Username { get; set; }
+        // first we will make a post request registering the user and then return a true or false once the user is registered. 
+        var response = await authService.Register(model!);
+        success = response;
 
-        [Required]
-        public string Firstname { get; set; }
+        //Here we instanciate a new LoginDTO object and set the Username and Password to the values from the model.
+        LoginDTO loginDTO = new LoginDTO { Username = model.Username, Password = model.Password };
 
-        [Required]
-        public string PhoneNumber { get; set; }
+        //If the user is not registered we will return and not try to login the user.
+        if(!success)
+        {
+            return;   
+        }
 
-        [Required]
-        public string Lastname { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-
-
-    }
-
-    private void OnValidSubmit(EditContext context)
-    {
-        var response = _http.PostAsJsonAsync("https://localhost:7207/Authentication/Register", model);
-        success = response.Result.IsSuccessStatusCode;
-        StateHasChanged();
+        //If the user is registered we will try to login the user. By calling the login method from the authService.
+        var loginResponse = await authService.Login(loginDTO!);
+        if (loginResponse != null)
+        {
+            await ((AuthStateProvide)authState).AuthenticateUser(loginResponse.Token);
+            NavigationManager.NavigateTo("/");
+        }
+        
     }
 
 }

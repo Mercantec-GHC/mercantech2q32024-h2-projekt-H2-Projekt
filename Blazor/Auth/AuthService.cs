@@ -1,5 +1,6 @@
 ﻿using Blazor.Auth.Contracts;
 using Blazored.LocalStorage;
+using DomainModels.DTO;
 using System.Net.Http.Headers;
 
 namespace Blazor.Auth
@@ -38,7 +39,7 @@ namespace Blazor.Auth
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<AuthResponse?> Login(AuthRequest request)
+        public async Task<AuthResponse?> Login(LoginDTO request)
         {
             var response = await _http.PostAsJsonAsync("https://localhost:7207/Authentication/Login", request);
             if (!response.IsSuccessStatusCode)
@@ -55,9 +56,9 @@ namespace Blazor.Auth
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<bool> Register(RegisterRequest request)
+        public async Task<bool> Register(CreateUserDTO request)
         {
-            var response = await _http.PostAsJsonAsync("api/auth/register", request);
+            var response = await _http.PostAsJsonAsync("https://localhost:7207/Authentication/Register", request);
             return response.IsSuccessStatusCode;
         }
 
