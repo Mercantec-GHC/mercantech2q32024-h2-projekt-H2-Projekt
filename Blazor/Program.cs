@@ -1,5 +1,6 @@
 using Blazor.Components;
 using MudBlazor.Services;
+using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddMudServices();
+
+// Register HttpClient for server-side Blazor
+builder.Services.AddHttpClient();  // Registers HttpClient to be available for dependency injection
 
 var app = builder.Build();
 
