@@ -30,7 +30,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetAll() 
         {
             // Currently the simplest CRUD operation
-            var room = _context.Rooms.ToList();
+            var room = await _context.Rooms.ToListAsync();
             
             return Ok(room);
         }
@@ -44,7 +44,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetById([FromRoute] int id) 
         {
             // Currently the simplest CRUD operation
-            var room = _context.Rooms.Find(id);
+            var room = await _context.Rooms.FindAsync(id);
             //Just in case null it returns not found
             if (room == null)
             {
@@ -94,7 +94,7 @@ namespace API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             // Currently the simplest CRUD operation
-            var room = _context.Rooms.Find(id);
+            var room = await _context.Rooms.FindAsync(id);
             _context.Rooms.Remove(room);
             _context.SaveChanges();
             return Ok(room);
@@ -161,7 +161,7 @@ namespace API.Controllers
         [HttpGet("RoomDetails/{id}")]
         public async Task<IActionResult> GetRoomDetails([FromRoute] int id)
         {
-            var room = _context.Rooms.Find(id);
+            var room = await _context.Rooms.FindAsync(id);
 
             if (room == null)
                 return NotFound();
@@ -186,7 +186,7 @@ namespace API.Controllers
         [HttpGet("RoomTypes")]
         public async Task<IActionResult> GetRoomTypes()
         {
-            var roomTypes = _context.RoomTypes.ToList();
+            var roomTypes = await _context.RoomTypes.ToListAsync();
             return Ok(roomTypes);
         }
     }

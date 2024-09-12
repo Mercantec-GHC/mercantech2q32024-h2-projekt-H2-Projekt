@@ -37,7 +37,7 @@ namespace API.Controllers
         public async Task<IActionResult> Get()
         {
             // Currently the simplest CRUD operation
-            var reservations = _context.Reservations.ToList();
+            var reservations = await _context.Reservations.ToListAsync();
             return Ok(reservations);
         }
 
@@ -50,7 +50,7 @@ namespace API.Controllers
         public async Task<IActionResult> Get(int id)
         {
             // Currently the simplest CRUD operation
-            var reservation = _context.Reservations.Find(id);
+            var reservation = await _context.Reservations.FindAsync(id);
             return Ok(reservation);
         }
 
@@ -163,7 +163,7 @@ namespace API.Controllers
             var appuser = await _userManager.FindByNameAsync(username);
             
             // Find reservation by ID
-            var reservation = _context.Reservations.Find(id);
+            var reservation = await _context.Reservations.FindAsync(id);
 
             // Check if user is admin role or user role
             if (!User.IsInRole("Admin"))

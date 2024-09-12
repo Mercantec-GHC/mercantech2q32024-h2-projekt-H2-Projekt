@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using DomainModels.DB;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -27,7 +28,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var ticket = _context.Tickets.ToList();
+            var ticket = await _context.Tickets.ToListAsync();
 
             if (ticket == null)
             {
@@ -40,7 +41,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var ticket = _context.Tickets.Find(id);
+            var ticket = await _context.Tickets.FindAsync(id);
             //Just in case null, returns not found
             if (ticket == null)
             {
@@ -69,7 +70,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var ticket = _context.Tickets.Find(id);
+            var ticket = await _context.Tickets.FindAsync(id);
             _context.Tickets.Remove(ticket);
             _context.SaveChanges();
             return Ok(ticket);
