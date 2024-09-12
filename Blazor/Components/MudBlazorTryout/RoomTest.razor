@@ -33,7 +33,7 @@ else
     {
         try
         {
-            roomDetails = await Http.GetFromJsonAsync<GetRoomDetailsDTO>("RoomDetailsEndpoint/GetRoomDetails/");
+            roomDetails = await Http.GetFromJsonAsync<GetRoomDetailsDTO>("https://localhost:7207/RoomDetailsEndpoint/GetRoomDetails/3");
         }
         catch (Exception)
         {
