@@ -57,10 +57,25 @@ namespace API.Controllers
         [HttpGet("email/{GuestEmail}")]
         public async Task<ActionResult<Booking>> GetBookingByGuestEmail(string GuestEmail)
         {
+            var booking = await _hotelContext.Bookings
+                .Where(b => b.GuestEmail == GuestEmail)
+                .Include(b => b.Room)
+                .FirstOrDefaultAsync();
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(booking);
+        }
+
+        [HttpGet("emails/{GuestEmail}")]
+        public async Task<ActionResult<List<Booking>>> GetBookingsByGuestEmail(string GuestEmail)
+        {
             var bookings = await _hotelContext.Bookings
                 .Where(b => b.GuestEmail == GuestEmail)
                 .Include(b => b.Room)
-                .ToArrayAsync();
+                .ToListAsync();
             if (bookings == null)
             {
                 return NotFound();
@@ -69,24 +84,19 @@ namespace API.Controllers
             return Ok(bookings);
         }
 
-
-		
-
-
         [HttpGet("phone/{GuestPhoneNr}")]
-
         public async Task<ActionResult<Booking>> GetBookingByGuestPhoneNr(string GuestPhoneNr)
         {
-            var bookings = await _hotelContext.Bookings
+            var booking = await _hotelContext.Bookings
                 .Where(b => b.GuestPhoneNr == GuestPhoneNr)
                 .Include(b => b.Room)
-                .ToArrayAsync();
-            if (bookings == null)
+                .FirstOrDefaultAsync();
+            if (booking == null)
             {
                 return NotFound();
             }
 
-            return Ok(bookings);
+            return Ok(booking);
         }
 
 
@@ -220,13 +230,9 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-            var room = booking.Room;
 
-            // need to filter bookeddays by booking start and end date
-            room.BookedDays.RemoveAll(d => d >= booking.StartDate && d < booking.EndDate);
-
-            _hotelContext.Bookings.Remove(booking);
             
+            _hotelContext.Bookings.Remove(booking);
             await _hotelContext.SaveChangesAsync();
             return NoContent();
         }

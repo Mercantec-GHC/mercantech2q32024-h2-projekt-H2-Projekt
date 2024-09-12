@@ -103,6 +103,12 @@ namespace Blazor.Services
 
         
 
+        public async Task<List<Room>> GetAllRoomsTypes()
+        {
+            return await _httpClient.GetFromJsonAsync<List<Room>>(_baseURL + "Rooms/types") ?? new();
+        }
+
+
     }
 
 }
