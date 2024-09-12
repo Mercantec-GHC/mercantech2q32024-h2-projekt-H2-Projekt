@@ -152,5 +152,42 @@ namespace API.Controllers
             return Ok(rooms.ToList());
             
         }
+
+        /// <summary>
+        /// Get the details of a room as a nice to digest DTO
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("RoomDetails/{id}")]
+        public IActionResult GetRoomDetails([FromRoute] int id)
+        {
+            var room = _context.Rooms.Find(id);
+
+            if (room == null)
+                return NotFound();
+
+            var roomDetails = new GetRoomDetailsDTO
+            {
+                Rooms = room.Rooms,
+                RoomNumber = room.RoomNumber,
+                Beds = room.Beds,
+                Price = room.Price,
+                Status = room.Status,
+                Condition = room.Condition
+            };
+
+            return Ok(roomDetails);
+        }
+
+        /// <summary>
+        /// Provide a list of all room types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("RoomTypes")]
+        public IActionResult GetRoomTypes()
+        {
+            var roomTypes = _context.RoomTypes.ToList();
+            return Ok(roomTypes);
+        }
     }
 }
