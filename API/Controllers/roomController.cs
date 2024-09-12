@@ -27,7 +27,7 @@ namespace API.Controllers
         /// </summary>
         /// <returns>Status OK with the list of rooms</returns>
         [HttpGet]
-        public IActionResult GetAll() 
+        public async Task<IActionResult> GetAll() 
         {
             // Currently the simplest CRUD operation
             var room = _context.Rooms.ToList();
@@ -41,7 +41,7 @@ namespace API.Controllers
         /// <param name="id">This is the id in the database of the room you want to select</param>
         /// <returns>Status OK with room</returns>
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id) 
+        public async Task<IActionResult> GetById([FromRoute] int id) 
         {
             // Currently the simplest CRUD operation
             var room = _context.Rooms.Find(id);
@@ -61,7 +61,7 @@ namespace API.Controllers
         /// <returns>Status OK with new room</returns>
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult Post([FromBody]Room room) 
+        public async Task<IActionResult> Post([FromBody]Room room) 
         {
             // Currently the simplest CRUD operation
             _context.Rooms.Add(room);
@@ -76,7 +76,7 @@ namespace API.Controllers
         /// <returns>Status OK with modified Room</returns>
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public IActionResult Update([FromBody] Room room) 
+        public async Task<IActionResult> Update([FromBody] Room room) 
         {
             // Currently the simplest CRUD operation
             _context.Rooms.Update(room);
@@ -91,7 +91,7 @@ namespace API.Controllers
         /// <returns>Status OK</returns>
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             // Currently the simplest CRUD operation
             var room = _context.Rooms.Find(id);
@@ -110,7 +110,7 @@ namespace API.Controllers
         /// Currently supports searching by RoomType tags, sorting by any property of the Room object, and lastly non zero-based pagination
         /// </remarks>
         [HttpGet("Search")]
-        public IActionResult Search([FromQuery] SearchRoomQuery query )
+        public async Task<IActionResult> Search([FromQuery] SearchRoomQuery query )
         {
             // Create the start of a request to the DB
             var rooms = _context.Rooms
@@ -159,7 +159,7 @@ namespace API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("RoomDetails/{id}")]
-        public IActionResult GetRoomDetails([FromRoute] int id)
+        public async Task<IActionResult> GetRoomDetails([FromRoute] int id)
         {
             var room = _context.Rooms.Find(id);
 
@@ -184,7 +184,7 @@ namespace API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("RoomTypes")]
-        public IActionResult GetRoomTypes()
+        public async Task<IActionResult> GetRoomTypes()
         {
             var roomTypes = _context.RoomTypes.ToList();
             return Ok(roomTypes);

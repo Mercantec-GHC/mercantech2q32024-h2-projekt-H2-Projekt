@@ -34,7 +34,7 @@ namespace API.Controllers
         /// </summary>
         /// <returns>Status OK with the list of reservations</returns>
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             // Currently the simplest CRUD operation
             var reservations = _context.Reservations.ToList();
@@ -47,7 +47,7 @@ namespace API.Controllers
         /// <param name="id">Reservation ID</param>
         /// <returns>Status OK with reservation</returns>
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             // Currently the simplest CRUD operation
             var reservation = _context.Reservations.Find(id);
