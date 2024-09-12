@@ -1,0 +1,108 @@
+﻿@using DomainModels
+@using System.Globalization
+@inject Services.DatabaseServices DatabaseServicesInstance
+@inject NavigationManager NavManager
+
+@page "/editbooking/{BookingId:int}"
+
+<h3>Edit Booking</h3>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success">@successMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@if (booking == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="form-group">
+        <label for="guestName">Guest Name</label>
+        <input id="guestName" class="form-control" @bind="@booking.GuestName" />
+    </div>
+    <div class="form-group">
+        <label for="guestEmail">Guest Email</label>
+        <input id="guestEmail" class="form-control" @bind="@booking.GuestEmail" />
+    </div>
+    <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <input id="startDate" type="date" class="form-control" @bind="@booking.StartDate" />
+    </div>
+    <div class="form-group">
+        <label for="endDate">End Date</label>
+        <input id="endDate" type="date" class="form-control" @bind="@booking.EndDate" />
+    </div>
+    <button class="btn btn-primary" @onclick="SaveChanges">Save</button>
+    <button class="btn btn-primary" @onclick="Delete">Delete</button>
+}
+
+@code {
+
+    // This method is called when the component is initialized
+    protected override async Task OnInitializedAsync()
+    {
+        await GetBooking();
+    }
+
+    // Method to fetch the booking details from the database
+    async Task GetBooking()
+    {
+        booking = await DatabaseServicesInstance.GetBookingById(BookingId);
+        StateHasChanged();
+    }
+
+    [Parameter]
+    public int BookingId { get; set; }
+
+    DomainModels.Booking booking;
+    private string successMessage = "";
+    private string errorMessage = "";
+
+    // Method to save the changes made to the booking
+    async Task SaveChanges()
+    {
+        try
+        {
+           
+            
+            // Call the UpdateBooking method from the DatabaseServices and show success message
+            await DatabaseServicesInstance.UpdateBooking(booking);
+            successMessage = "Booking updated successfully!";
+            errorMessage = "";
+            // to be sure that the page is updated
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            successMessage = "";
+            errorMessage = "Failed to update booking: " + ex.Message;
+            // to be sure that the page is updated
+            StateHasChanged();
+        }
+    }
+
+    // Method to delete the booking
+    async Task Delete()
+    {
+        try
+        {
+            
+            await DatabaseServicesInstance.DeleteBooking(booking.BookingId);
+            successMessage = "Booking deleted successfully!";
+            errorMessage = "";
+            NavManager.NavigateTo("/upcomingbookings");
+        }
+        catch (Exception ex)
+        {
+            successMessage = "";
+            errorMessage = "Failed to delete booking: " + ex.Message;
+        }
+    }
+}

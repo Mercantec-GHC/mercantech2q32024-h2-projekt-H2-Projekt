@@ -17,10 +17,11 @@ namespace API.Controllers
 		}
 
 		[HttpGet("all")]
-		public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
+		public async Task<ActionResult<IEnumerable<GetBookingDTO>>> GetBookings()
 		{
-			var bookings = await _hotelContext.Bookings.Include(b => b.Room).ToArrayAsync();
-			return Ok(bookings);
+			var bookings = await _hotelContext.Bookings.Include(b => b.Room).ToListAsync();
+            // convert to dto and return
+            return Ok(bookings.ConvertAll(GetBookingDTO.FromBooking));
 		}
 
         [HttpGet("id/{BookingId}")]
@@ -57,11 +58,11 @@ namespace API.Controllers
 		[HttpGet("email/{GuestEmail}")]
         public async Task<ActionResult<Booking>> GetBookingByGuestEmail(string GuestEmail)
         {
-            var booking = await _hotelContext.Bookings
+            var bookings = await _hotelContext.Bookings
                 .Where(b => b.GuestEmail == GuestEmail)
                 .Include(b => b.Room)
-                .FirstOrDefaultAsync();
-            if (booking == null)
+                .ToArrayAsync();
+            if (bookings == null)
             {
                 return NotFound();
             }
@@ -84,19 +85,24 @@ namespace API.Controllers
             return Ok(bookings);
         }
 
+
+		
+
+
         [HttpGet("phone/{GuestPhoneNr}")]
+
         public async Task<ActionResult<Booking>> GetBookingByGuestPhoneNr(string GuestPhoneNr)
         {
-            var booking = await _hotelContext.Bookings
+            var bookings = await _hotelContext.Bookings
                 .Where(b => b.GuestPhoneNr == GuestPhoneNr)
                 .Include(b => b.Room)
-                .FirstOrDefaultAsync();
-            if (booking == null)
+                .ToArrayAsync();
+            if (bookings == null)
             {
                 return NotFound();
             }
 
-            return Ok(booking);
+            return Ok(bookings);
         }
 
        
@@ -105,16 +111,11 @@ namespace API.Controllers
 		public ActionResult AddBooking(CreateBookingDTO bookingDTO)
 		{
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
+            // Data validation
             if (room == null)
             {
                 return NotFound("room not found");
             }
-
-            //var user = _hotelContext.Users.Find(bookingDTO.UserId);
-            //if (user == null)
-            //{
-            //    return NotFound("user not found");
-            //}
 
             if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
@@ -125,7 +126,6 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid date range");
             }
-
 
             var booking = new Booking
             {
@@ -138,11 +138,10 @@ namespace API.Controllers
             }; 
             _hotelContext.Bookings.Add(booking);
             
-            //update room booked days
-            room.BookedDays.Clear();
+            //update room booked days.
             room.BookedDays.AddRange(Enumerable
                 .Range(0, (int)(bookingDTO.EndDate - bookingDTO.StartDate).TotalDays)
-                .Select(i => bookingDTO.StartDate
+                .Select(i => DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc)
                 .AddDays(i)));
 
             _hotelContext.SaveChanges();
@@ -166,6 +165,12 @@ namespace API.Controllers
                 return NotFound("booking not found");
             }
 
+            var user = _hotelContext.Users.Find(bookingDTO.UserId);
+            if (user == null)
+            {
+                return NotFound("user not found");
+            }
+
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
 
 
@@ -174,13 +179,7 @@ namespace API.Controllers
                 return NotFound("room not found");
             }
 
-            var user = _hotelContext.Users.Find(bookingDTO.UserId);
-            if (user == null)
-            {
-                return NotFound("user not found");
-            }
-
-            if (bookingDTO.StartDate >= bookingDTO.DateTo)
+            if (bookingDTO.StartDate >= bookingDTO.EndDate)
             {
                 return BadRequest("Invalid date range");
             }
@@ -189,15 +188,15 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid date range");
             }
-            
-            booking.Room = room;
-            booking.GuestName = user.FullName;
-            booking.GuestEmail = user.Email;
-            booking.GuestPhoneNr = user.PhoneNr;
-            booking.StartDate = bookingDTO.StartDate;
-            booking.EndDate = bookingDTO.DateTo;
-            
 
+            booking.Room = room;
+            booking.GuestName = bookingDTO.GuestName;
+            booking.GuestEmail = bookingDTO.GuestEmail;
+            booking.GuestPhoneNr = bookingDTO.GuestPhoneNr;
+            booking.StartDate = DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc);
+            booking.EndDate = DateTime.SpecifyKind(bookingDTO.EndDate, DateTimeKind.Utc);
+
+            _hotelContext.Entry(booking).State = EntityState.Modified;
             _hotelContext.SaveChanges();
 
             return Ok("Done");
@@ -213,9 +212,13 @@ namespace API.Controllers
             {
                 return NotFound();
             }
+            var room = booking.Room;
 
-            booking.Room.BookedDays.Clear();
+            // need to filter bookeddays by booking start and end date
+            room.BookedDays.RemoveAll(d => d >= booking.StartDate && d < booking.EndDate);
+
             _hotelContext.Bookings.Remove(booking);
+            
             await _hotelContext.SaveChangesAsync();
             return NoContent();
         }

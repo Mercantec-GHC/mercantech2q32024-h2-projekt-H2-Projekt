@@ -1,0 +1,37 @@
+﻿@page "/Register"
+<h3>Register</h3>
+
+
+
+    <div class="imgcontainer">
+        <img src="/Pictures/Trinity-logo.png" height="300px" alt="Image">
+    </div>
+
+    <div class="container">
+    <label for="fname"><b>Full Name</b></label>
+    <input @bind-value="FullName" type="text" placeholder="Enter First Name" name="fname" required>
+
+        <label for="Email"><b>Email</b></label>
+        <input @bind-value="Email" type="email" placeholder="Enter Email" name="Email" required>
+
+        <label for="psw"><b>Phone Number</b></label>
+        <input @bind-value="PhoneNr" type="password" placeholder="Enter Password" name="psw" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input @bind-value="Password" type="password" placeholder="Enter Password" name="psw" required>
+
+       
+    </div>
+
+    <div class="button-container">
+    <a @onclick="RegisterUser" class="register-button">Confirm</a>
+
+    <a href="Login">
+        <button>Already have an account</button>
+    </a>
+    </div>
+
+
+
+
+  

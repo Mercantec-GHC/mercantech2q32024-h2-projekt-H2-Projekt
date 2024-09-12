@@ -56,6 +56,35 @@ namespace API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("types")]
+        public async Task<ActionResult<List<Room>>> GetTypes()
+        {
+            try
+            {
+                // Get all exist rooms from the database
+                var allRooms = await _hotelContext.Rooms.ToListAsync();
+
+                // Create a new list of rooms
+                List<Room> rooms = new List<Room>();
+
+                foreach (var DBRoom in allRooms)
+                {
+                    var searchedRoom = rooms.Find(r => r.Type == DBRoom.Type);
+                    if (searchedRoom != null)
+                    {
+                        continue;
+                    }
+                    rooms.Add(DBRoom);
+                }
+
+                return Ok(rooms);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> PostRoom(RoomPostDTO roomDTO)
         {
@@ -159,7 +188,7 @@ namespace API.Controllers
             return StatusCode(200);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)
         {
             try

@@ -9,9 +9,15 @@ namespace API.Data
 		public DbSet<Booking> Bookings { get; set; }
 		public DbSet<Room> Rooms { get; set; }
 		public DbSet<User> Users { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
 
         public HotelContext(DbContextOptions<HotelContext> dbContextOptions) : base(dbContextOptions)
         {}
+        
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql("Host=ep-lingering-darkness-a2ju0sof.eu-central-1.aws.neon.tech;Port=5432;Database=H2;Username=H2;Password=1TLNuqZtK8Yv;").UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

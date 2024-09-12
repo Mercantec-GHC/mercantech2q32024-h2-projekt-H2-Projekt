@@ -4,8 +4,6 @@ namespace API.Services
 {
     public class UserMapping
     {
-        public UserMapping() { }
-
         public UserGetDTO MapUserToUserGetDTO(User user)
         {
             var userDTO = new UserGetDTO
@@ -13,13 +11,13 @@ namespace API.Services
                 UserId = user.UserId,
                 FullName = user.FullName,
                 Role = user.Role,
+                Email = user.Email,
                 Bookings = user.Bookings
             };
-
             return userDTO;
         }
 
-        public User MapToUserCreateDTO(UserPostDTO user)
+        public User MapUserPostDTOToUser(UserPostDTO user)
         {
             var userDTO = new User
             {
@@ -33,7 +31,7 @@ namespace API.Services
             return userDTO;
         }
 
-        public UserLoginDTO MapToUserLoginDTO(User user)
+        public UserLoginDTO MapUserToUserLoginDTO(User user)
         {
             var userDTO = new UserLoginDTO
             {

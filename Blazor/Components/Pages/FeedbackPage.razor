@@ -1,0 +1,56 @@
+﻿@page "/feedback"
+
+<PageTitle>Trinity Hotel Feedback</PageTitle>
+
+<h3>Trinity Hotel Feedback</h3>
+
+
+@if (submitFeedback == false)
+{
+	<button class="btn btn-dark" @onclick="Onclick">Make feedback</button>
+	@if (feedbacks == null)
+	{
+		<p>Loading feedback...</p>
+	}
+	else
+	{
+		@foreach (var feedback in feedbacks)
+		{
+			<div class="card">
+				<p>@feedback.FeedbackText</p>
+			</div>
+		}
+	}
+}
+else
+{
+	<p>Write your feedback</p>
+	<input type="text" @bind="newFeedback.FeedbackText" placeholder="Your Feedback"/>
+	<button class="btn btn-dark" @onclick="SubmitFeedback">Submit</button>
+}
+
+
+@code {
+	List<Feedback> feedbacks;
+	private Feedback newFeedback = new Feedback();
+	private bool submitFeedback = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		feedbacks = await DBServices.GetAllFeedbacks();
+	}
+
+	// changes the page so customer can create a feedback.
+	private void Onclick()
+	{
+		submitFeedback = true;
+	}
+
+	// Submits Feedback and updates the feedback page.
+	private async Task SubmitFeedback()
+	{
+		await DBServices.CreateFeedback(newFeedback);
+		submitFeedback = false;
+		feedbacks.Add(newFeedback);
+	}
+}
