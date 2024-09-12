@@ -10,6 +10,7 @@
     </MudCardHeader>
 
     <MudCardContent>
+        @*if statement to display a text while loading the page, or if there was an issue.*@
         @if (reservations == null)
         {
             <MudText Typo="Typo.body1">Loading reservations...</MudText>
@@ -57,6 +58,7 @@
         await LoadReservations();
     }
 
+    //simple api call to get a list over all current reservations.
     private async Task LoadReservations()
     {
         try
@@ -68,22 +70,26 @@
             Console.WriteLine(ex.Message);
         }
     }
-
-    //got issue with making something similar to the delete function, ill look into it in another version
+    
+    //got issues with making something similar to the delete function, placeholder class for now.
     private void CreateReservation()
     {
         Navigation.NavigateTo("/Reservations/Post");
     }
 
+    //placeholder class at the current moment.
     private void EditReservation(int id)
     {
         Navigation.NavigateTo($"/Reservations/Update/{id}");
     }
 
+    //class that implements delete function on the razor page which deletes the entry, requires admin login.
     private async Task DeleteReservation(int id)
     {
         try
         {
+            //call the api with a Delete call for the specific id, if successful call, reload reservations to show updated list.
+            //GetHttpClient() is a function within the AuthService.cs which then includes the login information in the header, since only admin has delete permission.
             var response = await Http.GetHttpClient().DeleteAsync($"https://localhost:7207/Reservations/{id}");
             if (response.IsSuccessStatusCode)
             {
