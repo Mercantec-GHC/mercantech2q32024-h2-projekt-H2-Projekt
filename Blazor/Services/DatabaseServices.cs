@@ -42,6 +42,7 @@ namespace Blazor.Services
             // Convert DomeinModel.Bookings to UpdateBookingDTO for using in backend API
             var bookingDTO = new UpdateBookingDTO
             {
+
                 BookingId = booking.BookingId,
                 RoomId = booking.Room.RoomId,
                 UserId = 5,
@@ -107,6 +108,15 @@ namespace Blazor.Services
         public async Task DeleteUser(int userID)
         {
             await _httpClient.DeleteAsync(_baseURL + "Users/" + userID);
+        }
+
+        public async Task UpdateBookings(Booking booking)
+        {
+            var response = await _httpClient.PutAsJsonAsync(_baseURL + "Bookings/update", booking);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Failed to update booking");
+            }
         }
 
     }

@@ -5,28 +5,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-	[ApiController]
-	[Route("[controller]")]
-	public class BookingsController : ControllerBase
-	{
-		private readonly HotelContext _hotelContext;
+    [ApiController]
+    [Route("[controller]")]
+    public class BookingsController : ControllerBase
+    {
+        private readonly HotelContext _hotelContext;
 
-		public BookingsController(HotelContext hotelContext)
-		{
-			_hotelContext = hotelContext;
-		}
+        public BookingsController(HotelContext hotelContext)
+        {
+            _hotelContext = hotelContext;
+        }
 
-		[HttpGet("all")]
-		public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
-		{
-			var bookings = await _hotelContext.Bookings.Include(b => b.Room).ToArrayAsync();
-			return Ok(bookings);
-		}
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
+        {
+            var bookings = await _hotelContext.Bookings.Include(b => b.Room).ToArrayAsync();
+            return Ok(bookings);
+        }
 
         [HttpGet("id/{BookingId}")]
         public async Task<ActionResult<Booking>> GetBookingById(int BookingId)
         {
-            
+
             var booking = await _hotelContext.Bookings
                 .Where(b => b.BookingId == BookingId)
                 .Include(b => b.Room)
@@ -39,7 +39,7 @@ namespace API.Controllers
             return Ok(booking);
         }
 
-		[HttpGet("name/{GuestName}")]
+        [HttpGet("name/{GuestName}")]
         public async Task<ActionResult<Booking>> GetBookingByGuestName(string GuestName)
         {
             var booking = await _hotelContext.Bookings
@@ -54,7 +54,7 @@ namespace API.Controllers
             return Ok(booking);
         }
 
-		[HttpGet("email/{GuestEmail}")]
+        [HttpGet("email/{GuestEmail}")]
         public async Task<ActionResult<Booking>> GetBookingByGuestEmail(string GuestEmail)
         {
             var booking = await _hotelContext.Bookings
@@ -99,11 +99,12 @@ namespace API.Controllers
             return Ok(booking);
         }
 
-       
+
 
         [HttpPost("add")]
-		public ActionResult AddBooking(CreateBookingDTO bookingDTO)
-		{
+       
+        public ActionResult AddBooking(CreateBookingDTO bookingDTO)
+        {
             var room = _hotelContext.Rooms.Find(bookingDTO.RoomId);
             // Data validation
             if (room == null)
@@ -129,9 +130,9 @@ namespace API.Controllers
                 GuestPhoneNr = bookingDTO.GuestPhoneNr,
                 StartDate = DateTime.SpecifyKind(bookingDTO.StartDate, DateTimeKind.Utc),
                 EndDate = DateTime.SpecifyKind(bookingDTO.EndDate, DateTimeKind.Utc)
-            }; 
+            };
             _hotelContext.Bookings.Add(booking);
-            
+
             //update room booked days.
             room.BookedDays.AddRange(Enumerable
                 .Range(0, (int)(bookingDTO.EndDate - bookingDTO.StartDate).TotalDays)
@@ -143,7 +144,32 @@ namespace API.Controllers
             return Ok("Done");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveBookings(List<Booking> bookings)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (var booking in bookings)
+                {
+                    var existingBooking = await _hotelContext.Bookings.FindAsync(booking.BookingId);
+                    if (existingBooking != null)
+                    {
+                        existingBooking.Room.Type = booking.Room.Type;
+                        existingBooking.StartDate = booking.StartDate;
+                        existingBooking.EndDate = booking.EndDate;
+                        existingBooking.GuestEmail = booking.GuestEmail;
+                        existingBooking.GuestPhoneNr = booking.GuestPhoneNr;
+
+                        _hotelContext.Update(existingBooking);
+                    }
+                }
+                await _hotelContext.SaveChangesAsync();
+            }
+            return Ok(bookings);
+        }
+
         [HttpPut("update")]
+        
         [ProducesResponseType(204)]
         public ActionResult UpdateBooking(UpdateBookingDTO bookingDTO)
         {
@@ -195,9 +221,7 @@ namespace API.Controllers
 
             return Ok("Done");
         }
-
-
-
+                
         [HttpDelete("id/{BookingId}")]
         public async Task<ActionResult<Booking>> DeleteBooking(int BookingId)
         {
