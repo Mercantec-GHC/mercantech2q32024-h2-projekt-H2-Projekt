@@ -107,7 +107,7 @@ namespace API.Controllers
         /// <param name="query"></param>
         /// <returns>A paginated list of rooms fitting the filters</returns>
         /// <remarks>
-        /// Currently supports searching by RoomType, sorting by any property of the Room object, and lastly non zero-based pagination
+        /// Currently supports searching by RoomType tags, sorting by any property of the Room object, and lastly non zero-based pagination
         /// </remarks>
         [HttpGet("Search")]
         public IActionResult Search([FromQuery] SearchRoomQuery query )
