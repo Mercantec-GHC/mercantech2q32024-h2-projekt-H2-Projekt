@@ -5,8 +5,10 @@
 @using DomainModels
 
 @code {
+    // Public parameter to capture the userId passed to the component
     [Parameter] public int userId { get; set; }
 
+    // Object to store the user's details
     private UserGetDTO user = new UserGetDTO();
 
     // List to store bookings associated with the user
@@ -16,7 +18,7 @@
     {
         try
         {
-            // Attempt to fetch user details by the given userId
+            // Fetch user details from the database using the given userId
             var fetchedUser = await DBServices.GetUserById(userId);
 
             // Check if a user with the provided ID exists
@@ -25,7 +27,7 @@
                 // Assign the fetched user details to the 'user' variable
                 user = fetchedUser;
 
-                // Fetch bookings related to the user's email
+                // Fetch bookings associated with the user's email and assign them to the 'bookings' list
                 bookings = await DBServices.GetBookingsByEmail(user.Email);
             }
             else
@@ -57,12 +59,13 @@
                 <ul>
                     @foreach (var booking in bookings)
                     {
+                        //Display each booking's room type, start date, end date, and guest email
                         <li>Room type : @booking.Room.Type</li>
                         <li>Start date : @booking.StartDate.ToString("yyyy-MM-dd")</li>
                         <li>End date : @booking.EndDate.ToString("yyyy-MM-dd")</li>
                         <li>Email : @booking.GuestEmail</li>
 
-                        //this button will transfer you to the EditBookingPage where you can edit the bookings for the user
+                        //Button to navigate to the EditBookingPage, allowing the user to edit the booking
                         <a href="/editbooking/@booking.BookingId" class="btn btn-primary">Edit Booking</a>
 
                     }

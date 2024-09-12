@@ -110,14 +110,7 @@ namespace Blazor.Services
             await _httpClient.DeleteAsync(_baseURL + "Users/" + userID);
         }
 
-        public async Task UpdateBookings(Booking booking)
-        {
-            var response = await _httpClient.PutAsJsonAsync(_baseURL + "Bookings/update", booking);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("Failed to update booking");
-            }
-        }
+        
 
     }
 }
