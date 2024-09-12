@@ -77,7 +77,7 @@ namespace API.Controllers
 				// Saves the changes to the database.
 				await _hotelContext.SaveChangesAsync();
 
-				return Ok(StatusCode(200));
+				return Ok();
 			}
 			catch
 			{
@@ -125,7 +125,7 @@ namespace API.Controllers
 		}
 
 		// Delete a User.
-		[HttpDelete]
+		[HttpDelete("{id}")]
 		public async Task<IActionResult> UserDelete(int id)
 		{
 			// Find user by user id.
@@ -142,5 +142,34 @@ namespace API.Controllers
 			await _hotelContext.SaveChangesAsync();
 			return StatusCode(200);
 		}
-	}
+
+
+		// Loggin in a user. returns loggedin userdata
+        [HttpPost("Login")]
+        public async Task<ActionResult<UserGetDTO>> LoginUser(string email, string password)
+        {
+            try
+            {
+                // Fetch the user from the database asynchronously by matching email and password
+                User user = await _hotelContext.Users.FirstOrDefaultAsync(u=>u.Email == email && u.Password == password);
+
+                // Check if the user exists, if not return a 404 Not Found response
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                // Map the User entity to a UserGetDTO object using a mapping function
+                // This ensures only required data is sent back, not sensitive information like passwords
+                UserGetDTO loggedin = _userMapping.MapUserToUserGetDTO(user);
+
+                // Return the mapped DTO object wrapped in a 200 OK response
+                return Ok(loggedin);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+    }
 }

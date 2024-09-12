@@ -17,6 +17,9 @@ namespace Blazor.Services
             string ToEmail = "";
             string EmailPW = "";
 
+            /* This can be changed so it can be send to from a guest email, but you should be aware that you would need the users password for their email.
+             You would also need the receiving email.*/
+
             // Tjeks which Email, you are using.
             if (FromEmail == GuestEmail)
             {

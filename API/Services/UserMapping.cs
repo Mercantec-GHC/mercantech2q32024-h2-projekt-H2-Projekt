@@ -4,8 +4,6 @@ namespace API.Services
 {
     public class UserMapping
     {
-        public UserMapping() { }
-
         public UserGetDTO MapUserToUserGetDTO(User user)
         {
             var userDTO = new UserGetDTO
@@ -16,7 +14,6 @@ namespace API.Services
                 Email = user.Email,
                 Bookings = user.Bookings
             };
-
             return userDTO;
         }
 

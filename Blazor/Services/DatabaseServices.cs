@@ -21,16 +21,13 @@ namespace Blazor.Services
         public DatabaseServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+           // _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-
-        // Bookings
         public async Task CreateBooking(CreateBookingDTO booking)
         {
             await _httpClient.PostAsJsonAsync(_baseURL + "Bookings/add", booking);
         }
-
 
         public async Task<Booking> GetBookingById(int bookingId)
         {
@@ -74,12 +71,9 @@ namespace Blazor.Services
             await _httpClient.PutAsJsonAsync<Room>(_baseURL + "Rooms/" + roomId, room);
         }
 
-        public async Task<List<DomainModels.Booking>> GetBookingList()
+        public async Task<List<DomainModels.GetBookingDTO>> GetBookingList()
         {
-            string url = "https://localhost:7207/Bookings/all";
-
-            var jsonString = await _httpClient.GetStringAsync(url);
-            return JsonSerializer.Deserialize<List<DomainModels.Booking>>(jsonString) ?? new();
+            return await _httpClient.GetFromJsonAsync<List<DomainModels.GetBookingDTO>>(_baseURL + "Bookings/all") ?? new();
         }
 
         public async Task<List<Feedback>> GetAllFeedbacks()
@@ -92,18 +86,15 @@ namespace Blazor.Services
             await _httpClient.PostAsJsonAsync(_baseURL + "Feedbacks", feedback);
         }
 
-        // Method to get a user by ID
         public async Task<UserGetDTO> GetUserById(int userId)
         {
             return await _httpClient.GetFromJsonAsync<UserGetDTO>($"{_baseURL}Users/{userId}");
         }
 
-
         public async Task<List<DomainModels.Booking>> GetBookingsByEmail(string email)
         {
             return await _httpClient.GetFromJsonAsync<List<DomainModels.Booking>>(_baseURL + $"Bookings/emails/{email}");
         }
-
 
         public async Task DeleteUser(int userID)
         {
@@ -113,4 +104,5 @@ namespace Blazor.Services
         
 
     }
+
 }
