@@ -67,7 +67,7 @@ namespace API.Controllers
                     Type = roomDTO.Type,
                     Price = roomDTO.Price
                 };
-                //Adds the new room to the context and saves changes asynchronusly
+                //Adds the new room to the context and saves changes asynchronously
                 _hotelContext.Rooms.Add(room);
                 await _hotelContext.SaveChangesAsync();
 
