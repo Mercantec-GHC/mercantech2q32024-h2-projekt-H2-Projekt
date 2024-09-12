@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.DB
 {
     public class Extra
     {
+        [Key]
         public int Id { get; set; }
         public string ExtraName { get; set; }
 

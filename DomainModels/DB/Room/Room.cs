@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.DB
 {
     public class Room
     {
+        [Key]
         public int Id { get; set; }
         public RoomType RoomType { get; set; }
         public int Rooms { get; set; }
@@ -19,6 +16,6 @@ namespace DomainModels.DB
 
         public string Description { get; set; }
 
-        public List<Reservation> Reservations { get; set; }
+        public List<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }

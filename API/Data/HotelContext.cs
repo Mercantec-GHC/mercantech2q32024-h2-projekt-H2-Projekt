@@ -11,9 +11,9 @@ namespace API.Data
         {
         }
         public DbSet<User> Users { get; set; }
-        public DbSet<Room> Rooms { get; set; }
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Extra> Extras { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
@@ -22,10 +22,15 @@ namespace API.Data
 
         public DbSet<Admin> Admins { get; set; }
 
+        /// <summary>
+        /// When the db model is created it will execute this method
+        /// </summary>
+        /// <param name="builder"></param>
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
+            // Seed the roles to the database
             List<IdentityRole> roles = new List<IdentityRole>()
             {   
                 new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
