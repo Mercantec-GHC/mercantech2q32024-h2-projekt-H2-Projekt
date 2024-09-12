@@ -3,6 +3,8 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using DomainModels.DB;
 using DomainModels.DTO;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -10,7 +12,7 @@ namespace API.Controllers
     /// Controller for room endpoints
     /// </summary>
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class RoomController : ControllerBase
     {
         private readonly HotelContext _context;
@@ -25,10 +27,10 @@ namespace API.Controllers
         /// </summary>
         /// <returns>Status OK with the list of rooms</returns>
         [HttpGet]
-        public IActionResult GetAll() 
+        public async Task<IActionResult> GetAll() 
         {
             // Currently the simplest CRUD operation
-            var room = _context.Rooms.ToList();
+            var room = await _context.Rooms.ToListAsync();
             
             return Ok(room);
         }
@@ -39,10 +41,10 @@ namespace API.Controllers
         /// <param name="id">This is the id in the database of the room you want to select</param>
         /// <returns>Status OK with room</returns>
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id) 
+        public async Task<IActionResult> GetById([FromRoute] int id) 
         {
             // Currently the simplest CRUD operation
-            var room = _context.Rooms.Find(id);
+            var room = await _context.Rooms.FindAsync(id);
             //Just in case null it returns not found
             if (room == null)
             {
@@ -58,7 +60,8 @@ namespace API.Controllers
         /// <param name="room">Room object</param>
         /// <returns>Status OK with new room</returns>
         [HttpPost]
-        public IActionResult Post([FromBody]Room room) 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Post([FromBody]Room room) 
         {
             // Currently the simplest CRUD operation
             _context.Rooms.Add(room);
@@ -72,7 +75,8 @@ namespace API.Controllers
         /// <param name="room">Room object</param>
         /// <returns>Status OK with modified Room</returns>
         [HttpPut]
-        public IActionResult Update([FromBody] Room room) 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update([FromBody] Room room) 
         {
             // Currently the simplest CRUD operation
             _context.Rooms.Update(room);
@@ -86,10 +90,11 @@ namespace API.Controllers
         /// <param name="id">Integer ID of Room</param>
         /// <returns>Status OK</returns>
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
         {
             // Currently the simplest CRUD operation
-            var room = _context.Rooms.Find(id);
+            var room = await _context.Rooms.FindAsync(id);
             _context.Rooms.Remove(room);
             _context.SaveChanges();
             return Ok(room);
@@ -102,20 +107,17 @@ namespace API.Controllers
         /// <param name="query"></param>
         /// <returns>A paginated list of rooms fitting the filters</returns>
         /// <remarks>
-        /// Currently supports searching by RoomType, sorting by any property of the Room object, and lastly non zero-based pagination
+        /// Currently supports searching by RoomType tags, sorting by any property of the Room object, and lastly non zero-based pagination
         /// </remarks>
-        [HttpGet]
-        public IActionResult Search([FromQuery] SearchRoomQuery query )
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search([FromQuery] SearchRoomQuery query )
         {
             // Create the start of a request to the DB
-            var rooms = _context.Rooms.AsQueryable();
-
-            // Check if search property of the query object isn't empty 
-            if (!string.IsNullOrWhiteSpace(query.Search))
-            {
-                // Add the condition to the db request that the returned list needs to have RoomType contain the search property
-                rooms = rooms.Where(r => r.Description.ToLower().Contains(query.Search.ToLower()));
-            }
+            var rooms = _context.Rooms
+                // Make sure that the RoomType is included in the result
+                .Include(r => r.RoomType)
+                // Check if the room type of any of the rooms contains a tag that matches the search property of the query object
+                .WhereIf(!string.IsNullOrWhiteSpace(query.Search), r => r.RoomType.Tags.Any(tag => tag.ToLower().Contains(query.Search.ToLower())));
 
             // Check if SortBy is empty and if not then check if the entered value is a property on the Room object
             if (!string.IsNullOrWhiteSpace(query.SortBy) && typeof(Room).GetProperties().Any(p => p.Name.ToLower() == query.SortBy.ToLower()))
@@ -149,6 +151,43 @@ namespace API.Controllers
             // Return the paginated list of rooms
             return Ok(rooms.ToList());
             
+        }
+
+        /// <summary>
+        /// Get the details of a room as a nice to digest DTO
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("RoomDetails/{id}")]
+        public async Task<IActionResult> GetRoomDetails([FromRoute] int id)
+        {
+            var room = await _context.Rooms.FindAsync(id);
+
+            if (room == null)
+                return NotFound();
+
+            var roomDetails = new GetRoomDetailsDTO
+            {
+                Rooms = room.Rooms,
+                RoomNumber = room.RoomNumber,
+                Beds = room.Beds,
+                Price = room.Price,
+                Status = room.Status,
+                Condition = room.Condition
+            };
+
+            return Ok(roomDetails);
+        }
+
+        /// <summary>
+        /// Provide a list of all room types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("RoomTypes")]
+        public async Task<IActionResult> GetRoomTypes()
+        {
+            var roomTypes = await _context.RoomTypes.ToListAsync();
+            return Ok(roomTypes);
         }
     }
 }

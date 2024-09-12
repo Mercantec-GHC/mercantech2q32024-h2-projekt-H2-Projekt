@@ -5,6 +5,7 @@ using DomainModels.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -33,10 +34,10 @@ namespace API.Controllers
         /// </summary>
         /// <returns>Status OK with the list of reservations</returns>
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             // Currently the simplest CRUD operation
-            var reservations = _context.Reservations.ToList();
+            var reservations = await _context.Reservations.ToListAsync();
             return Ok(reservations);
         }
 
@@ -46,10 +47,10 @@ namespace API.Controllers
         /// <param name="id">Reservation ID</param>
         /// <returns>Status OK with reservation</returns>
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             // Currently the simplest CRUD operation
-            var reservation = _context.Reservations.Find(id);
+            var reservation = await _context.Reservations.FindAsync(id);
             return Ok(reservation);
         }
 
@@ -72,12 +73,21 @@ namespace API.Controllers
             var username = User.GetUsername();
             var appuser = await _userManager.FindByNameAsync(username);
 
-            Room? room = await _context.Rooms.FindAsync(reservation.RoomId);
+            Room? room = await _context.Rooms.Include(r => r.Reservations).FirstAsync(r => r.Id == reservation.RoomId);
             User? customer = _context.Users.FirstOrDefault(u => u.UserName == username);
 
             if (room == null || customer == null)
             {
                 return BadRequest("Room ID could not be found.");
+            }
+
+            // Create time span for reservation
+            TimeSpan span = reservation.CheckOut - reservation.CheckIn;
+
+            // Check if the room is available
+            if (room.Reservations.Any(r => ((r.CheckIn <= reservation.CheckOut && reservation.CheckIn < r.CheckOut) || (reservation.CheckIn <= r.CheckOut && r.CheckIn < reservation.CheckOut))))
+            {
+                return BadRequest("Room is already reserved for the selected dates.");
             }
 
             Reservation res = new Reservation
@@ -153,7 +163,7 @@ namespace API.Controllers
             var appuser = await _userManager.FindByNameAsync(username);
             
             // Find reservation by ID
-            var reservation = _context.Reservations.Find(id);
+            var reservation = await _context.Reservations.FindAsync(id);
 
             // Check if user is admin role or user role
             if (!User.IsInRole("Admin"))

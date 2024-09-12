@@ -9,12 +9,13 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using DomainModels.DB;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
     // This class is a controller class that handles the HTTP requests for the User entity
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class TicketController : Controller
     {
         private readonly HotelContext _context;
@@ -25,9 +26,9 @@ namespace API.Controllers
         }
         //fetch all tickets
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var ticket = _context.Tickets.ToList();
+            var ticket = await _context.Tickets.ToListAsync();
 
             if (ticket == null)
             {
@@ -38,9 +39,9 @@ namespace API.Controllers
         }
         //fetch the id of a ticket
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var ticket = _context.Tickets.Find(id);
+            var ticket = await _context.Tickets.FindAsync(id);
             //Just in case null, returns not found
             if (ticket == null)
             {
@@ -51,7 +52,7 @@ namespace API.Controllers
         }
         // adding a new ticket
         [HttpPost]
-        public IActionResult Post([FromBody] Ticket ticket)
+        public async Task<IActionResult> Post([FromBody] Ticket ticket)
         {
             _context.Tickets.Add(ticket);
             _context.SaveChanges();
@@ -59,7 +60,7 @@ namespace API.Controllers
         }
         // updating an already existing ticket, this can also be a part of the message/reply feature for now
         [HttpPut]
-        public IActionResult Update([FromBody] Ticket ticket)
+        public async Task<IActionResult> Update([FromBody] Ticket ticket)
         {
             _context.Tickets.Update(ticket);
             _context.SaveChanges();
@@ -67,9 +68,9 @@ namespace API.Controllers
         }
         // removing/deleting an existing ticket, may want to do so in another way in the future, where it instead stores the ticket
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var ticket = _context.Tickets.Find(id);
+            var ticket = await _context.Tickets.FindAsync(id);
             _context.Tickets.Remove(ticket);
             _context.SaveChanges();
             return Ok(ticket);

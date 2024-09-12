@@ -1,9 +1,12 @@
-﻿using DomainModels.DTO;
-using DomainModels;
-using DomainModels.DB;
-using Microsoft.AspNetCore.Authentication;
+﻿using DomainModels.DB;
+using DomainModels.DTO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace API.Mappers
+namespace DomainModels.Mappers
 {
     //this is an example mapper used to try out some DTO stuff, dont mind it for now
     public static class TicketMapper

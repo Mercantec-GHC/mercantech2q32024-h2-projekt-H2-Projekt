@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DomainModels.DTO;
-using DomainModels.DB;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DomainModels.DB
 {
     public class Reservation
     {
+        [Key]
         public int Id { get; set; }
         public decimal Price { get; set; }
         public DateTime CheckIn { get; set; }

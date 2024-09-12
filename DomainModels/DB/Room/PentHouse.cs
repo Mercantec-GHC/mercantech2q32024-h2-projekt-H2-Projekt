@@ -10,11 +10,14 @@ namespace DomainModels.DB
 {
     public class PentHouse : RoomType
     {
-        public int Id { get; set; }
-        public List<string> facilitates = new List<string>()
+        public PentHouse()
         {
-            "King-size seng", "stort badeværelse med badekar og separat bruser", "opholdsstue", "TV", "skrivebord", "minibar", "Wi-Fi", "privat terrasse med udsigt"
-        };
-        public decimal PricePerNight = 3000;
+            PricePerNight = 3000;
+            RoomTypeName = "Penthouse";
+            Tags = new List<string>()
+            {
+                "King-size seng", "stort badeværelse med badekar og separat bruser", "opholdsstue", "TV", "skrivebord", "minibar", "Wi-Fi", "privat terrasse med udsigt"
+            };
+        }
     }
 }

@@ -80,46 +80,46 @@ public class Worker : BackgroundService
     private async Task SeedDataAsync(HotelContext dbContext, CancellationToken cancellationToken)
     {
         // Create a new room type object with sample data.
-        RoomType testRoomType = new()
+        List<RoomType> roomTypes = new()
         {
-            RoomTypeName = "Single Room",
-            Tags = new List<string> { "Single" },
+            new PentHouse(),
+            new PremiumHouse(),
+            new StandardHouse()
         };
 
-        RoomType testRoomType2 = new()
-        {
-            RoomTypeName = "Double Room",
-            Tags = new List<string> { "Double" },
-        };
+        TrySeedEntities<RoomType>(dbContext, roomTypes);
 
         // Create a new room object with sample data.
-        Room testRoom = new()
+        List<Room> rooms = new()
         {
-            RoomType = testRoomType,
-            Rooms = 1,
-            RoomNumber = 101,
-            Beds = "Single",
-            Price = 100,
-            Status = "Available",
-            Condition = "Good",
-            Description = "This is a single room with a single bed."
-        };
 
-        Room testRoom2 = new()
-        {
-            RoomType = testRoomType2,
-            Rooms = 1,
-            RoomNumber = 102,
-            Beds = "Double",
-            Price = 200,
-            Status = "Available",
-            Condition = "Good",
-            Description = "This is a double room with a double bed."
+            new()
+            {
+                RoomType = roomTypes[0],
+                Rooms = 1,
+                RoomNumber = 101,
+                Beds = "Single",
+                Price = 100,
+                Status = "Available",
+                Condition = "Good",
+                Description = "This is a single room with a single bed."
+            },
+
+            new()
+            {
+                RoomType = roomTypes[1],
+                Rooms = 1,
+                RoomNumber = 102,
+                Beds = "Double",
+                Price = 200,
+                Status = "Available",
+                Condition = "Good",
+                Description = "This is a double room with a double bed."
+            }
         };
 
         // Try to seed the database with the sample room data.
-        var success = TrySeedEntity<Room>(dbContext, testRoom);
-        var success2 = TrySeedEntity<Room>(dbContext, testRoom2);
+        var success = TrySeedEntities<Room>(dbContext, rooms);
 
         // Log the result of the seeding operation.
         _logger.LogDebug(success ? "Sample room was created" : "Room table already contains data. Room was skipped.");
@@ -132,15 +132,19 @@ public class Worker : BackgroundService
     /// <param name="dbContext"></param>
     /// <param name="entity"></param>
     /// <returns>True if successful, false if database table of entity already contains data</returns>
-    private bool TrySeedEntity<T>(HotelContext dbContext, T entity) where T : class
+    private bool TrySeedEntities<T>(HotelContext dbContext, IEnumerable<T> entities) where T : class
     {
-        var existingEntity = !dbContext.Set<T>().IsNullOrEmpty();
-        if (existingEntity)
+
+        var existingEntityCount = dbContext.Set<T>().Count();
+        if (existingEntityCount == entities.Count())
         {
             return false;
         }
 
-        dbContext.Set<T>().Add(entity);
+        entities.ToList().ForEach(e =>
+        {
+            dbContext.Set<T>().Add(e);
+        });
         dbContext.SaveChanges();
         return true;
     }

@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DomainModels.DB
 {
     public class RoomType
     {
+        [Key]
         public int Id { get; set; }
-        public string RoomTypeName { get; set; }
-        public List<string> Tags { get; set; }
+        public virtual string RoomTypeName { get; set; } = "";
+        public virtual decimal PricePerNight { get; set; } = 100;
+        public virtual List<string> Tags { get; set; } = new List<string>();
 
-        public List<Room> Rooms { get; set; }
+        [JsonIgnore]
+        public List<Room> Rooms { get; set; } = new List<Room>();
 
     }
 }

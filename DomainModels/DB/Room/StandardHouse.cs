@@ -6,32 +6,33 @@ using System.Threading.Tasks;
 
 namespace DomainModels.DB
 {
-    public class StandardHouse
+    public class StandardHouse : RoomType
     {
-        public int Id { get; set; }
-        public List<string> facilitates = new List<string>()
+        public StandardHouse()
         {
-            "Enkeltseng eller dobbeltseng", "badeværelse med bruser", "TV", "skrivebord", "Wi-Fi"
-        };
-        public decimal PricePerNight;
+            PricePerNight = CalRoomPrice(this);
+            RoomTypeName = "StandardHouse";
+            Tags = new List<string>()
+            {
+                "Enkeltseng eller dobbeltseng", "badeværelse med bruser", "TV", "skrivebord", "Wi-Fi"
+            };
+        }
 
         public string NumberOfRooms { get; set; }
-
         public decimal CalRoomPrice(StandardHouse rooms)
         {
             if (rooms.NumberOfRooms == "single room")
             {
-                rooms.PricePerNight = 500;
+                return 500;
             }
             else if (rooms.NumberOfRooms == "double room")
             {
-                rooms.PricePerNight = 800;
+                return 800;
             }
             else
             {
-                rooms.PricePerNight = 0;
+                return 0;
             }
-            return rooms.PricePerNight;
         }
     }
 }
