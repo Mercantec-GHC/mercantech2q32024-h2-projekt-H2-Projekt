@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DTOs\**" />
+    <Content Remove="DTOs\**" />
+    <EmbeddedResource Remove="DTOs\**" />
+    <None Remove="DTOs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="appsettings.json" />
   </ItemGroup>
 
@@ -33,10 +40,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DomainModels\DomainModels.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DTOs\" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,8 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using DomainModels.DB;
 using DomainModels.DTO;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -10,7 +12,7 @@ namespace API.Controllers
     /// Controller for room endpoints
     /// </summary>
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class RoomController : ControllerBase
     {
         private readonly HotelContext _context;
@@ -58,6 +60,7 @@ namespace API.Controllers
         /// <param name="room">Room object</param>
         /// <returns>Status OK with new room</returns>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody]Room room) 
         {
             // Currently the simplest CRUD operation
@@ -72,6 +75,7 @@ namespace API.Controllers
         /// <param name="room">Room object</param>
         /// <returns>Status OK with modified Room</returns>
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public IActionResult Update([FromBody] Room room) 
         {
             // Currently the simplest CRUD operation
@@ -86,6 +90,7 @@ namespace API.Controllers
         /// <param name="id">Integer ID of Room</param>
         /// <returns>Status OK</returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             // Currently the simplest CRUD operation
@@ -104,18 +109,15 @@ namespace API.Controllers
         /// <remarks>
         /// Currently supports searching by RoomType, sorting by any property of the Room object, and lastly non zero-based pagination
         /// </remarks>
-        [HttpGet]
+        [HttpGet("Search")]
         public IActionResult Search([FromQuery] SearchRoomQuery query )
         {
             // Create the start of a request to the DB
-            var rooms = _context.Rooms.AsQueryable();
-
-            // Check if search property of the query object isn't empty 
-            if (!string.IsNullOrWhiteSpace(query.Search))
-            {
-                // Add the condition to the db request that the returned list needs to have RoomType contain the search property
-                rooms = rooms.Where(r => r.Description.ToLower().Contains(query.Search.ToLower()));
-            }
+            var rooms = _context.Rooms
+                // Make sure that the RoomType is included in the result
+                .Include(r => r.RoomType)
+                // Check if the room type of any of the rooms contains a tag that matches the search property of the query object
+                .WhereIf(!string.IsNullOrWhiteSpace(query.Search), r => r.RoomType.Tags.Any(tag => tag.ToLower().Contains(query.Search.ToLower())));
 
             // Check if SortBy is empty and if not then check if the entered value is a property on the Room object
             if (!string.IsNullOrWhiteSpace(query.SortBy) && typeof(Room).GetProperties().Any(p => p.Name.ToLower() == query.SortBy.ToLower()))

@@ -14,7 +14,7 @@ namespace API.Controllers
 {
     // This class is a controller class that handles the HTTP requests for the User entity
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class TicketController : Controller
     {
         private readonly HotelContext _context;
