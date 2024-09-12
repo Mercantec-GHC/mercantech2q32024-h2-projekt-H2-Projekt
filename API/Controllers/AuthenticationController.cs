@@ -90,9 +90,9 @@ namespace API.Controllers
                 var user = new User
                 {
                     UserName = createUsersDTO.Username,
-                    FirstName = createUsersDTO.FirstName,
-                    LastName = createUsersDTO.LastName,
-                    PhoneNumber = createUsersDTO.phoneNumber,
+                    FirstName = createUsersDTO.Firstname,
+                    LastName = createUsersDTO.Lastname,
+                    PhoneNumber = createUsersDTO.PhoneNumber,
                     Email = createUsersDTO.Email
                 };
 

@@ -10,11 +10,11 @@ namespace DomainModels.DTO
         [Required]
         public string Username { get; set; }
         [Required]
-        public string FirstName { get; set; }
+        public string Firstname { get; set; }
         [Required]
-        public string LastName { get; set; }
+        public string Lastname { get; set; }
         [Required]
-        public string phoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }

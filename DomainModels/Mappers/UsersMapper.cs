@@ -12,9 +12,9 @@ namespace API.Mappers
             return new User
             {
                 UserName = userDTO.Username,
-                FirstName = userDTO.FirstName,
-                LastName = userDTO.LastName,
-                PhoneNumber = userDTO.phoneNumber,
+                FirstName = userDTO.Firstname,
+                LastName = userDTO.Lastname,
+                PhoneNumber = userDTO.PhoneNumber,
                 Email = userDTO.Email,
                 PasswordHash = userDTO.Password,
             };
