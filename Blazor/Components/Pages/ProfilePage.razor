@@ -1,44 +1,47 @@
 ﻿@page "/profile/{userId:int}"
-
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Microsoft.AspNetCore.Mvc.Rendering
 @inject Services.DatabaseServices DBServices
 @using DomainModels
 
-
 @code {
-    // Declaring a parameter to receive the userId from the URL
-    [Parameter]public int userId { get; set; }
+    // Public parameter to capture the userId passed to the component
+    [Parameter] public int userId { get; set; }
 
-    // User object to store data
+    // Object to store the user's details
     private UserGetDTO user = new UserGetDTO();
 
-    public List<DomainModels.Booking> bookings = new List<DomainModels.Booking>();
+    // List to store bookings associated with the user
+    private List<DomainModels.Booking> bookings = new List<DomainModels.Booking>();
 
-    // Fetch user data on component initialization
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Fetch the user by their ID from the DBServices and assign it to the fetchedUser variable
+            // Fetch user details from the database using the given userId
             var fetchedUser = await DBServices.GetUserById(userId);
 
-            // If the user is found, assign the fetched data to the user variable.
+            // Check if a user with the provided ID exists
             if (fetchedUser != null)
             {
+                // Assign the fetched user details to the 'user' variable
                 user = fetchedUser;
+
+                // Fetch bookings associated with the user's email and assign them to the 'bookings' list
+                bookings = await DBServices.GetBookingsByEmail(user.Email);
             }
             else
             {
-                // If no user is found, log to the console.
                 Console.WriteLine("User not found.");
             }
-
-            bookings = await DBServices.GetBookingsByEmail(user.Email);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"An unexpected error occurred: {ex.Message}");
         }
     }
+
+   
 }
 
 <div class="profile-container">
@@ -52,16 +55,23 @@
     <div class="profile-content">
         @if (bookings != null)
         {
-            <ul>
-                @foreach (var booking in bookings)
-                {
-                    <li>Room type : @booking.Room.Type</li>
-                    <li>Start date : @booking.StartDate</li>
-                    <li>End date : @booking.EndDate</li>
-                    <li>Email : @booking.GuestEmail</li>
-                    
-                }
-            </ul>
+            <form >
+                <ul>
+                    @foreach (var booking in bookings)
+                    {
+                        //Display each booking's room type, start date, end date, and guest email
+                        <li>Room type : @booking.Room.Type</li>
+                        <li>Start date : @booking.StartDate.ToString("yyyy-MM-dd")</li>
+                        <li>End date : @booking.EndDate.ToString("yyyy-MM-dd")</li>
+                        <li>Email : @booking.GuestEmail</li>
+
+                        //Button to navigate to the EditBookingPage, allowing the user to edit the booking
+                        <a href="/editbooking/@booking.BookingId" class="btn btn-primary">Edit Booking</a>
+
+                    }
+                </ul>
+               
+            </form>
         }
         else
         {
@@ -69,6 +79,7 @@
         }
     </div>
 </div>
+
 
 <style>
   
