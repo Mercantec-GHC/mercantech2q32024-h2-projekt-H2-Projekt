@@ -3,7 +3,6 @@
 @using System.Net
 @inject HttpClient httpClient
 @using Services
-@inject Services.ReusableRoomFunctions RRFunctions
 
 <PageTitle>Book a room</PageTitle>
 
@@ -101,6 +100,7 @@ else if (!roomFree)
     //this is used to check if a room is free and stop from looping through more than necessary if a room is booked at least one date in the selected range of dates
     public bool roomFree = true;
 
+    ReusableRoomFunctions RRFunctions = new ReusableRoomFunctions();
     //booking placeholder that has the values getting filled into the booking table in DB
     public CreateBookingDTO booking = new CreateBookingDTO()
         {
@@ -191,7 +191,6 @@ else if (!roomFree)
     //finally the booking is used to create a new booking in DB through DBServices
     private async Task CreateBooking()
     {
-        ReusableRoomFunctions test = new ReusableRoomFunctions();
         booking.RoomId = await RRFunctions.GetRoom(roomType, booking, room);
         if(booking.RoomId == 0)
         {
