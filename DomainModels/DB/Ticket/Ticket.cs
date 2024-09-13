@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DomainModels.DB
 {
@@ -10,6 +11,7 @@ namespace DomainModels.DB
         public string Description { get; set; }
         public Status status { get; set; }
 
+        [JsonIgnore]
         public List<Message> Messages { get; set; }
 
 

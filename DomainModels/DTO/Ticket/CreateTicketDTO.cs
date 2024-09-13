@@ -1,5 +1,4 @@
-﻿using DomainModels;
-using DomainModels.DB;
+﻿using DomainModels.DB;
 
 namespace DomainModels.DTO
 {
