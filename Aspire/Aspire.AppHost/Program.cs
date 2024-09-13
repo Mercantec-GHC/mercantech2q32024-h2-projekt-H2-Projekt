@@ -19,4 +19,9 @@ var api = builder.AddProject<Projects.API>("api").WithReference(db);
 builder.AddProject<Projects.Blazor>("blazor").WithReference(api);
 #endregion
 
+#region Migrations Worker
+// Truly you do not need to worry about this as it just runs migrations and seeds the database if the run configuration is set to "Debug"
+builder.AddProject<Projects.MigrationService>("migrations").WithReference(db);
+#endregion
+
 builder.Build().Run();

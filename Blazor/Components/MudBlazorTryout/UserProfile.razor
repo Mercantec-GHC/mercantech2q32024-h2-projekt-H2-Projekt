@@ -1,5 +1,14 @@
-﻿@page "/manageProfile"
+﻿@page "/register"
 @using System.ComponentModel.DataAnnotations
+@using DomainModels.DTO
+@using Blazor.Auth
+@using Blazor.Auth.Contracts
+@inject Blazor.Auth.AuthService authService
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider authState
+
+@inject NavigationManager NavigationManager
+@inject HttpClient _http
 
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
 <DataAnnotationsValidator/>
@@ -7,6 +16,14 @@
     <MudItem xs="12" sm="7">
         <MudCard>
             <MudCardContent>
+                 <MudTextField Label="Username" Class="mt-3"
+                                  @bind-Value="model.Username" For="@(() => model.Username)" />
+                <MudTextField Label="Firstname" Class="mt-3"
+                                  @bind-Value="model.Firstname" For="@(() => model.Firstname)" />
+                <MudTextField Label="Lastname" Class="mt-3"
+                                  @bind-Value="model.Lastname" For="@(() => model.Lastname)" />
+                <MudTextField Label="Phonenumber" Class="mt-3"
+                                  @bind-Value="model.PhoneNumber" For="@(() => model.PhoneNumber)" />
                 <MudTextField Label="Email" Class="mt-3" 
                               @bind-Value="model.Email" For="@(() => model.Email)"/>
                 <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
@@ -42,27 +59,34 @@
 
 
 @code {
-    RegisterAccountForm model = new RegisterAccountForm();
+
+    CreateUserDTO model = new CreateUserDTO(); 
     bool success;
 
-    public class RegisterAccountForm
+    // we use this function to handle the registration and signin/login of a user. 
+    private async void OnValidSubmit(EditContext context)
     {
+        // first we will make a post request registering the user and then return a true or false once the user is registered. 
+        var response = await authService.Register(model!);
+        success = response;
 
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        //Here we instanciate a new LoginDTO object and set the Username and Password to the values from the model.
+        LoginDTO loginDTO = new LoginDTO { Username = model.Username, Password = model.Password };
 
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
+        //If the user is not registered we will return and not try to login the user.
+        if(!success)
+        {
+            return;   
+        }
 
-
-    }
-
-    private void OnValidSubmit(EditContext context)
-    {
-        success = true;
-        StateHasChanged();
+        //If the user is registered we will try to login the user. By calling the login method from the authService.
+        var loginResponse = await authService.Login(loginDTO!);
+        if (loginResponse != null)
+        {
+            await ((AuthStateProvide)authState).AuthenticateUser(loginResponse.Token);
+            NavigationManager.NavigateTo("/");
+        }
+        
     }
 
 }
