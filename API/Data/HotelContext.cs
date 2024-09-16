@@ -29,6 +29,7 @@ namespace API.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            
 
             // Seed the roles to the database
             List<IdentityRole> roles = new List<IdentityRole>()
@@ -36,7 +37,22 @@ namespace API.Data
                 new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
                 new IdentityRole { Name = "User", NormalizedName = "USER" }
             };
+
+            var hasher = new PasswordHasher<User>();
+
+            User user = new User
+            {
+                UserName = "admin",
+                Email = "admin@admin.com",
+                FirstName = "Admin",
+                LastName = "Admin",
+                PhoneNumber = "123456789",
+                PasswordHash = hasher.HashPassword(null, "admin")
+            };
+
+            builder.Entity<User>().HasData(user);
             builder.Entity<IdentityRole>().HasData(roles);
+            
         }
     }
 }

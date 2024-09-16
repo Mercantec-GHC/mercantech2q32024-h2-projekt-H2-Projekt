@@ -117,7 +117,7 @@ public class Worker : BackgroundService
                 Description = "This is a double room with a double bed."
             }
         };
-
+     
         // Try to seed the database with the sample room data.
         var success = TrySeedEntities<Room>(dbContext, rooms);
 

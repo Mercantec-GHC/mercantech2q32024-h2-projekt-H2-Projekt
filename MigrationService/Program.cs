@@ -11,6 +11,5 @@ builder.Services.AddOpenTelemetry().WithTracing(tracing => tracing.AddSource(Wor
 
 // Add the database context to the service.
 builder.AddNpgsqlDbContext<HotelContext>("hoteldb");
-
 var host = builder.Build();
 host.Run();

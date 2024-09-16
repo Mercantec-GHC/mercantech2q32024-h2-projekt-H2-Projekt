@@ -3,6 +3,7 @@ using API.Mappers;
 using DomainModels.DB;
 using DomainModels.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +17,12 @@ namespace API.Controllers
      
         // This is a constructor for the UserController class that takes in a HotelContext object to istantiate the database context
         private readonly HotelContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public UserController(HotelContext context)
+        public UserController(HotelContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
 
@@ -113,6 +116,66 @@ namespace API.Controllers
                 _context.SaveChanges();
                 return Ok(user);
      
+        }
+
+        /// <summary>
+        /// This endpoint is used to assign the role of admin to a user by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost("assignadmin/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignRoleToUser([FromRoute] string id)
+        {
+            // first we find the user by the id
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            // then we assign the role of admin to the user
+            var assignToAdmin = await _userManager.AddToRoleAsync(user, "Admin");
+
+            // if the assignment is successful we return an ok status code
+            if (assignToAdmin.Succeeded)
+            {
+                return Ok();
+            } else
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// This endpoint is used to remove the role of admin from a user by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("removeadmin/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveRoleFromUser([FromRoute] string id)
+        {
+            // first we find the user by the id
+            var user = await _context.Users.FindAsync(id);
+
+            // if the user is not found we return a not found status code
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // then we remove the role of admin from the user
+            var removeAdmin = await _userManager.RemoveFromRoleAsync(user, "Admin");
+
+            // if the removal is successful we return an ok status code
+            if (removeAdmin.Succeeded)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
 
