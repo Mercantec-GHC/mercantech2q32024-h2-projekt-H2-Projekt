@@ -12,7 +12,7 @@ namespace DomainModels.DB
         public Status status { get; set; }
 
         [JsonIgnore]
-        public List<Message> Messages { get; set; }
+        public List<Message> Messages = new List<Message>();
 
 
     }
