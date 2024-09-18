@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    public class HotelContext : IdentityDbContext<User>
+    public class HotelContext : DbContext
     {
         public HotelContext(DbContextOptions<HotelContext> options) : base(options)
         {

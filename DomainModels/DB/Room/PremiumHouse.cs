@@ -4,7 +4,7 @@
     {
         public PremiumHouse()
         {
-            PricePerNight = CalRoomPrice(this);
+            PricePerNight = CalRoomPrice();
             RoomTypeName = "PremiumHouse";
             Tags = new List<string>()
             {
@@ -13,13 +13,13 @@
         }
 
         public string numberOfRooms { get; set; }
-        public decimal CalRoomPrice(PremiumHouse rooms)
+        public decimal CalRoomPrice()
         {
-            if (rooms.numberOfRooms == "single room")
+            if (numberOfRooms == "single room")
             {
                 return 900;
             }
-            else if (rooms.numberOfRooms == "double room")
+            else if (numberOfRooms == "double room")
             {
                 return 1200;
             }

@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
 
-    /// <summary>
+    
     /// Authorization controller
     /// Handles anything to do with login and registration of users
-    /// </summary>
+    
     [ApiController]
     [Route("[controller]/[action]")]
     public class AuthenticationController : Controller
@@ -27,9 +27,7 @@ namespace API.Controllers
             _signInManager = signInManager;
         }
 
-        /// <summary>
         /// Login endpoint
-        /// </summary>
         /// <param name="loginDTO">Login DTO consisting of username and password</param>
         /// <returns>UserTokenDTO which consists of username, email, and JWT token used in future requests to locked services</returns>
         [HttpPost]
