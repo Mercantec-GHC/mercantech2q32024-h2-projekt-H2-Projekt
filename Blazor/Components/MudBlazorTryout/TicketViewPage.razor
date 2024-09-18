@@ -1,0 +1,72 @@
+﻿@page "/ticket/view"
+@using DomainModels
+@using DomainModels.DB
+@using System.Net.Http.Json
+
+<h3>Ticket</h3>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudPaper Class="pa-4">
+        <MudGrid>
+            <MudItem xs="12">
+                    <MudGrid>
+                        <MudItem xs="12" sm="1">
+                            id
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            title
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            description
+                        </MudItem>
+                        <MudItem xs="12" sm="3">
+                            status
+                        </MudItem>
+                    </MudGrid>
+            </MudItem>
+            @foreach (Ticket ticket in tickets)
+            {
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4">
+                        <MudGrid>
+                            <MudItem xs="12" sm="1">
+                                @ticket.Id
+                            </MudItem>
+                            <MudItem xs="12" sm="4">
+                                @ticket.Title
+                            </MudItem>
+                            <MudItem xs="12" sm="4">
+                                @ticket.Description
+                            </MudItem>
+                            <MudItem xs="12" sm="3">
+                                @ticket.status
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudPaper>
+</MudContainer>
+
+
+@code {
+    [Parameter]
+    public int ticketId { get; set; }
+
+    List<Ticket> tickets = new List<Ticket>();
+
+    private readonly HttpClient _httpClient = new HttpClient();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTicketsFromDB();
+    }
+
+    public async Task GetTicketsFromDB()
+    {
+        tickets = await _httpClient.GetFromJsonAsync<List<Ticket>>("https://localhost:7207/Ticket");
+    }
+}
+
+
+
