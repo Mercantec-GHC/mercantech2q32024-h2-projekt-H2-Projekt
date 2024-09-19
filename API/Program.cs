@@ -5,6 +5,7 @@ using API.Services;
 using DomainModels.DB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -51,7 +52,8 @@ builder.Services.AddSwaggerGen(
         });
     });
 
-builder.AddNpgsqlDbContext<HotelContext>("hoteldb");
+builder.Services.AddDbContext<HotelContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Identity to the services and configure them in regards to the DB
 builder.Services.AddIdentity<User, IdentityRole>()

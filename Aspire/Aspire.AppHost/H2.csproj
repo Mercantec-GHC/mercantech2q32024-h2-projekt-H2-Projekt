@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\API\API.csproj" />
     <ProjectReference Include="..\..\Blazor\Blazor.csproj" />
-    <ProjectReference Include="..\..\MigrationService\MigrationService.csproj" />
   </ItemGroup>
 
 </Project>
