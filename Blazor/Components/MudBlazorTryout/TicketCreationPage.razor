@@ -5,13 +5,17 @@
 
 <h3>Ticket</h3>
 
-<MudTextField @bind-Value="ticket.Title" Label="Ticket title" HelperText="Title" Variant="Variant.Outlined" />
+
+<MudTextField @bind-Value="ticket.Title" Label="Ticket title" HelperText="Title" Variant="Variant.Outlined"/>
 <MudTextField @bind-Value="ticket.Description" Label="Ticket description" HelperText="Description" Variant="Variant.Outlined" />
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => AddTicketToDB()">Primary</MudButton>
 
 @code {
-    Ticket ticket = new Ticket();
+    Ticket ticket = new Ticket()
+        {
+            status = Status.WorkInProgress
+        };
 
     private readonly HttpClient _httpClient = new HttpClient();
 

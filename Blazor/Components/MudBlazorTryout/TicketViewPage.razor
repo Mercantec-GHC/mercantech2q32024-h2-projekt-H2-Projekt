@@ -8,40 +8,42 @@
     <MudPaper Class="pa-4">
         <MudGrid>
             <MudItem xs="12">
-                    <MudGrid>
-                        <MudItem xs="12" sm="1">
-                            id
-                        </MudItem>
-                        <MudItem xs="12" sm="4">
-                            title
-                        </MudItem>
-                        <MudItem xs="12" sm="4">
-                            description
-                        </MudItem>
-                        <MudItem xs="12" sm="3">
-                            status
-                        </MudItem>
-                    </MudGrid>
+                <MudGrid>
+                    <MudItem xs="12" sm="1">
+                        id
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        title
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        description
+                    </MudItem>
+                    <MudItem xs="12" sm="3">
+                        status
+                    </MudItem>
+                </MudGrid>
             </MudItem>
             @foreach (Ticket ticket in tickets)
             {
                 <MudItem xs="12">
-                    <MudPaper Class="pa-4">
-                        <MudGrid>
-                            <MudItem xs="12" sm="1">
-                                @ticket.Id
-                            </MudItem>
-                            <MudItem xs="12" sm="4">
-                                @ticket.Title
-                            </MudItem>
-                            <MudItem xs="12" sm="4">
-                                @ticket.Description
-                            </MudItem>
-                            <MudItem xs="12" sm="3">
-                                @ticket.status
-                            </MudItem>
-                        </MudGrid>
-                    </MudPaper>
+                    <MudLink Href="@($"ticket/view/{ticket.Id}")">
+                        <MudPaper Class="pa-4">
+                            <MudGrid>
+                                <MudItem xs="12" sm="1">
+                                    @ticket.Id
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    @ticket.Title
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    @ticket.Description
+                                </MudItem>
+                                <MudItem xs="12" sm="3">
+                                    @ticket.status
+                                </MudItem>
+                            </MudGrid>
+                        </MudPaper>
+                    </MudLink>
                 </MudItem>
             }
         </MudGrid>
