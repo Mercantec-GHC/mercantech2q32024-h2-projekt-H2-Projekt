@@ -65,7 +65,7 @@ else
         try
         {
             // API call to fetch bookings by user email
-            var response = await HttpClient.GetAsync($"api/Bookings/{UserId}");
+            var response = await HttpClient.GetAsync($"api/Bookings?email={user.Email}");
 
             if (response.IsSuccessStatusCode)
             {
