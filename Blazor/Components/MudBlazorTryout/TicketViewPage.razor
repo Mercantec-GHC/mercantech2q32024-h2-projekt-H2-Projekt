@@ -50,9 +50,6 @@
 
 
 @code {
-    [Parameter]
-    public int ticketId { get; set; }
-
     List<Ticket> tickets = new List<Ticket>();
 
     private readonly HttpClient _httpClient = new HttpClient();

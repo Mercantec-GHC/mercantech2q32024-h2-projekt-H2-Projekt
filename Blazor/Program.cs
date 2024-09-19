@@ -21,6 +21,11 @@ builder.Services.AddBlazoredLocalStorage();
 
 // Register HttpClient for server-side Blazor
 builder.Services.AddHttpClient();  // Registers HttpClient to be available for dependency injection
+builder.Services.AddServerSideBlazor().AddCircuitOptions(options =>
+{
+    options.DetailedErrors = true;
+});
+
 
 var app = builder.Build();
 
