@@ -12,11 +12,8 @@ namespace API.Mappers
         {
             return new Room
             {
-                Rooms = roomDTO.Rooms,
-                RoomNumber = roomDTO.RoomNumber,
                 Beds = roomDTO.Beds,
                 Price = roomDTO.Price,
-                Status = roomDTO.Status,
                 Condition = roomDTO.Condition
             };
         }

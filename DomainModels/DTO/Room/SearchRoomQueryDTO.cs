@@ -1,9 +1,9 @@
 ﻿namespace DomainModels.DTO
 {
-    /// <summary>
-    /// Query object for pagination and sorting
-    /// </summary>
-    public class SearchRoomQuery
+    
+    // Query object for pagination and sorting
+    
+    public class SearchRoomQueryDTO
     {
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 5;
