@@ -20,6 +20,5 @@ namespace DomainModels.DB
         WorkInProgress,
         ClosedCompleted,
         ClosedSkipped
-
     }
 }

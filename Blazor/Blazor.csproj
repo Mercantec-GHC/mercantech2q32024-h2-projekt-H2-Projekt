@@ -3,13 +3,15 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings> 
     <UserSecretsId>71b51827-3397-4607-bd01-c42760bf22d6</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Remove="Components\MudBlazorTryout\Employee.razor" />
+    <Content Remove="Components\MudBlazorTryout\TicketEdit.razor" />
+    <Content Remove="Components\MudBlazorTryout\TicketEditPage.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,14 +28,26 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Components\MudBlazorTryout\Employee.razor" />
+    <_ContentIncludedByDefault Remove="Components\MudBlazorTryout\TicketEdit.razor" />
+    <_ContentIncludedByDefault Remove="Components\MudBlazorTryout\TicketEditPage.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Components\MudBlazorTryout\Employee.razor" />
+    <None Include="Components\MudBlazorTryout\TicketEdit.razor" />
+    <None Include="Components\MudBlazorTryout\TicketEditPage.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DomainModels\DomainModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\MudBlazorTryout\TicketEditPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\MudBlazorTryout\TicketEdit.razor" />
   </ItemGroup>
 
 </Project>
