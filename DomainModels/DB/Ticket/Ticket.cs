@@ -12,7 +12,7 @@ namespace DomainModels.DB
         public Status status { get; set; }
 
         [JsonIgnore]
-        public List<Message> Messages = new List<Message>();
+        public List<Message> Messages { get; set; } = new List<Message>();
     }
 
     public enum Status
