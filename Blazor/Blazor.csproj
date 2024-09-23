@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <Content Remove="Components\MudBlazorTryout\Employee.razor" />
-    <Content Remove="Components\MudBlazorTryout\TicketEdit.razor" />
-    <Content Remove="Components\MudBlazorTryout\TicketEditPage.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,26 +26,14 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Components\MudBlazorTryout\Employee.razor" />
-    <_ContentIncludedByDefault Remove="Components\MudBlazorTryout\TicketEdit.razor" />
-    <_ContentIncludedByDefault Remove="Components\MudBlazorTryout\TicketEditPage.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Components\MudBlazorTryout\Employee.razor" />
-    <None Include="Components\MudBlazorTryout\TicketEdit.razor" />
-    <None Include="Components\MudBlazorTryout\TicketEditPage.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DomainModels\DomainModels.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Components\MudBlazorTryout\TicketEditPage.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Components\MudBlazorTryout\TicketEdit.razor" />
   </ItemGroup>
 
 </Project>
