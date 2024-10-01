@@ -1,23 +1,87 @@
 ﻿@inherits LayoutComponentBase
+@using System.Threading
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<MudLayout>
+    <MudAppBar>
+        <MudGrid AlignItems="Center">
+            <!-- Left Section -->
+            <MudItem xs="3" Class="d-flex align-center">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                <MudText Typo="Typo.h6" Class="ml-2">Hotel Vesterly</MudText>
+            </MudItem>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+            <!-- Center Section (Search Bar) -->
+            <MudItem xs="6" Class="d-flex justify-center">
+                <MudAutocomplete T="string" Label="US States" @bind-Value="value1" SearchFunc="@Search1"
+                                 ResetValueOnEmptyText="@resetValueOnEmptyText"
+                                 CoerceText="@coerceText" CoerceValue="@coerceValue"
+                                 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Dark" 
+                                 Class="w-100" />
+            </MudItem>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+            <!-- Right Section -->
+            <MudItem xs="3" Class="d-flex justify-end align-center">
+                <MudBadge Content="1" Color="Color.Primary" Overlap="true" Class="mx-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Email" Color="Color.Default" />
+                </MudBadge>
+                <MudIconButton Icon="@Icons.Material.Filled.Lock" Color="Color.Error" />
+            </MudItem>
+        </MudGrid>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <MyNavMenu/>
+    </MudDrawer>
+
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private bool resetValueOnEmptyText;
+    private bool coerceText;
+    private bool coerceValue;
+    private string value1;
+    private string[] states =
+    {
+        "Alabama", "Alaska", "American Samoa", "Arizona",
+        "Arkansas", "California", "Colorado", "Connecticut",
+        "Delaware", "District of Columbia", "Federated States of Micronesia",
+        "Florida", "Georgia", "Guam", "Hawaii", "Idaho",
+        "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+        "Louisiana", "Maine", "Marshall Islands", "Maryland",
+        "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+        "Missouri", "Montana", "Nebraska", "Nevada",
+        "New Hampshire", "New Jersey", "New Mexico", "New York",
+        "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
+        "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+        "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+        "Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
+        "Washington", "West Virginia", "Wisconsin", "Wyoming",
+    };
+
+    private async Task<IEnumerable<string>> Search1(string value, CancellationToken token)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5, token);
+
+        // if text is null or empty, don't return values (drop-down will not open)
+        if (string.IsNullOrEmpty(value))
+            return new string[0];
+        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+}
+

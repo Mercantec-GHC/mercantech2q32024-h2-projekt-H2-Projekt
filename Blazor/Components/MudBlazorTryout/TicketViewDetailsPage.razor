@@ -1,0 +1,45 @@
+﻿@page "/ticket/view/{ticketId:int}"
+@using DomainModels
+@using DomainModels.DB
+@using System.Net.Http.Json
+@inject HttpClient _httpClient
+
+<h3>Ticket</h3>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudText>@ticket.Title</MudText>
+            <MudText Typo="Typo.body2">@ticket.Description</MudText>
+            <MudText Typo="Typo.body2">Status: @ticket.status</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="@($"/ticket/edit/{ticketId}")">Edit</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => DeleteTicketInDB()">Delete</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+
+@code {
+    [Parameter]
+    public int ticketId { get; set; }
+
+    Ticket ticket = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTicketFromDB();
+    }
+
+    public async Task GetTicketFromDB()
+    {
+        ticket = await _httpClient.GetFromJsonAsync<Ticket>($"https://localhost:7207/Ticket/{ticketId}");
+    }
+
+    public async Task DeleteTicketInDB()
+    {
+        await _httpClient.DeleteAsync($"https://localhost:7207/Ticket/{ticketId}");
+        Navigation.NavigateTo("/ticket/view/");
+    }
+}
